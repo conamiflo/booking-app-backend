@@ -32,7 +32,7 @@ public class GreetingController {
 
     /*
      * Prilikom poziva metoda potrebno je navesti nekoliko parametara
-     * unutar @@GetMapping anotacije: url kao vrednost 'value' atributa (ukoliko se
+     * unutar @@GetMapping anotacije: url kao vrednost 'value' atributa (ukoliko seGet
      * izostavi, ruta do metode je ruta do kontrolera), u slucaju GET zahteva
      * atribut 'produce' sa naznakom tipa odgovora (u nasem slucaju JSON).
      *
