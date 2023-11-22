@@ -1,6 +1,8 @@
-package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
+package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto;
 
-public class User {
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.UserRole;
+
+public class UserEditAdminDTO {
     private String email;
 
     private String password;
@@ -15,9 +17,8 @@ public class User {
 
     private String phoneNumber;
 
-    private UserRole userRole;
 
-    public User(String email, String password, boolean isActive, String name, String lastName, String address, String phoneNumber, UserRole userRole) {
+    public UserEditAdminDTO(String email, String password, boolean isActive, String name, String lastName, String address, String phoneNumber) {
         this.email = email;
         this.password = password;
         this.isActive = isActive;
@@ -25,15 +26,6 @@ public class User {
         this.lastName = lastName;
         this.address = address;
         this.phoneNumber = phoneNumber;
-        this.userRole = userRole;
-    }
-
-    public UserRole getUserRole() {
-        return userRole;
-    }
-
-    public void setUserRole(UserRole userRole) {
-        this.userRole = userRole;
     }
 
     public String getEmail() {

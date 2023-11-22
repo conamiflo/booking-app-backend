@@ -1,11 +1,7 @@
-package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
+package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto;
 
-public class User {
-    private String email;
-
+public class UserSelfEditDTO {
     private String password;
-
-    private boolean isActive;
 
     private String name;
 
@@ -15,33 +11,12 @@ public class User {
 
     private String phoneNumber;
 
-    private UserRole userRole;
-
-    public User(String email, String password, boolean isActive, String name, String lastName, String address, String phoneNumber, UserRole userRole) {
-        this.email = email;
+    public UserSelfEditDTO(String password, String name, String lastName, String address, String phoneNumber) {
         this.password = password;
-        this.isActive = isActive;
         this.name = name;
         this.lastName = lastName;
         this.address = address;
         this.phoneNumber = phoneNumber;
-        this.userRole = userRole;
-    }
-
-    public UserRole getUserRole() {
-        return userRole;
-    }
-
-    public void setUserRole(UserRole userRole) {
-        this.userRole = userRole;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getPassword() {
@@ -50,14 +25,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
     }
 
     public String getName() {
