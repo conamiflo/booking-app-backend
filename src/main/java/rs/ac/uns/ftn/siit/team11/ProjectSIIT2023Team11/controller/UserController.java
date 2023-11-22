@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserForShowDTO;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.UserMapper;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.UserForShowMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 
 import java.util.Collection;
@@ -22,7 +22,7 @@ public class UserController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<UserForShowDTO>> getUsers(){
         Collection<User> users = userService.findAll();
-        return new ResponseEntity<Collection<UserForShowDTO>>(UserMapper.mapToUsersDto(users), HttpStatus.OK);
+        return new ResponseEntity<Collection<UserForShowDTO>>(UserForShowMapper.mapToUsersDto(users), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -31,7 +31,7 @@ public class UserController {
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(UserMapper.mapToUserDto(user), HttpStatus.OK);
+        return new ResponseEntity<>(UserForShowMapper.mapToUserDto(user), HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
