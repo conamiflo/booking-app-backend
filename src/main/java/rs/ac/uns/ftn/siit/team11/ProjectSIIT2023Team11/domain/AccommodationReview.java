@@ -6,8 +6,12 @@ public class AccommodationReview extends Review{
 
     private String accommondation;
 
-    public AccommodationReview(int id, String guest, String description, int rating, LocalDate date, String accommondation) {
-        super(id, guest, description, rating, date);
+    public AccommodationReview(int id, String guest, String description, int rating, LocalDate date, boolean reported, String accommondation) {
+        super(id, guest, description, rating, date, reported);
+        this.accommondation = accommondation;
+    }
+
+    public AccommodationReview(String accommondation) {
         this.accommondation = accommondation;
     }
 
