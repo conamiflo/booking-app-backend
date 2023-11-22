@@ -6,6 +6,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.OwnerReview;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReviewForShowDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.ReviewForShowMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.OwnerReviewService;
 
 import java.util.Collection;
@@ -18,18 +20,18 @@ public class OwnerReviewController {
     private OwnerReviewService ownerReviewService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<OwnerReview>> getAllOwnerReviews() {
+    public ResponseEntity<Collection<ReviewForShowDTO>> getAllOwnerReviews() {
         Collection<OwnerReview> ownerReviews = ownerReviewService.findAll();
-        return new ResponseEntity<>(ownerReviews, HttpStatus.OK);
+        return new ResponseEntity<>(ReviewForShowMapper.mapToOwnerReviewsToShowDto(ownerReviews), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OwnerReview> getOwnerReviewById(@PathVariable("id") int id) {
+    public ResponseEntity<ReviewForShowDTO> getOwnerReviewById(@PathVariable("id") int id) {
         OwnerReview ownerReview = ownerReviewService.findById(id);
         if (ownerReview == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(ownerReview, HttpStatus.OK);
+        return new ResponseEntity<>(ReviewForShowMapper.mapToReviewToShowDto(ownerReview), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{email}", produces = MediaType.APPLICATION_JSON_VALUE)

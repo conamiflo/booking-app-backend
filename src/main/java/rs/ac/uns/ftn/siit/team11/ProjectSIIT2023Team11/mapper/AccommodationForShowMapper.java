@@ -1,14 +1,13 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper;
 
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationForShowDTO;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class AccommodationForShowMapper {
-    public static AccommodationForShowDTO mapToUserDto(Accommodation accommodation){
+    public static AccommodationForShowDTO mapToAccommodationForShowDto(Accommodation accommodation){
         return new AccommodationForShowDTO(
                 accommodation.getName(),
                 accommodation.getDescription(),
@@ -22,10 +21,10 @@ public class AccommodationForShowMapper {
         );
     }
 
-    public static Collection<AccommodationForShowDTO> mapToUsersDto(Collection<Accommodation> accommodations) {
+    public static Collection<AccommodationForShowDTO> mapToAccommodationsForShowDto(Collection<Accommodation> accommodations) {
         Collection<AccommodationForShowDTO> accommodationsForShow = new ArrayList<>();
         for (Accommodation accommodation: accommodations){
-            accommodationsForShow.add(mapToUserDto(accommodation));
+            accommodationsForShow.add(mapToAccommodationForShowDto(accommodation));
         }
         return  accommodationsForShow;
 

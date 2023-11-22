@@ -19,6 +19,7 @@ public class Accommodation {
     private boolean active;
     private Date created;
 
+
     public Accommodation(Long id, Long ownerId, String name, String description, String location, List<String> amenities, List<String> photos, int minGuests, int maxGuests, String type, double price, boolean automaticApproval, boolean active, Date created) {
         this.id = id;
         this.ownerId = ownerId;
