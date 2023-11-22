@@ -33,7 +33,6 @@ public class AmenityService implements IAmenityService {
             throw new IllegalArgumentException("Amenity ID should be null for creation.");
         }
 
-        // You can add additional validation or business logic here before saving
         return amenityRepository.save(amenity);
     }
 
@@ -43,13 +42,11 @@ public class AmenityService implements IAmenityService {
             throw new IllegalArgumentException("Amenity ID cannot be null for update.");
         }
 
-        // Check if the amenity with the given ID exists before updating
         Amenity existingAmenity = amenityRepository.findById(amenity.getId());
         if (existingAmenity == null) {
             throw new IllegalArgumentException("Amenity with ID " + amenity.getId() + " not found.");
         }
 
-        // You can add additional validation or business logic here before updating
         return amenityRepository.update(amenity);
     }
 
