@@ -1,60 +1,89 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Reservation {
-    private Long reservationId;
-    private Long accommodationId;
-    private Long guestId;
-    private Date checkInDate;
-    private Date checkOutDate;
+    private int id;
+    private int accommodation;
+    private String user;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private int numberOfGuests;
+    private String status;
+    private Double price;
 
-
-    public Reservation(Long reservationId, Long accommodationId, Long guestId, Date checkInDate, Date checkOutDate) {
-        this.reservationId = reservationId;
-        this.accommodationId = accommodationId;
-        this.guestId = guestId;
-        this.checkInDate = checkInDate;
-        this.checkOutDate = checkOutDate;
+    public Reservation(int id, int accommodation, String user, LocalDate startDate, LocalDate endDate, int numberOfGuests, String status, Double price) {
+        this.id = id;
+        this.accommodation = accommodation;
+        this.user = user;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.numberOfGuests = numberOfGuests;
+        this.status = status;
+        this.price = price;
     }
 
-    public Long getReservationId() {
-        return reservationId;
+    public int getId() {
+        return id;
     }
 
-    public void setReservationId(Long reservationId) {
-        this.reservationId = reservationId;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public Long getAccommodationId() {
-        return accommodationId;
+    public int getAccommodation() {
+        return accommodation;
     }
 
-    public void setAccommodationId(Long accommodationId) {
-        this.accommodationId = accommodationId;
+    public void setAccommodation(int accommodation) {
+        this.accommodation = accommodation;
     }
 
-    public Long getGuestId() {
-        return guestId;
+    public String getUser() {
+        return user;
     }
 
-    public void setGuestId(Long guestId) {
-        this.guestId = guestId;
+    public void setUser(String user) {
+        this.user = user;
     }
 
-    public Date getCheckInDate() {
-        return checkInDate;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setCheckInDate(Date checkInDate) {
-        this.checkInDate = checkInDate;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
-    public Date getCheckOutDate() {
-        return checkOutDate;
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
-    public void setCheckOutDate(Date checkOutDate) {
-        this.checkOutDate = checkOutDate;
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public int getNumberOfGuests() {
+        return numberOfGuests;
+    }
+
+    public void setNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }
