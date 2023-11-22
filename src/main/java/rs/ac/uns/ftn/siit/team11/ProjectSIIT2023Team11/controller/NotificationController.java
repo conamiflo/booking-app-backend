@@ -6,6 +6,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Notification;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.NotificationForSendDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.NotificationForSendMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.NotificationService;
 
 import java.util.Collection;
@@ -18,18 +20,18 @@ public class NotificationController {
     private NotificationService notificationService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Notification>> getNotifications() {
-        Collection<Notification> notifications = notificationService.findAll();
+    public ResponseEntity<Collection<NotificationForSendDTO>> getNotifications() {
+        Collection<NotificationForSendDTO> notifications = NotificationForSendMapper.mapToNotificationsForSendDto(notificationService.findAll());
         return new ResponseEntity<>(notifications, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Notification> getNotificationById(@PathVariable("id") Long id) {
+    public ResponseEntity<NotificationForSendDTO> getNotificationById(@PathVariable("id") Long id) {
         Notification notification = notificationService.findById(id);
         if (notification == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(notification, HttpStatus.OK);
+        return new ResponseEntity<>(NotificationForSendMapper.mapToNotificationForSendDto(notification), HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

@@ -6,6 +6,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationForShowDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AccommodationForShowMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.AccommodationService;
 
 import java.util.Collection;
@@ -18,18 +20,18 @@ public class AccommodationController {
     private AccommodationService accommodationService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Accommodation>> getAccommodations() {
-        Collection<Accommodation> accommodations = accommodationService.findAll();
+    public ResponseEntity<Collection<AccommodationForShowDTO>> getAccommodations() {
+        Collection<AccommodationForShowDTO> accommodations = AccommodationForShowMapper.mapToAccommodationsForShowDto(accommodationService.findAll());
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Accommodation> getAccommodationById(@PathVariable("id") Long id) {
+    public ResponseEntity<AccommodationForShowDTO> getAccommodationById(@PathVariable("id") Long id) {
         Accommodation accommodation = accommodationService.findById(id);
         if (accommodation == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(accommodation, HttpStatus.OK);
+        return new ResponseEntity<>(AccommodationForShowMapper.mapToAccommodationForShowDto(accommodation), HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
