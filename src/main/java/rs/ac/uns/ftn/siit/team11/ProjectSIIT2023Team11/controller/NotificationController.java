@@ -1,3 +1,15 @@
+package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Notification;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.NotificationService;
+
+import java.util.Collection;
+
 @RestController
 @RequestMapping("/api/notifications")
 public class NotificationController {
@@ -45,7 +57,7 @@ public class NotificationController {
     // Dodatna metoda za pretragu smeštaja po kriterijumima
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<Notification>> searchNotifications(@RequestParam("receiver") String receiver
-                                                                           @RequestParam("type") String type) {
+                                                                           , @RequestParam("type") String type) {
         Collection<Notification> foundNotifications = notificationService.search(receiver, type);
         return new ResponseEntity<>(foundNotifications, HttpStatus.OK);
     }

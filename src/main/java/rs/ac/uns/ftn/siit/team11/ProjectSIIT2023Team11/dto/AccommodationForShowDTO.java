@@ -1,55 +1,30 @@
-package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
+package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto;
 
 import java.util.Date;
 import java.util.List;
 
-public class Accommodation {
-    private Long id;
-    private Long ownerId;
+public class AccommodationForShowDTO {
+
     private String name;
     private String description;
     private String location;
     private List<String> amenities;
-    private List<String> photos;
     private int minGuests;
     private int maxGuests;
     private String type;
     private double price;
-    private boolean automaticApproval;
-    private boolean active;
     private Date created;
 
-    public Accommodation(Long id, Long ownerId, String name, String description, String location, List<String> amenities, List<String> photos, int minGuests, int maxGuests, String type, double price, boolean automaticApproval, boolean active, Date created) {
-        this.id = id;
-        this.ownerId = ownerId;
+    public AccommodationForShowDTO(String name, String description, String location, List<String> amenities, int minGuests, int maxGuests, String type, double price, Date created) {
         this.name = name;
         this.description = description;
         this.location = location;
         this.amenities = amenities;
-        this.photos = photos;
         this.minGuests = minGuests;
         this.maxGuests = maxGuests;
         this.type = type;
         this.price = price;
-        this.automaticApproval = automaticApproval;
-        this.active = active;
         this.created = created;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
     }
 
     public String getName() {
@@ -84,14 +59,6 @@ public class Accommodation {
         this.amenities = amenities;
     }
 
-    public List<String> getPhotos() {
-        return photos;
-    }
-
-    public void setPhotos(List<String> photos) {
-        this.photos = photos;
-    }
-
     public int getMinGuests() {
         return minGuests;
     }
@@ -122,22 +89,6 @@ public class Accommodation {
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-    public boolean isAutomaticApproval() {
-        return automaticApproval;
-    }
-
-    public void setAutomaticApproval(boolean automaticApproval) {
-        this.automaticApproval = automaticApproval;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     public Date getCreated() {

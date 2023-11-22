@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IAccommodationRepository;
 
 import java.util.Collection;
@@ -46,4 +47,14 @@ public class AccommodationService implements IAccommodationService {
     public Collection<Accommodation> search(String location, int guests, String startDate, String endDate) {
         return accommodationRepository.search(location, guests, startDate, endDate);
     }
+
+    @Override
+    public Accommodation create(Accommodation accommodation) {
+        if (accommodation.getId() != null) {
+            throw new IllegalArgumentException("Amenity ID should be null for creation.");
+        }
+
+        return accommodationRepository.save(accommodation);
+    }
+
 }
