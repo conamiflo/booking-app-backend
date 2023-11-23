@@ -16,4 +16,6 @@ public interface IUserService {
 
     void delete(String email);
 
+    boolean isLoginValid(String email, String password);
+
 }

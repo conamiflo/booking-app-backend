@@ -36,4 +36,9 @@ public class UserService implements IUserService {
     public void delete(String email) {
 
     }
+    @Override
+    public boolean isLoginValid(String email, String password) {
+        User user = userRepository.findByEmail(email);
+        return user != null && user.getPassword().equals(password);
+    }
 }
