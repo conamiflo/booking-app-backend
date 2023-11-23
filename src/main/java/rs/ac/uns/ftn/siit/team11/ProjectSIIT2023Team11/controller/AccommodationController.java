@@ -26,7 +26,7 @@ public class AccommodationController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AccommodationForShowDTO> getAccommodationById(@PathVariable("id") Long id) {
+    public ResponseEntity<AccommodationForShowDTO> getAccommodationById(@PathVariable("id") int id) {
         Accommodation accommodation = accommodationService.findById(id);
         if (accommodation == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -41,7 +41,7 @@ public class AccommodationController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Accommodation> updateAccommodation(@RequestBody Accommodation accommodation, @PathVariable Long id) throws Exception {
+    public ResponseEntity<Accommodation> updateAccommodation(@RequestBody Accommodation accommodation, @PathVariable int id) throws Exception {
         Accommodation existingAccommodation = accommodationService.findById(id);
         if (existingAccommodation == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -51,19 +51,16 @@ public class AccommodationController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteAccommodation(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteAccommodation(@PathVariable("id") int id) {
         accommodationService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // Dodatna metoda za pretragu smeštaja po kriterijumima
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<Accommodation>> searchAccommodations(@RequestParam("location") String location,
                                                                            @RequestParam("guests") int guests,
                                                                            @RequestParam("startDate") String startDate,
                                                                            @RequestParam("endDate") String endDate) {
-        // Implementacija pretrage na osnovu lokacije, broja gostiju i datuma
-        // Pozivanje servisa ili repozitorijuma za pretragu
         Collection<Accommodation> foundAccommodations = accommodationService.search(location, guests, startDate, endDate);
         return new ResponseEntity<>(foundAccommodations, HttpStatus.OK);
     }

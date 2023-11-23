@@ -2,21 +2,49 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository;
 
 import org.springframework.stereotype.Repository;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Repository
 public class AccommodationRepository implements IAccommodationRepository {
 
+    private Collection<Accommodation> accommodations = new ArrayList<Accommodation>();
+
+    public AccommodationRepository() {
+        Accommodation accommodation = new Accommodation(
+                1,
+                "johndoe@gmail.com",
+                "Cozy Apartment",
+                "A comfortable apartment in the heart of the city.",
+                "City Center",
+                List.of("WiFi", "Air Conditioning", "Kitchen"),
+                List.of("photo1.jpg", "photo2.jpg"),
+                2,
+                4,
+                "Apartment",
+                80.0,
+                true,
+                true,
+                LocalDate.now()
+        );
+        accommodations.add(accommodation);
+    }
     @Override
     public Collection<Accommodation> findAll() {
-        // Implement logic to retrieve all accommodations
-        return null;
+        return this.accommodations;
     }
 
     @Override
-    public Accommodation findById(Long id) {
-        // Implement logic to find accommodation by ID
+    public Accommodation findById(int id) {
+        for(Accommodation accommodation : accommodations){
+            if (accommodation.getId() == id){
+                return accommodation;
+            }
+        }
         return null;
     }
 
@@ -33,7 +61,7 @@ public class AccommodationRepository implements IAccommodationRepository {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(int id) {
         // Implement logic to delete an accommodation by ID
     }
 

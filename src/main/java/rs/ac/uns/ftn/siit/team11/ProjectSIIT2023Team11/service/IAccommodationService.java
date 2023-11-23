@@ -9,13 +9,13 @@ public interface IAccommodationService {
 
     Collection<Accommodation> findAll();
 
-    Accommodation findById(Long id);
+    Accommodation findById(int id);
 
     Accommodation save(Accommodation accommodation);
 
     Accommodation update(Accommodation accommodation);
 
-    void delete(Long id);
+    void delete(int id);
 
     Collection<Accommodation> search(String location, int guests, String startDate, String endDate);
     Accommodation create(Accommodation accommodation);

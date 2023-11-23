@@ -24,7 +24,7 @@ public class AccommodationService implements IAccommodationService {
     }
 
     @Override
-    public Accommodation findById(Long id) {
+    public Accommodation findById(int id) {
         return accommodationRepository.findById(id);
     }
 
@@ -39,7 +39,7 @@ public class AccommodationService implements IAccommodationService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(int id) {
         accommodationRepository.delete(id);
     }
 
@@ -50,11 +50,12 @@ public class AccommodationService implements IAccommodationService {
 
     @Override
     public Accommodation create(Accommodation accommodation) {
-        if (accommodation.getId() != null) {
-            throw new IllegalArgumentException("Amenity ID should be null for creation.");
-        }
-
-        return accommodationRepository.save(accommodation);
+//        if (accommodation.getId() != null) {
+//            throw new IllegalArgumentException("Amenity ID should be null for creation.");
+//        }
+//
+//        return accommodationRepository.save(accommodation);
+        return null;
     }
 
 }

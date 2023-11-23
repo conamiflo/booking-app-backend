@@ -6,10 +6,9 @@ import java.util.Collection;
 
 public interface IAccommodationRepository {
     Collection<Accommodation> findAll();
-    Accommodation findById(Long id);
+    Accommodation findById(int id);
     Accommodation save(Accommodation accommodation);
     Accommodation update(Accommodation accommodation);
-    void delete(Long id);
-    // Dodatna metoda za pretragu smeštaja
+    void delete(int id);
     Collection<Accommodation> search(String location, int guests, String startDate, String endDate);
 }

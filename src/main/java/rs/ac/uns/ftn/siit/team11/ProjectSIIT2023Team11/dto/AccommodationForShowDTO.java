@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -13,9 +14,9 @@ public class AccommodationForShowDTO {
     private int maxGuests;
     private String type;
     private double price;
-    private Date created;
+    private LocalDate created;
 
-    public AccommodationForShowDTO(String name, String description, String location, List<String> amenities, int minGuests, int maxGuests, String type, double price, Date created) {
+    public AccommodationForShowDTO(String name, String description, String location, List<String> amenities, int minGuests, int maxGuests, String type, double price, LocalDate created) {
         this.name = name;
         this.description = description;
         this.location = location;
@@ -91,11 +92,11 @@ public class AccommodationForShowDTO {
         this.price = price;
     }
 
-    public Date getCreated() {
+    public LocalDate getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(LocalDate created) {
         this.created = created;
     }
 }

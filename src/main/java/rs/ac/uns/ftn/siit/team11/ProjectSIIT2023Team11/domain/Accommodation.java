@@ -1,11 +1,12 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 public class Accommodation {
-    private Long id;
-    private Long ownerId;
+    private int id;
+    private String owner;
     private String name;
     private String description;
     private String location;
@@ -17,12 +18,12 @@ public class Accommodation {
     private double price;
     private boolean automaticApproval;
     private boolean active;
-    private Date created;
+    private LocalDate created;
 
 
-    public Accommodation(Long id, Long ownerId, String name, String description, String location, List<String> amenities, List<String> photos, int minGuests, int maxGuests, String type, double price, boolean automaticApproval, boolean active, Date created) {
+    public Accommodation(int id, String owner, String name, String description, String location, List<String> amenities, List<String> photos, int minGuests, int maxGuests, String type, double price, boolean automaticApproval, boolean active, LocalDate created) {
         this.id = id;
-        this.ownerId = ownerId;
+        this.owner = owner;
         this.name = name;
         this.description = description;
         this.location = location;
@@ -37,20 +38,20 @@ public class Accommodation {
         this.created = created;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
+    public String getOwner() {
+        return owner;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     public String getName() {
@@ -141,11 +142,11 @@ public class Accommodation {
         this.active = active;
     }
 
-    public Date getCreated() {
+    public LocalDate getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(LocalDate created) {
         this.created = created;
     }
 }
