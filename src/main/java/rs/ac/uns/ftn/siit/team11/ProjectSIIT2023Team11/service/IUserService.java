@@ -10,9 +10,9 @@ public interface IUserService {
 
     User findByEmail(String email);
 
-    User create(User greeting) throws Exception;
+    User create(User user) throws Exception;
 
-    User update(User greeting) throws Exception;
+    User update(User user) throws Exception;
 
     void delete(String email);
 
