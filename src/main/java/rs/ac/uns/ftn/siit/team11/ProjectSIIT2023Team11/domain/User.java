@@ -1,5 +1,7 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 
+import lombok.Getter;
+
 public class User {
     private String email;
 
@@ -15,6 +17,7 @@ public class User {
 
     private String phoneNumber;
 
+    @Getter
     private UserRole userRole;
 
     public User(String email, String password, boolean isActive, String name, String lastName, String address, String phoneNumber, UserRole userRole) {
@@ -26,10 +29,6 @@ public class User {
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.userRole = userRole;
-    }
-
-    public UserRole getUserRole() {
-        return userRole;
     }
 
     public void setUserRole(UserRole userRole) {

@@ -14,26 +14,31 @@ public class UserService implements IUserService {
     private UserRepository userRepository;
     @Override
     public Collection<User> findAll() {
-        return null;
+        return userRepository.findAll();
     }
 
     @Override
     public User findByEmail(String email) {
-        return null;
+        return userRepository.findByEmail(email);
     }
 
     @Override
-    public User create(User greeting) throws Exception {
-        return null;
+    public User create(User user) throws Exception {
+        return user;
     }
 
     @Override
-    public User update(User greeting) throws Exception {
+    public User update(User user) throws Exception {
         return null;
     }
 
     @Override
     public void delete(String email) {
 
+    }
+    @Override
+    public boolean isLoginValid(String email, String password) {
+        User user = userRepository.findByEmail(email);
+        return user != null && user.getPassword().equals(password);
     }
 }
