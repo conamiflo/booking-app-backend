@@ -23,6 +23,5 @@ public class UserForShowMapper {
             usersForShow.add(mapToUserDto(user));
         }
         return  usersForShow;
-
     }
 }
