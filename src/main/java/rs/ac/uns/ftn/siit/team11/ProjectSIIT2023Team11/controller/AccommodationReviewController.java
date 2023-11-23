@@ -34,8 +34,8 @@ public class AccommodationReviewController {
         return new ResponseEntity<>(ReviewForShowMapper.mapToReviewToShowDto(accommodationReview), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AccommodationReview> getReviewByAccommodation(@PathVariable("id") int id) {
+    @GetMapping(value = "/{accommodationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccommodationReview> getReviewByAccommodation(@PathVariable("accommodationId") int id) {
         AccommodationReview accommodationReview = accommodationReviewService.findByAccommodation(id);
         if (accommodationReview == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
