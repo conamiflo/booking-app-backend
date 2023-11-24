@@ -3,17 +3,17 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 public interface IAmenityService {
 
-    Collection<Amenity> findAll();
+    public List<Amenity> findAll();
 
-    Amenity findById(Long id);
+    public Optional<Amenity> findById(Long id);
 
-    Amenity create(Amenity amenity) throws Exception;
+    public Amenity save(Amenity amenity);
 
-    Amenity update(Amenity amenity) throws Exception;
-
-    void delete(Long id);
+    public void deleteById(Long aLong);
 
 }

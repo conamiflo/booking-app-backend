@@ -6,52 +6,31 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IAmenityRepository;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AmenityService implements IAmenityService {
 
-    private final IAmenityRepository amenityRepository;
 
     @Autowired
-    public AmenityService(IAmenityRepository amenityRepository) {
-        this.amenityRepository = amenityRepository;
-    }
+    IAmenityRepository amenityRepository;
 
     @Override
-    public Collection<Amenity> findAll() {
+    public List<Amenity> findAll() {
         return amenityRepository.findAll();
     }
 
     @Override
-    public Amenity findById(Long id) {
+    public Optional<Amenity> findById(Long id) {
         return amenityRepository.findById(id);
     }
 
-    @Override
-    public Amenity create(Amenity amenity) throws Exception {
-        if (amenity.getId() != null) {
-            throw new IllegalArgumentException("Amenity ID should be null for creation.");
-        }
-
+    public Amenity save(Amenity amenity) {
         return amenityRepository.save(amenity);
     }
 
-    @Override
-    public Amenity update(Amenity amenity) throws Exception {
-        if (amenity.getId() == null) {
-            throw new IllegalArgumentException("Amenity ID cannot be null for update.");
-        }
-
-        Amenity existingAmenity = amenityRepository.findById(amenity.getId());
-        if (existingAmenity == null) {
-            throw new IllegalArgumentException("Amenity with ID " + amenity.getId() + " not found.");
-        }
-
-        return amenityRepository.update(amenity);
-    }
-
-    @Override
-    public void delete(Long id) {
-        amenityRepository.delete(id);
+    public void deleteById(Long aLong) {
+        amenityRepository.deleteById(aLong);
     }
 }

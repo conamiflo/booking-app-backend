@@ -8,13 +8,4 @@ import java.util.Optional;
 
 public interface IAmenityRepository extends JpaRepository<Amenity,Long> {
 
-    List<Amenity> findAll();
-
-    Optional<Amenity> findById(Long id);
-
-    Amenity save(Amenity amenity);
-
-    Amenity update(Amenity amenity);
-
-    void delete(Long id);
 }
