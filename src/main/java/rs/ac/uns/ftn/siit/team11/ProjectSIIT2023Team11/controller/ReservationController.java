@@ -30,7 +30,7 @@ public class ReservationController {
     }
 
     @GetMapping(value = "/accommodation/{accommodationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Reservation>> getReservationsByAccommodationId(@PathVariable("accommodationId") int accommodationId) {
+    public ResponseEntity<Collection<Reservation>> getReservationsByAccommodationId(@PathVariable("accommodationId") Long accommodationId) {
         Collection<Reservation> reservations = reservationService.findByAccommodationId(accommodationId);
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
@@ -42,7 +42,7 @@ public class ReservationController {
     }
 
     @PutMapping(value = "/{reservationId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Reservation> updateReservation(@RequestBody Reservation reservation, @PathVariable int reservationId) {
+    public ResponseEntity<Reservation> updateReservation(@RequestBody Reservation reservation, @PathVariable Long reservationId) {
         Reservation existingReservation = reservationService.findById(reservationId);
         if (existingReservation == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -52,7 +52,7 @@ public class ReservationController {
     }
 
     @DeleteMapping(value = "/{reservationId}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable("reservationId") int reservationId) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable("reservationId") Long reservationId) {
         reservationService.delete(reservationId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
