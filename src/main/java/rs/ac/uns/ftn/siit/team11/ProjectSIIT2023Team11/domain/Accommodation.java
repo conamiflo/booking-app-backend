@@ -2,9 +2,10 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 
 import jakarta.persistence.*;
 
+import javax.persistence.Entity;
+
 import java.time.LocalDate;
 import java.util.List;
-
 public class Accommodation {
     private Long id;
     private User owner;
