@@ -6,56 +6,42 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IAccommodationRepository;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AccommodationService implements IAccommodationService {
 
-    private final IAccommodationRepository accommodationRepository;
-
     @Autowired
-    public AccommodationService(IAccommodationRepository accommodationRepository) {
-        this.accommodationRepository = accommodationRepository;
+    IAccommodationRepository accommodationRepository;
+
+    public List<Accommodation> findAll() {
+        return new ArrayList<Accommodation>();
+        //return accommodationRepository.findAll();
     }
 
-    @Override
-    public Collection<Accommodation> findAll() {
-        return accommodationRepository.findAll();
-    }
-
-    @Override
-    public Accommodation findById(int id) {
+    public Optional<Accommodation> findById(Long id) {
         return accommodationRepository.findById(id);
     }
 
-    @Override
-    public Accommodation save(Accommodation accommodation) {
-        return accommodationRepository.save(accommodation);
+    public void deleteById(Long id) {
+        accommodationRepository.deleteById(id);
     }
 
-    @Override
-    public Accommodation update(Accommodation accommodation) {
-        return accommodationRepository.update(accommodation);
+    public void delete(Accommodation entity) {
+        accommodationRepository.delete(entity);
     }
 
-    @Override
-    public void delete(int id) {
-        accommodationRepository.delete(id);
-    }
 
     @Override
     public Collection<Accommodation> search(String location, int guests, String startDate, String endDate) {
-        return accommodationRepository.search(location, guests, startDate, endDate);
-    }
-
-    @Override
-    public Accommodation create(Accommodation accommodation) {
-//        if (accommodation.getId() != null) {
-//            throw new IllegalArgumentException("Amenity ID should be null for creation.");
-//        }
-//
-//        return accommodationRepository.save(accommodation);
         return null;
     }
 
+    public <S extends Accommodation> S save(S entity) {
+        return accommodationRepository.save(entity);
+    }
 }

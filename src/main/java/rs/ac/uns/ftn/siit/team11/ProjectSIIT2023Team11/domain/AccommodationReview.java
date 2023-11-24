@@ -4,22 +4,22 @@ import java.time.LocalDate;
 
 public class AccommodationReview extends Review{
 
-    private String accommondation;
+    private Accommodation accommondation;
 
-    public AccommodationReview(int id, String guest, String description, int rating, LocalDate date, boolean reported, String accommondation) {
+    public AccommodationReview(Long id, User guest, String description, int rating, LocalDate date, boolean reported, Accommodation accommondation) {
         super(id, guest, description, rating, date, reported);
         this.accommondation = accommondation;
     }
 
-    public AccommodationReview(String accommondation) {
+    public AccommodationReview(Accommodation accommondation) {
         this.accommondation = accommondation;
     }
 
-    public String getAccommondation() {
+    public Accommodation getAccommondation() {
         return accommondation;
     }
 
-    public void setAccommondation(String accommondation) {
+    public void setAccommondation(Accommodation accommondation) {
         this.accommondation = accommondation;
     }
 }

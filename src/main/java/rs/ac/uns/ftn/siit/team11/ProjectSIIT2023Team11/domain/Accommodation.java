@@ -1,12 +1,13 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 public class Accommodation {
-    private int id;
-    private String owner;
+    private Long id;
+    private User owner;
     private String name;
     private String description;
     private String location;
@@ -21,7 +22,7 @@ public class Accommodation {
     private LocalDate created;
 
 
-    public Accommodation(int id, String owner, String name, String description, String location, List<String> amenities, List<String> photos, int minGuests, int maxGuests, String type, double price, boolean automaticApproval, boolean active, LocalDate created) {
+    public Accommodation(Long id, User owner, String name, String description, String location, List<String> amenities, List<String> photos, int minGuests, int maxGuests, String type, double price, boolean automaticApproval, boolean active, LocalDate created) {
         this.id = id;
         this.owner = owner;
         this.name = name;
@@ -38,19 +39,19 @@ public class Accommodation {
         this.created = created;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getOwner() {
+    public User getOwner() {
         return owner;
     }
 
-    public void setOwner(String owner) {
+    public void setOwner(User owner) {
         this.owner = owner;
     }
 

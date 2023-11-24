@@ -1,26 +1,20 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import lombok.Getter;
-
 import java.time.LocalDate;
-@Getter
-@Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+//@Getter
+//@Entity
+//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Review {
 
-    @Id
-    private int id;
-    private String guest;
+    //@Id
+    private Long id;
+    private User guest;
     private String description;
     private int rating;
     private LocalDate date;
     private boolean reported;
 
-    public Review(int id, String guest, String description, int rating, LocalDate date,boolean reported
+    public Review(Long id, User guest, String description, int rating, LocalDate date, boolean reported
     ) {
         this.id = id;
         this.guest = guest;
@@ -33,11 +27,11 @@ public class Review {
     public Review() {
 
     }
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public void setGuest(String guest) {
+    public void setGuest(User guest) {
         this.guest = guest;
     }
 
@@ -55,5 +49,29 @@ public class Review {
 
     public void setReported(boolean reported) {
         this.reported = reported;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public User getGuest() {
+        return guest;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public boolean isReported() {
+        return reported;
     }
 }

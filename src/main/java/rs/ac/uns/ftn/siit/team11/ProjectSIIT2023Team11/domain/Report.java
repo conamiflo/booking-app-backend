@@ -3,15 +3,15 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 public class Report {
 
     private Long id;
-    private String sender;
-    private String receiver;
+    private User sender;
+    private User receiver;
     private String content;
 
     public Report() {
         // Default constructor
     }
 
-    public Report(Long id, String sender, String receiver, String content) {
+    public Report(Long id, User sender, User receiver, String content) {
         this.id = id;
         this.sender = sender;
         this.receiver = receiver;
@@ -27,19 +27,19 @@ public class Report {
         this.id = id;
     }
 
-    public String getSender() {
+    public User getSender() {
         return sender;
     }
 
-    public void setSender(String sender) {
+    public void setSender(User sender) {
         this.sender = sender;
     }
 
-    public String getReceiver() {
+    public User getReceiver() {
         return receiver;
     }
 
-    public void setReceiver(String receiver) {
+    public void setReceiver(User receiver) {
         this.receiver = receiver;
     }
 

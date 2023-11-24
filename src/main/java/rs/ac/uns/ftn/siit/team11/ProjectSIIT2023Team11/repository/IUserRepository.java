@@ -1,11 +1,12 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
 
-import java.util.Collection;
+import java.util.List;
 
-public interface IUserRepository {
-    Collection<User> findAll();
+public interface IUserRepository extends JpaRepository<User,String> {
+    List<User> findAll();
 
     User findByEmail(String email);
 

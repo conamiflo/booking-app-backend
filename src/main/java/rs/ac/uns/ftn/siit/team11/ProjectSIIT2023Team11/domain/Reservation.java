@@ -3,16 +3,16 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 import java.time.LocalDate;
 
 public class Reservation {
-    private int id;
-    private int accommodation;
-    private String user;
+    private Long id;
+    private Accommodation accommodation;
+    private User user;
     private LocalDate startDate;
     private LocalDate endDate;
     private int numberOfGuests;
     private String status;
     private Double price;
 
-    public Reservation(int id, int accommodation, String user, LocalDate startDate, LocalDate endDate, int numberOfGuests, String status, Double price) {
+    public Reservation(Long id, Accommodation accommodation, User user, LocalDate startDate, LocalDate endDate, int numberOfGuests, String status, Double price) {
         this.id = id;
         this.accommodation = accommodation;
         this.user = user;
@@ -23,27 +23,27 @@ public class Reservation {
         this.price = price;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public int getAccommodation() {
+    public Accommodation getAccommodation() {
         return accommodation;
     }
 
-    public void setAccommodation(int accommodation) {
+    public void setAccommodation(Accommodation accommodation) {
         this.accommodation = accommodation;
     }
 
-    public String getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(String user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

@@ -10,13 +10,13 @@ public interface IReservationService {
 
     Collection<Reservation> findByUserEmail(String email);
 
-    Collection<Reservation> findByAccommodationId(int accommodationId);
+    Collection<Reservation> findByAccommodationId(Long accommodationId);
 
-    Reservation findById(int reservationId);
+    Reservation findById(Long reservationId);
 
     Reservation create(Reservation reservation);
 
     Reservation update(Reservation reservation);
 
-    void delete(int reservationId);
+    void delete(Long reservationId);
 }

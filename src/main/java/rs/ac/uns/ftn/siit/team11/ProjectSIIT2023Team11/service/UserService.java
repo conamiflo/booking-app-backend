@@ -3,7 +3,7 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.UserRepository;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IUserRepository;
 
 import java.util.Collection;
 
@@ -11,7 +11,7 @@ import java.util.Collection;
 public class UserService implements IUserService {
 
     @Autowired
-    private UserRepository userRepository;
+    private IUserRepository userRepository;
     @Override
     public Collection<User> findAll() {
         return userRepository.findAll();

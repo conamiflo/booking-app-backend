@@ -1,12 +1,17 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IReservationRepository;
 
 import java.util.Collection;
 
 @Service
 public class ReservationService implements IReservationService{
+
+    @Autowired
+    IReservationRepository reservationRepository;
     @Override
     public Collection<Reservation> findAll() {
         return null;
@@ -18,12 +23,12 @@ public class ReservationService implements IReservationService{
     }
 
     @Override
-    public Collection<Reservation> findByAccommodationId(int accommodationId) {
+    public Collection<Reservation> findByAccommodationId(Long accommodationId) {
         return null;
     }
 
     @Override
-    public Reservation findById(int reservationId) {
+    public Reservation findById(Long reservationId) {
         return null;
     }
 
@@ -38,7 +43,7 @@ public class ReservationService implements IReservationService{
     }
 
     @Override
-    public void delete(int reservationId) {
+    public void delete(Long reservationId) {
 
     }
 }

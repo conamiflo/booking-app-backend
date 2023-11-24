@@ -1,12 +1,13 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.OwnerReview;
 
-import java.util.Collection;
+import java.util.List;
 
-public interface IOwnerReviewRepository {
+public interface IOwnerReviewRepository extends JpaRepository<OwnerReview,Long> {
 
-    Collection<OwnerReview> findAll();
+    List<OwnerReview> findAll();
 
     OwnerReview findById(int id);
 

@@ -1,25 +1,27 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto;
 
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
+
 import java.time.LocalDate;
 
 public class ReviewForShowDTO {
-    private String guest;
+    private User guest;
     private String description;
     private int rating;
     private LocalDate date;
 
-    public ReviewForShowDTO(String guest, String description, int rating, LocalDate date) {
+    public ReviewForShowDTO(User guest, String description, int rating, LocalDate date) {
         this.guest = guest;
         this.description = description;
         this.rating = rating;
         this.date = date;
     }
 
-    public String getGuest() {
+    public User getGuest() {
         return guest;
     }
 
-    public void setGuest(String guest) {
+    public void setGuest(User guest) {
         this.guest = guest;
     }
 

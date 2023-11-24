@@ -3,8 +3,7 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.AccommodationReview;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.AccommodationReviewRepository;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.OwnerReviewRepository;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IAccommodationReviewRepository;
 
 import java.util.Collection;
 
@@ -12,7 +11,7 @@ import java.util.Collection;
 public class AccommodationReviewService implements IAccommodationReviewService {
 
     @Autowired
-    private AccommodationReviewRepository accommodationReviewRepository;
+    private IAccommodationReviewRepository accommodationReviewRepository;
     @Override
     public Collection<AccommodationReview> findAll() {
         return null;

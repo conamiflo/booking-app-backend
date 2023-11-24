@@ -3,14 +3,14 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 public class Notification {
 
     private Long id;
-    private String receiver;
+    private User receiver;
     private String type;
     private String message;
 
     public Notification() {
     }
 
-    public Notification(Long id, String receiver, String type, String message) {
+    public Notification(Long id, User receiver, String type, String message) {
         this.id = id;
         this.receiver = receiver;
         this.type = type;
@@ -25,11 +25,11 @@ public class Notification {
         this.id = id;
     }
 
-    public String getReceiver() {
+    public User getReceiver() {
         return receiver;
     }
 
-    public void setReceiver(String receiver) {
+    public void setReceiver(User receiver) {
         this.receiver = receiver;
     }
 

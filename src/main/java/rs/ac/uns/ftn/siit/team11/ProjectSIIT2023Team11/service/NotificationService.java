@@ -10,12 +10,8 @@ import java.util.Collection;
 @Service
 public class NotificationService implements INotificationService {
 
-    private final INotificationRepository notificationRepository;
-
     @Autowired
-    public NotificationService(INotificationRepository notificationRepository) {
-        this.notificationRepository = notificationRepository;
-    }
+    INotificationRepository notificationRepository;
 
     @Override
     public Collection<Notification> findAll() {

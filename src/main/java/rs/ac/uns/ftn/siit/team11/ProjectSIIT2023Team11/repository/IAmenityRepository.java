@@ -1,14 +1,16 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
-public interface IAmenityRepository {
+public interface IAmenityRepository extends JpaRepository<Amenity,Long> {
 
-    Collection<Amenity> findAll();
+    List<Amenity> findAll();
 
-    Amenity findById(Long id);
+    Optional<Amenity> findById(Long id);
 
     Amenity save(Amenity amenity);
 
