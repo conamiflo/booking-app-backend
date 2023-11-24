@@ -1,12 +1,22 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Entity;
-
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
+
+@Getter
+@Setter
+//@Entity
+//@Table(name = "tbl_accomondations")
 public class Accommodation {
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private User owner;
     private String name;
@@ -22,133 +32,4 @@ public class Accommodation {
     private boolean active;
     private LocalDate created;
 
-
-    public Accommodation(Long id, User owner, String name, String description, String location, List<String> amenities, List<String> photos, int minGuests, int maxGuests, String type, double price, boolean automaticApproval, boolean active, LocalDate created) {
-        this.id = id;
-        this.owner = owner;
-        this.name = name;
-        this.description = description;
-        this.location = location;
-        this.amenities = amenities;
-        this.photos = photos;
-        this.minGuests = minGuests;
-        this.maxGuests = maxGuests;
-        this.type = type;
-        this.price = price;
-        this.automaticApproval = automaticApproval;
-        this.active = active;
-        this.created = created;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public List<String> getAmenities() {
-        return amenities;
-    }
-
-    public void setAmenities(List<String> amenities) {
-        this.amenities = amenities;
-    }
-
-    public List<String> getPhotos() {
-        return photos;
-    }
-
-    public void setPhotos(List<String> photos) {
-        this.photos = photos;
-    }
-
-    public int getMinGuests() {
-        return minGuests;
-    }
-
-    public void setMinGuests(int minGuests) {
-        this.minGuests = minGuests;
-    }
-
-    public int getMaxGuests() {
-        return maxGuests;
-    }
-
-    public void setMaxGuests(int maxGuests) {
-        this.maxGuests = maxGuests;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public boolean isAutomaticApproval() {
-        return automaticApproval;
-    }
-
-    public void setAutomaticApproval(boolean automaticApproval) {
-        this.automaticApproval = automaticApproval;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public LocalDate getCreated() {
-        return created;
-    }
-
-    public void setCreated(LocalDate created) {
-        this.created = created;
-    }
 }

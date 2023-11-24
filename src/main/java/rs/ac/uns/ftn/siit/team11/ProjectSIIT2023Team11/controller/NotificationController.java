@@ -11,6 +11,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.NotificationForSen
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.NotificationService;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -27,36 +28,34 @@ public class NotificationController {
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<NotificationForSendDTO> getNotificationById(@PathVariable("id") Long id) {
-        Notification notification = notificationService.findById(id);
-        if (notification == null) {
+        Optional<Notification> notification = notificationService.findById(id);
+        if (notification.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(NotificationForSendMapper.mapToNotificationForSendDto(notification), HttpStatus.OK);
+        return new ResponseEntity<>(NotificationForSendMapper.mapToNotificationForSendDto(notification.get()), HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Notification> createNotification(@RequestBody Notification notification) throws Exception {
-        Notification newNotification = notificationService.create(notification);
+        Notification newNotification = notificationService.save(notification);
         return new ResponseEntity<>(newNotification, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Notification> updateNotification(@RequestBody Notification notification, @PathVariable Long id) throws Exception {
-        Notification existingNotification = notificationService.findById(id);
-        if (existingNotification == null) {
+        Optional<Notification> existingNotification = notificationService.findById(id);
+        if (existingNotification.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Notification updatedNotification = notificationService.update(existingNotification);
+        Notification updatedNotification = notificationService.save(existingNotification.get());
         return new ResponseEntity<>(updatedNotification, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteNotification(@PathVariable("id") Long id) {
-        notificationService.delete(id);
+        notificationService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-    // Dodatna metoda za pretragu smeštaja po kriterijumima
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<Notification>> searchNotifications(@RequestParam("receiver") String receiver
                                                                            , @RequestParam("type") String type) {

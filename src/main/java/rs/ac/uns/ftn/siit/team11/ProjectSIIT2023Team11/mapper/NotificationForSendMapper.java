@@ -1,12 +1,11 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper;
 
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Notification;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationForShowDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.NotificationForSendDTO;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 public class NotificationForSendMapper {
     public static NotificationForSendDTO mapToNotificationForSendDto(Notification notification){
