@@ -6,6 +6,8 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Notification;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.INotificationRepository;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class NotificationService implements INotificationService {
@@ -14,41 +16,21 @@ public class NotificationService implements INotificationService {
     INotificationRepository notificationRepository;
 
     @Override
-    public Collection<Notification> findAll() {
+    public List<Notification> findAll() {
         return notificationRepository.findAll();
     }
 
-    @Override
-    public Notification findById(Long id) {
-        return notificationRepository.findById(id);
+    public <S extends Notification> S save(S entity) {
+        return notificationRepository.save(entity);
     }
 
     @Override
-    public Notification create(Notification notification) throws Exception {
-        if (notification.getId() != null) {
-            throw new IllegalArgumentException("Notification ID should be null for creation.");
-        }
-
-        return notificationRepository.save(notification);
+    public Optional<Notification> findById(Long aLong) {
+        return notificationRepository.findById(aLong);
     }
 
-    @Override
-    public Notification update(Notification notification) throws Exception {
-        if (notification.getId() == null) {
-            throw new IllegalArgumentException("Notification ID cannot be null for update.");
-        }
-
-        Notification existingNotification = notificationRepository.findById(notification.getId());
-        if (existingNotification == null) {
-            throw new IllegalArgumentException("Notification with ID " + notification.getId() + " not found.");
-        }
-
-        return notificationRepository.update(notification);
-    }
-
-    @Override
-    public void delete(Long id) {
-        notificationRepository.delete(id);
+    public void deleteById(Long aLong) {
+        notificationRepository.deleteById(aLong);
     }
 
     @Override

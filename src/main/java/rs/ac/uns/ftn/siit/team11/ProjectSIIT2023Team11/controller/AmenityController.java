@@ -8,6 +8,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAmenityService;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/amenities")
@@ -28,9 +29,9 @@ public class AmenityController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Amenity> getAmenityById(@PathVariable Long id) {
-        Amenity amenity = amenityService.findById(id);
-        if (amenity != null) {
-            return new ResponseEntity<>(amenity, HttpStatus.OK);
+        Optional<Amenity> amenity = amenityService.findById(id);
+        if (!amenity.isEmpty()) {
+            return new ResponseEntity<>(amenity.get(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -39,7 +40,7 @@ public class AmenityController {
     @PostMapping
     public ResponseEntity<Amenity> createAmenity(@RequestBody Amenity amenity) {
         try {
-            Amenity createdAmenity = amenityService.create(amenity);
+            Amenity createdAmenity = amenityService.save(amenity);
             return new ResponseEntity<>(createdAmenity, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -49,7 +50,7 @@ public class AmenityController {
     @PutMapping("/{id}")
     public ResponseEntity<Amenity> updateAmenity(@PathVariable Long id, @RequestBody Amenity amenity) {
         try {
-            Amenity updatedAmenity = amenityService.update(amenity);
+            Amenity updatedAmenity = amenityService.save(amenity);
             return new ResponseEntity<>(updatedAmenity, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -58,7 +59,7 @@ public class AmenityController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAmenity(@PathVariable Long id) {
-        amenityService.delete(id);
+        amenityService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

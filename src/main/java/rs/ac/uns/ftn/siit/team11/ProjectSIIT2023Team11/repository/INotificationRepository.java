@@ -8,16 +8,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface INotificationRepository extends JpaRepository<Notification,Long> {
-
-    List<Notification> findAll();
-
-    Optional<Notification> findById(Long id);
-
-    Notification save(Notification notification);
-
-    Notification update(Notification notification);
-
-    void delete(Long id);
-
-    Collection<Notification> search(String receiver, String type);
+    Collection<Notification> search(String User, String type);
 }

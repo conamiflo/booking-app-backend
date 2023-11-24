@@ -3,18 +3,14 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Notification;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 public interface INotificationService {
 
-    Collection<Notification> findAll();
-
-    Notification findById(Long id);
-
-    Notification create(Notification notification) throws Exception;
-
-    Notification update(Notification notification) throws Exception;
-
-    void delete(Long id);
-
+    List<Notification> findAll();
+    <S extends Notification> S save(S entity);
+    Optional<Notification> findById(Long aLong);
+    void deleteById(Long aLong);
     Collection<Notification> search(String receiver, String type);
 }
