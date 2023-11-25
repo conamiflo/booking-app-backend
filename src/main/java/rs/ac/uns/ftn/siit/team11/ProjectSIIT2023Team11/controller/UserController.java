@@ -10,7 +10,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Owner;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserForShowDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserRegistrationDTO;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.UserForShowMapper;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.UserMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 
 import java.util.Collection;
@@ -26,7 +26,7 @@ public class UserController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<UserForShowDTO>> getUsers(){
         Collection<User> users = userService.findAll();
-        return new ResponseEntity<Collection<UserForShowDTO>>(UserForShowMapper.mapToUsersDto(users), HttpStatus.OK);
+        return new ResponseEntity<Collection<UserForShowDTO>>(UserMapper.mapToUsersDto(users), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -35,31 +35,26 @@ public class UserController {
         if (user.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(UserForShowMapper.mapToUserDto(user.get()), HttpStatus.OK);
+        return new ResponseEntity<>(UserMapper.mapToUserDto(user.get()), HttpStatus.OK);
     }
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> registerUserWithRole(@RequestBody User user,
-                                                     @RequestParam String role) throws Exception {
-        if (userService.findById(user.getEmail()).isPresent()) {
+    public ResponseEntity<UserRegistrationDTO> registerUserWithRole(@RequestBody UserRegistrationDTO registeredUser) throws Exception {
+        if (userService.findById(registeredUser.getEmail()).isPresent()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         try {
-            User newUser;
-            if (role.equalsIgnoreCase("Owner")) {
-                newUser = new Owner(user);
-            } else if (role.equalsIgnoreCase("Guest")) {
-                newUser = new Guest(user);
+            if (registeredUser.getRole().equalsIgnoreCase("Guest")) {
+                userService.save(UserMapper.mapToGuest(registeredUser));
+            } else if (registeredUser.getRole().equalsIgnoreCase("Owner")) {
+                userService.save(UserMapper.mapToOwner(registeredUser));
             } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
-            userService.save(newUser);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception exception) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-
-
     @DeleteMapping(value = "/{email}")
     public ResponseEntity<Void> deleteUser(@PathVariable("email") String email) {
         userService.deleteById(email);
