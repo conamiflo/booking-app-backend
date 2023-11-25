@@ -2,22 +2,16 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Entity;
-import java.util.Collection;
 
 @Getter
 @Setter
 @Entity
-public class Owner extends User{
-
-    private Double averageScore;
-
-    public Owner(String email, String password, boolean isActive, String name, String lastName, String address, String phoneNumber, Double averageScore) {
+public class Admin extends User{
+    public Admin(String email, String password, boolean isActive, String name, String lastName, String address, String phoneNumber) {
         super(email, password, isActive, name, lastName, address, phoneNumber);
-        this.averageScore = averageScore;
     }
 }
