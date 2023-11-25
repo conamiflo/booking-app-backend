@@ -12,11 +12,11 @@ import java.util.List;
 
 @Getter
 @Setter
-//@Entity
-//@Table(name = "tbl_accomondations")
+@Entity
+@Table(name = "tbl_accomondations")
 public class Accommodation {
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private User owner;
     private String name;

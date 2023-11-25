@@ -16,5 +16,5 @@ public interface IAccommodationService {
     void deleteById(Long id);
     void delete(Accommodation entity);
     Collection<Accommodation> search(String location, int guests, String startDate, String endDate);
-    public <S extends Accommodation> S save(S entity);
+    <S extends Accommodation> S save(S entity);
 }

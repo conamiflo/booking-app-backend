@@ -8,12 +8,12 @@ import java.util.Optional;
 
 public interface IAmenityService {
 
-    public List<Amenity> findAll();
+    List<Amenity> findAll();
 
-    public Optional<Amenity> findById(Long id);
+    Optional<Amenity> findById(Long id);
 
-    public Amenity save(Amenity amenity);
+    Amenity save(Amenity amenity);
 
-    public void deleteById(Long aLong);
+    void deleteById(Long aLong);
 
 }

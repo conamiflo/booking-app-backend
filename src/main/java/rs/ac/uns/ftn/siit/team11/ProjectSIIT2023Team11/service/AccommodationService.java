@@ -16,7 +16,7 @@ import java.util.Optional;
 public class AccommodationService implements IAccommodationService {
 
     @Autowired
-    IAccommodationRepository accommodationRepository;
+    private IAccommodationRepository accommodationRepository;
 
     public List<Accommodation> findAll() {
         return new ArrayList<Accommodation>();
