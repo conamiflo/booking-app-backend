@@ -1,8 +1,19 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import lombok.Getter;
+import lombok.Setter;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Getter
+@Setter
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class User {
+    @Id
     private String email;
 
     private String password;
@@ -17,10 +28,8 @@ public class User {
 
     private String phoneNumber;
 
-    @Getter
-    private UserRole userRole;
 
-    public User(String email, String password, boolean isActive, String name, String lastName, String address, String phoneNumber, UserRole userRole) {
+    public User(String email, String password, boolean isActive, String name, String lastName, String address, String phoneNumber) {
         this.email = email;
         this.password = password;
         this.isActive = isActive;
@@ -28,66 +37,6 @@ public class User {
         this.lastName = lastName;
         this.address = address;
         this.phoneNumber = phoneNumber;
-        this.userRole = userRole;
     }
 
-    public void setUserRole(UserRole userRole) {
-        this.userRole = userRole;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
 }
