@@ -6,8 +6,10 @@ import jakarta.persistence.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 @DiscriminatorValue("Admin")
 public class Admin extends User{
+
 
 }

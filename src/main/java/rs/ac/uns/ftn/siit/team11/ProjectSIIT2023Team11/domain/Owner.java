@@ -10,4 +10,13 @@ import lombok.*;
 public class Owner extends User{
 
     private Double averageScore;
+
+    public Owner(String email, String password, boolean isActive, String name, String lastName, String address, String phoneNumber) {
+        super(email, password, isActive, name, lastName, address, phoneNumber);
+        this.averageScore = (double) 0;
+    }
+
+    public Owner() {
+
+    }
 }
