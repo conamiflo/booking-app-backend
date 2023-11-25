@@ -15,8 +15,12 @@ public class Owner extends User{
         super(email, password, isActive, name, lastName, address, phoneNumber);
         this.averageScore = (double) 0;
     }
-
     public Owner() {
-
+        this.averageScore = 0.0;
     }
+    public Owner(User user) {
+        super(user.getEmail(), user.getPassword(), user.isActive(), user.getName(), user.getLastName(), user.getAddress(), user.getPhoneNumber());
+        this.averageScore = 0.0;
+    }
+
 }

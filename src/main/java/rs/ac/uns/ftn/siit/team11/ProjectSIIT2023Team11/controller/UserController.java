@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Guest;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Owner;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserForShowDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserRegistrationDTO;
@@ -35,23 +37,29 @@ public class UserController {
         }
         return new ResponseEntity<>(UserForShowMapper.mapToUserDto(user.get()), HttpStatus.OK);
     }
-//    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<User> registerUser(@RequestBody UserRegistrationDTO user) throws Exception {
-//        if (userService.findById(user.getEmail()).isPresent()) {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//
-//        try{
-//            if(user.getRole().equals("Guest")){
-//
-//            }
-//
-////            User newUser = userService.save(user);
-//            return new ResponseEntity<>(newUser, HttpStatus.CREATED);
-//        } catch (Exception exception){
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//    }
+    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<User> registerUserWithRole(@RequestBody User user,
+                                                     @RequestParam String role) throws Exception {
+        if (userService.findById(user.getEmail()).isPresent()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        try {
+            User newUser;
+            if (role.equalsIgnoreCase("Owner")) {
+                newUser = new Owner(user);
+            } else if (role.equalsIgnoreCase("Guest")) {
+                newUser = new Guest(user);
+            } else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            userService.save(newUser);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
     @DeleteMapping(value = "/{email}")
     public ResponseEntity<Void> deleteUser(@PathVariable("email") String email) {
         userService.deleteById(email);

@@ -16,8 +16,12 @@ public class Guest extends User{
         super(email, password, isActive, name, lastName, address, phoneNumber);
         this.cancelledReservations = 0;
     }
-
     public Guest() {
+        this.cancelledReservations = 0;
+    }
 
+    public Guest(User user) {
+        super(user.getEmail(), user.getPassword(), user.isActive(), user.getName(), user.getLastName(), user.getAddress(), user.getPhoneNumber());
+        this.cancelledReservations = 0;
     }
 }
