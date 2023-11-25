@@ -1,9 +1,13 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 
-import java.util.List;
+import jakarta.persistence.*;
+import lombok.*;
 
-public class Owner {
-    private Long ownerId;
-    private String email;
+@Getter
+@Setter
+@Entity
+@DiscriminatorValue("Owner")
+public class Owner extends User{
 
+    private Double averageScore;
 }

@@ -7,9 +7,7 @@ import jakarta.persistence.*;
 @Getter
 @Setter
 @Entity
-@DiscriminatorValue("Guest")
-public class Guest extends User{
-
-    private int cancelledReservations;
+@DiscriminatorValue("Admin")
+public class Admin extends User{
 
 }
