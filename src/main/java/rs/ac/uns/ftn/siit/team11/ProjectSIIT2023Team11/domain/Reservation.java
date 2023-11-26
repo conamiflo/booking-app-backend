@@ -8,6 +8,8 @@ import lombok.Setter;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
 import java.time.LocalDate;
+import java.util.Optional;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,4 +29,5 @@ public class Reservation {
     private int numberOfGuests;
     private ReservationStatus status;
     private Double price;
+
 }

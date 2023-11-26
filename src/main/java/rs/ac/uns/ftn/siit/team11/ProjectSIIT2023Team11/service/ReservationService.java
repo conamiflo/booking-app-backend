@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class RepositoryService implements IRepositoryService{
+public class ReservationService implements IReservationService {
 
     @Autowired
-    private IReservationRepository reservationRepository;
+    IReservationRepository reservationRepository;
 
     public List<Reservation> findAll() {
         return reservationRepository.findAll();
@@ -30,15 +30,16 @@ public class RepositoryService implements IRepositoryService{
         reservationRepository.deleteById(id);
     }
 
-    public Collection<Reservation> findReservationsByOwner(String owner) {
-        return reservationRepository.findReservationsByOwner(owner);
+    public Collection<Reservation> findReservationsByAccommodation_Owner_Email(String email) {
+        return reservationRepository.findReservationsByAccommodation_Owner_Email(email);
+    }
+    @Override
+    public Collection<Reservation> findReservationsByGuestEmail(String email) {
+        return reservationRepository.findReservationsByGuestEmail(email);
     }
 
-    public Collection<Reservation> findReservationsByGuest(String guest) {
-        return reservationRepository.findReservationsByGuest(guest);
-    }
-
-    public Collection<Reservation> findReservationsByAccommodation(Long accommodationId) {
-        return reservationRepository.findReservationsByAccommodation(accommodationId);
-    }
+//    @Override
+//    public Collection<Reservation> findByAccommodationName(String accommodationName) {
+//        return reservationRepository.findByAccommodationName(accommodationName);
+//    }
 }

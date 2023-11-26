@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public interface IRepositoryService {
+public interface IReservationService {
     List<Reservation> findAll();
 
     <S extends Reservation> S save(S entity);
@@ -15,10 +15,8 @@ public interface IRepositoryService {
 
     void deleteById(Long id);
 
-    Collection<Reservation> findReservationsByOwner(String owner);
+    Collection<Reservation> findReservationsByAccommodation_Owner_Email(String email);
+    Collection<Reservation> findReservationsByGuestEmail(String email);
+//    Collection<Reservation> findByAccommodationName(String accommodationName);
 
-
-    Collection<Reservation> findReservationsByGuest(String guest);
-
-    Collection<Reservation> findReservationsByAccommodation(Long accommodationId);
 }
