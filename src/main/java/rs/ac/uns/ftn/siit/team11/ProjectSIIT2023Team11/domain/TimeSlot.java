@@ -9,4 +9,11 @@ public class TimeSlot {
     private LocalDate startDate;
     private LocalDate endDate;
 
+    public boolean contains(LocalDate date){
+        return !date.isBefore(startDate) && !date.isAfter(endDate);
+    }
+    public boolean overlapsWith(TimeSlot timeSlot){
+        return (startDate.isBefore(timeSlot.endDate) && endDate.isAfter(timeSlot.startDate)) ||
+                (timeSlot.startDate.isBefore(endDate) && timeSlot.endDate.isAfter(startDate));
+    }
 }
