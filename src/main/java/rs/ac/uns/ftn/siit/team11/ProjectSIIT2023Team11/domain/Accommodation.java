@@ -20,7 +20,7 @@ public class Accommodation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.ALL},fetch = FetchType.EAGER)
     private Owner owner;
     private String name;
     private String description;
