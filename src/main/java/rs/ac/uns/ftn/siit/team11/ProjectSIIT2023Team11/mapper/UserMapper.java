@@ -32,7 +32,7 @@ public class UserMapper {
                 registeredUser.getLastName(),
                 registeredUser.getAddress(),
                 registeredUser.getPhoneNumber()
-                );
+        );
     }
 
     public static Owner mapToOwner(UserRegistrationDTO registeredUser){

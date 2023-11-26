@@ -24,8 +24,10 @@ public class Accommodation {
     private String name;
     private String description;
     private String location;
+    @JoinTable(name = "amenities")
     @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
     private List<Amenity> amenities;
+    @JoinTable(name = "priceList")
     @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
     private List<Price> priceList;
     @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
