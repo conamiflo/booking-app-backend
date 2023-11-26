@@ -16,7 +16,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name="accommodations")
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Accommodation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,18 +24,21 @@ public class Accommodation {
     private String name;
     private String description;
     private String location;
-    @OneToMany(cascade = {CascadeType.ALL})
+    @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
     private List<Amenity> amenities;
-    @OneToMany(cascade = {CascadeType.ALL})
+    @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
     private List<Price> priceList;
+    @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
+    private List<Availability> availability;
     @ElementCollection
     private List<String> photos;
     private int minGuests;
     private int maxGuests;
     private String type;
-    private double price;
+    private Double price;
     private boolean automaticApproval;
     private boolean active;
+    private int cancelationDays;
     private LocalDate created;
 
 }
