@@ -16,7 +16,8 @@ public class OwnerReservationMapper {
                 reservation.getEndDate(),
                 reservation.getNumberOfGuests(),
                 reservation.getStatus(),
-                reservation.getPrice()
+                reservation.getPrice(),
+                0
         );
     }
 }

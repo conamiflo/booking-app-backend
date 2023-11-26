@@ -1,6 +1,9 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,8 +18,11 @@ public interface IReservationService {
 
     void deleteById(Long id);
 
-    Collection<Reservation> findReservationsByAccommodation_Owner_Email(String email);
-    Collection<Reservation> findReservationsByGuestEmail(String email);
-//    Collection<Reservation> findByAccommodationName(String accommodationName);
+    Collection<Reservation> findAllByGuestEmail(String email);
+    Collection<Reservation> findAllByAccommodationOwnerEmail(String email);
+    Collection<Reservation> findAllByAccommodationName(String name);
+    List<Reservation> findByStatusAndGuestEmail(@Param("status") ReservationStatus status, @Param("email") String email);
+    List<Reservation> findByStatusAndOwnerEmail(@Param("status") ReservationStatus status, @Param("email") String email);
+
 
 }

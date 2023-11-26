@@ -17,4 +17,5 @@ public class OwnerReservationDTO {
     private int numberOfGuests;
     private ReservationStatus status;
     private Double price;
+    private int cancelledReservations;
 }
