@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,7 +21,7 @@ public class Accommodation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(cascade = {CascadeType.ALL},fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     private Owner owner;
     private String name;
     private String description;
@@ -38,10 +39,26 @@ public class Accommodation {
     private int minGuests;
     private int maxGuests;
     private String type;
-    private Double price;
+    private Double defaultPrice;
     private boolean automaticApproval;
     private boolean active;
     private int cancelationDays;
     private LocalDate created;
+
+
+    public Double calculatePrice() {
+        LocalDate today = LocalDate.now();
+        if (priceList == null){
+            priceList = new ArrayList<Price>();
+        }
+        for (Price price : priceList) {
+            if (price.getTimeSlot().contains(today)) {
+                return price.getPrice();
+            }
+        }
+        return defaultPrice;
+    }
+
+
 
 }
