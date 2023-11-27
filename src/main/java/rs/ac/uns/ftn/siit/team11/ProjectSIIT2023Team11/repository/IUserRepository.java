@@ -7,4 +7,5 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
 @Repository
 public interface IUserRepository extends JpaRepository<User,String> {
 
+//    boolean isLoginValid(String email, String password);
 }

@@ -15,5 +15,6 @@ public interface IUserService {
     Optional<User> findById(String s);
 
     void deleteById(String s);
+    boolean isLoginValid(String email, String password);
 
 }

@@ -31,4 +31,9 @@ public class UserService implements IUserService {
     public void deleteById(String s) {
         userRepository.deleteById(s);
     }
+
+    public boolean isLoginValid(String email, String password) {
+        Optional<User> user = userRepository.findById(email);
+        return user.isPresent() && user.get().getPassword().equals(password);
+    }
 }
