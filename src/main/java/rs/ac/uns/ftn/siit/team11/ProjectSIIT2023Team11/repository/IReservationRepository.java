@@ -16,10 +16,12 @@ public interface IReservationRepository extends JpaRepository<Reservation,Long> 
     Collection<Reservation> findAllByGuestEmail(String email);
     Collection<Reservation> findAllByAccommodationOwnerEmail(String email);
 
-    Collection<Reservation> findAllByGuestEmailAndAccommodationName(String email,String name);
+//    Collection<Reservation> findAllByGuestEmailAndAccommodationName(String email,String name);
+
+//    Collection<Reservation> findAllByOwnerEmailAndAccommodationName(String email,String name);
 
     @Query("SELECT r FROM Reservation r WHERE r.status = :status AND r.guest.email = :email")
-    List<Reservation> findByStatusAndGuestEmail(@Param("status") ReservationStatus status, @Param("email") String email);
+    Collection<Reservation> findByStatusAndGuestEmail(@Param("status") ReservationStatus status, @Param("email") String email);
 
     @Query("SELECT r FROM Reservation r WHERE r.status = :status AND r.accommodation.owner.email = :email")
     List<Reservation> findByStatusAndOwnerEmail(@Param("status") ReservationStatus status, @Param("email") String email);

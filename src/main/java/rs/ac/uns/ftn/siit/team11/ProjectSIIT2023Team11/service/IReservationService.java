@@ -20,9 +20,9 @@ public interface IReservationService {
 
     Collection<Reservation> findAllByGuestEmail(String email);
     Collection<Reservation> findAllByAccommodationOwnerEmail(String email);
-    Collection<Reservation> findAllByAccommodationName(String name);
-    List<Reservation> findByStatusAndGuestEmail(@Param("status") ReservationStatus status, @Param("email") String email);
-    List<Reservation> findByStatusAndOwnerEmail(@Param("status") ReservationStatus status, @Param("email") String email);
+
+    Collection<Reservation> findByStatusAndGuestEmail(@Param("status") ReservationStatus status, @Param("email") String email);
+    Collection<Reservation> findByStatusAndOwnerEmail(@Param("status") ReservationStatus status, @Param("email") String email);
 
 
 }

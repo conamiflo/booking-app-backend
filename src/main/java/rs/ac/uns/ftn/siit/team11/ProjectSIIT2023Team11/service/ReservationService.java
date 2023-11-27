@@ -45,7 +45,7 @@ public class ReservationService implements IReservationService {
         return reservationRepository.findAllByAccommodationOwnerEmail(email);
     }
 
-    public List<Reservation> findByStatusAndGuestEmail(ReservationStatus status, String email) {
+    public Collection<Reservation> findByStatusAndGuestEmail(ReservationStatus status, String email) {
         return reservationRepository.findByStatusAndGuestEmail(status, email);
     }
 

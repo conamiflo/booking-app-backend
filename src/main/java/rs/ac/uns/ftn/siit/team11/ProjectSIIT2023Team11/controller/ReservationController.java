@@ -76,22 +76,6 @@ public class ReservationController {
         return new ResponseEntity<>(updatedReservation, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/owner/{name}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<OwnerReservationDTO>> getOwnerReservationsByAccommodationName(@PathVariable("accommodationName") String accommodationName) {
-        Collection<Reservation> reservations = reservationService.findAllByAccommodationName(accommodationName);
-        return new ResponseEntity<>(reservations.stream()
-                .map(OwnerReservationMapper::mapToOwnerReservationDTO)
-                .collect(Collectors.toList()), HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/guest/{name}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<GuestReservationDTO>> getGuestReservationsByAccommodationName(@PathVariable("accommodationName") String accommodationName) {
-        Collection<Reservation> reservations = reservationService.findAllByAccommodationName(accommodationName);
-        return new ResponseEntity<>(reservations.stream()
-                .map(GuestReservationMapper::mapToGuestReservationDTO)
-                .collect(Collectors.toList()), HttpStatus.OK);
-    }
-
     @GetMapping(value = "/guest/filter", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<GuestReservationDTO>> filterGuestReservations(
             @RequestParam("status") ReservationStatus status,
@@ -106,7 +90,7 @@ public class ReservationController {
     public ResponseEntity<Collection<OwnerReservationDTO>> filterOwnerReservations(
             @RequestParam("status") ReservationStatus status,
             @RequestParam("email") String email) {
-        Collection<Reservation> reservations = reservationService.findByStatusAndGuestEmail(status, email);
+        Collection<Reservation> reservations = reservationService.findByStatusAndOwnerEmail(status, email);
         return new ResponseEntity<>(reservations.stream()
                 .map(OwnerReservationMapper::mapToOwnerReservationDTO)
                 .collect(Collectors.toList()), HttpStatus.OK);
