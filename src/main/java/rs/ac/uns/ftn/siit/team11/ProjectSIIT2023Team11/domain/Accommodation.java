@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.PriceType;
 
 @Getter
 @Setter
@@ -44,7 +45,7 @@ public class Accommodation {
     private boolean active;
     private int cancelationDays;
     private LocalDate created;
-
+    private PriceType priceType;
 
     public Double calculatePrice() {
         LocalDate today = LocalDate.now();

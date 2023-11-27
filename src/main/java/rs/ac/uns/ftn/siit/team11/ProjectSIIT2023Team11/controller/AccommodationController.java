@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDetailsDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.InputPriceDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AccommodationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
@@ -69,5 +70,12 @@ public class AccommodationController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccommodationDetailsDTO> createAccommodationPrice(@RequestBody InputPriceDTO accommodation) throws Exception {
+        Optional<AccommodationDetailsDTO> newAccommodation = accommodationService.create(accommodation, userService);
+        if(newAccommodation.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(newAccommodation.get(), HttpStatus.CREATED);
+    }
 }

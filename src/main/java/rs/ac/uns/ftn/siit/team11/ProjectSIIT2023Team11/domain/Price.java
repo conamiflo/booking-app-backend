@@ -20,5 +20,5 @@ public class Price {
     @Embedded
     private TimeSlot timeSlot;
     private Double price;
-    private PriceType type;
+
 }
