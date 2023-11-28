@@ -72,10 +72,6 @@ public class AccommodationController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDetailsDTO> createAccommodationPrice(@RequestBody InputPriceDTO accommodation) throws Exception {
-        Optional<AccommodationDetailsDTO> newAccommodation = accommodationService.create(accommodation, userService);
-        if(newAccommodation.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(newAccommodation.get(), HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
