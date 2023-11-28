@@ -106,6 +106,23 @@ public class UserController {
         return new ResponseEntity<>(UserMapper.mapGuestToGuestForShowDTO(guest), HttpStatus.OK);
     }
 
+    @DeleteMapping("/{email}/favorite_accommodation/{accommodationId}")
+    public ResponseEntity<GuestForShowDTO> deleteGuestsFavoriteAccommodation(@PathVariable("email") String email, @PathVariable("accommodationId") Long accommodationId){
+        Optional<User> user = userService.findById(email);
+        Optional<Accommodation> accommodation = accommodationService.findById(accommodationId);
+        if(user.isEmpty() || accommodation.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if(!(user.get() instanceof Guest guest)){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if(!guest.getFavoriteAccommodations().contains(accommodation.get())){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        guest.getFavoriteAccommodations().remove(accommodation.get());
+        userService.save(guest);
+        return new ResponseEntity<>(UserMapper.mapGuestToGuestForShowDTO(guest), HttpStatus.OK);
+    }
 
     @DeleteMapping(value = "/{email}")
     public ResponseEntity<Void> deleteUser(@PathVariable("email") String email) {
