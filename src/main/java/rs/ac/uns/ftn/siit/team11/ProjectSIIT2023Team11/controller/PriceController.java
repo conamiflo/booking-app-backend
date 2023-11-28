@@ -12,22 +12,26 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.InputPriceDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceForShowDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AccommodationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.PriceMapper;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IPriceService;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/pricelist")
+@RequestMapping("/api/price")
 public class PriceController {
     @Autowired
     private IPriceService priceService;
+    @Autowired
+    private IAccommodationService accommodationService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<PriceForShowDTO>> getAccommodations() {
+    public ResponseEntity<Collection<PriceForShowDTO>> getPrices() {
         Collection<PriceForShowDTO> prices = priceService.findAll().stream().map(PriceMapper::mapToPriceForShowDto).toList();
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(prices, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -58,6 +62,17 @@ public class PriceController {
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deletePrice(@PathVariable("id") Long id) {
+        Optional<Price> price = priceService.findById(id);
+        if(price.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        List<Accommodation> accommodations = accommodationService.findAll();
+        for(Accommodation accommodation : accommodations){
+            if(accommodation.containsPrice(price.get())){
+                accommodation.getPriceList().remove(price.get());
+            }
+        }
         priceService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

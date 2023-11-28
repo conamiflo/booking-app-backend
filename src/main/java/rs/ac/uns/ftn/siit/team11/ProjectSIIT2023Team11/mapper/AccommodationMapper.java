@@ -5,6 +5,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Owner;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationCardDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDetailsDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationPricesDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserForShowDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 
@@ -77,5 +78,11 @@ public class AccommodationMapper {
         accommodation.setMaxGuests(accommodationDetailsDTO.maxGuests());
         accommodation.setActive(false);
         return accommodation;
+    }
+
+    public static AccommodationPricesDTO mapAccommodationToAccommodationPriceDTO(Accommodation accommodation){
+        return new AccommodationPricesDTO(
+                accommodation.getId(),
+                accommodation.getPriceList());
     }
 }
