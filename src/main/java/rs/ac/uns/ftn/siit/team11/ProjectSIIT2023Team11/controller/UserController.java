@@ -65,6 +65,16 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
+    @PutMapping("/{id}/block")
+    public ResponseEntity<UserForShowDTO> blockUser(@PathVariable("id") String userId){
+        Optional<User> user = userService.findById(userId);
+        if(user.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        user.get().setActive(false);
+        userService.save(user.get());
+        return new ResponseEntity<UserForShowDTO>(UserMapper.mapToUserDto(user.get()), HttpStatus.OK);
+    }
     @DeleteMapping(value = "/{email}")
     public ResponseEntity<Void> deleteUser(@PathVariable("email") String email) {
         userService.deleteById(email);
