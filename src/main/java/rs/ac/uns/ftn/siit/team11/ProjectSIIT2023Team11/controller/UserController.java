@@ -93,6 +93,20 @@ public class UserController {
         userService.save(guest);
         return new ResponseEntity<>(UserMapper.mapGuestToGuestForShowDTO(guest), HttpStatus.OK);
     }
+
+    @GetMapping("/{email}/favorite_accommodation")
+    public ResponseEntity<GuestForShowDTO> getGuestsFavoriteAccommodations(@PathVariable("email") String email){
+        Optional<User> user = userService.findById(email);
+        if(user.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if(!(user.get() instanceof Guest guest)){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(UserMapper.mapGuestToGuestForShowDTO(guest), HttpStatus.OK);
+    }
+
+
     @DeleteMapping(value = "/{email}")
     public ResponseEntity<Void> deleteUser(@PathVariable("email") String email) {
         userService.deleteById(email);
