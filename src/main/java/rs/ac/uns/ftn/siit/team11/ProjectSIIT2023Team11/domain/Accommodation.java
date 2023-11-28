@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 import jakarta.persistence.*;
@@ -60,6 +61,13 @@ public class Accommodation {
         return defaultPrice;
     }
 
-
+    public Boolean containsPrice(Price price){
+        for (Price accommodationPrice : priceList) {
+            if (Objects.equals(price.getId(), accommodationPrice.getId())){
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
