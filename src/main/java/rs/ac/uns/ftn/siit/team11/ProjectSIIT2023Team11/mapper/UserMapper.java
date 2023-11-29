@@ -17,8 +17,6 @@ import java.util.Optional;
 @Component
 public class UserMapper {
     public static UserForShowDTO mapToUserDto(User user) {
-        UserForShowDTO userForShow = new UserForShowDTO();
-
         return new UserForShowDTO(
                 user.getEmail(),
                 user.getName(),

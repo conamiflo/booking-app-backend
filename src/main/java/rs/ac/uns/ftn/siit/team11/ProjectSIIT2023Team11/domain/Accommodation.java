@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 import jakarta.persistence.*;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.PriceType;
 
 @Getter
 @Setter
@@ -44,7 +46,7 @@ public class Accommodation {
     private boolean active;
     private int cancelationDays;
     private LocalDate created;
-
+    private PriceType priceType;
 
     public Double calculatePrice() {
         LocalDate today = LocalDate.now();
@@ -59,6 +61,13 @@ public class Accommodation {
         return defaultPrice;
     }
 
-
+    public Boolean containsPrice(Price price){
+        for (Price accommodationPrice : priceList) {
+            if (Objects.equals(price.getId(), accommodationPrice.getId())){
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
