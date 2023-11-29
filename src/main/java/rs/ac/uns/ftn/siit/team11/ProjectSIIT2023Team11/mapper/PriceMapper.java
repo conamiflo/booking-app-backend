@@ -1,8 +1,8 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper;
 
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.InputPriceDTO;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceForShowDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceDTO.InputPriceDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceDTO.PriceForShowDTO;
 
 public class PriceMapper {
     public static PriceForShowDTO mapToPriceForShowDto(Price price) {

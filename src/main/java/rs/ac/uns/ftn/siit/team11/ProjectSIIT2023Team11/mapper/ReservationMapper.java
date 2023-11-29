@@ -3,8 +3,8 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper;
 import org.springframework.stereotype.Component;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Guest;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationForShowDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.ReservationDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.ReservationForShowDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 

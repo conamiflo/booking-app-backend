@@ -1,9 +1,8 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 
-import org.springframework.data.domain.Example;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDetailsDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,4 +17,6 @@ public interface IAccommodationService {
     void deleteById(Long aLong);
 
     Optional<AccommodationDetailsDTO> create(AccommodationDetailsDTO accommodation, IUserService userService);
+
+    void deletePriceFromAllAccommodations(Price price);
 }
