@@ -6,14 +6,17 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Guest;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Owner;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserForShowDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserLoginDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserRegistrationDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 @Component
 public class UserMapper {
-    public static UserForShowDTO mapToUserDto(User user){
+    public static UserForShowDTO mapToUserDto(User user) {
         UserForShowDTO userForShow = new UserForShowDTO();
 
         return new UserForShowDTO(
@@ -21,10 +24,10 @@ public class UserMapper {
                 user.getName(),
                 user.getLastName(),
                 getRole(user)
-                );
+        );
     }
 
-    public static Guest mapToGuest(UserRegistrationDTO registeredUser){
+    public static Guest mapToGuest(UserRegistrationDTO registeredUser) {
         return new Guest(
                 registeredUser.getEmail(),
                 registeredUser.getPassword(),
@@ -36,7 +39,7 @@ public class UserMapper {
         );
     }
 
-    public static Owner mapToOwner(UserRegistrationDTO registeredUser){
+    public static Owner mapToOwner(UserRegistrationDTO registeredUser) {
         return new Owner(
                 registeredUser.getEmail(),
                 registeredUser.getPassword(),
@@ -47,7 +50,8 @@ public class UserMapper {
                 registeredUser.getPhoneNumber()
         );
     }
-    public static String getRole(User user){
+
+    public static String getRole(User user) {
         if (user instanceof Owner) {
             return "Owner";
         } else if (user instanceof Admin) {
@@ -59,9 +63,10 @@ public class UserMapper {
 
     public static Collection<UserForShowDTO> mapToUsersDto(Collection<User> users) {
         Collection<UserForShowDTO> usersForShow = new ArrayList<>();
-        for (User user: users){
+        for (User user : users) {
             usersForShow.add(mapToUserDto(user));
         }
-        return  usersForShow;
+        return usersForShow;
     }
+
 }
