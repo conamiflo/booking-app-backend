@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper;
 
+import org.springframework.stereotype.Component;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Admin;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Guest;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Owner;
@@ -10,8 +11,8 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserRegistrationDTO;
 import java.util.ArrayList;
 import java.util.Collection;
 
+@Component
 public class UserMapper {
-    // Convert User JPA Entity into UserDto
     public static UserForShowDTO mapToUserDto(User user){
         UserForShowDTO userForShow = new UserForShowDTO();
 
