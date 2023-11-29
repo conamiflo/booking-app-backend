@@ -5,14 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Report;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReportDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.ReportMapper;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IReportService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.UserService;
 
 import java.util.Collection;
 import java.util.Optional;
