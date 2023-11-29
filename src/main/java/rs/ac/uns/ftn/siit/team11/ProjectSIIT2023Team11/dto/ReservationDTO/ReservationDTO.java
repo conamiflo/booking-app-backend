@@ -1,7 +1,5 @@
-package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto;
+package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
@@ -9,9 +7,10 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 import java.time.LocalDate;
 @Data
 @AllArgsConstructor
-public class GuestReservationDTO {
+public class ReservationDTO {
     private Long id;
-    private String accommodation;
+    private Long accommodation;
+    private String guest;
     private LocalDate startDate;
     private LocalDate endDate;
     private int numberOfGuests;

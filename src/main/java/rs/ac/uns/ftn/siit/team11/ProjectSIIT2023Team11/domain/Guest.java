@@ -1,10 +1,10 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 
-import lombok.*;
-
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.naming.Name;
 import java.util.ArrayList;
 import java.util.List;
 

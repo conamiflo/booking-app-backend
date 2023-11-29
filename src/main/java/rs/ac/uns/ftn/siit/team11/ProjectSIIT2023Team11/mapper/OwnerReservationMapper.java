@@ -1,9 +1,8 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper;
 
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.OwnerReservationDTO;
 import org.springframework.stereotype.Component;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.GuestReservationDTO;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.OwnerReservationDTO;
 
 @Component
 public class OwnerReservationMapper {

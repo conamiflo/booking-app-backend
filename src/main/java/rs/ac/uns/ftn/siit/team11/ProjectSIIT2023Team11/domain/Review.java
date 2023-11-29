@@ -3,7 +3,6 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;

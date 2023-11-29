@@ -3,7 +3,6 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Report;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReportDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.UserService;
 
 import java.util.ArrayList;
 import java.util.Collection;

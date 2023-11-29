@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto;
+package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO;
 
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
 

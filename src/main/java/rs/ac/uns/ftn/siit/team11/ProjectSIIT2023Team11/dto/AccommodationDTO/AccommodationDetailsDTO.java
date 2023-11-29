@@ -1,9 +1,4 @@
-package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto;
-
-import jakarta.persistence.*;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Availability;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
+package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO;
 
 import java.time.LocalDate;
 import java.util.List;
