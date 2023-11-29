@@ -1,54 +1,24 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReviewStatus;
+
+@Data
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name="reports")
 public class Report {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String sender;
-    private String receiver;
+    @ManyToOne(cascade={CascadeType.ALL}, fetch = FetchType.LAZY)
+    private User sender;
+    @ManyToOne(cascade={CascadeType.ALL}, fetch = FetchType.LAZY)
+    private User receiver;
     private String content;
-
-    public Report() {
-        // Default constructor
-    }
-
-    public Report(Long id, String sender, String receiver, String content) {
-        this.id = id;
-        this.sender = sender;
-        this.receiver = receiver;
-        this.content = content;
-    }
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getSender() {
-        return sender;
-    }
-
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
-
-    public String getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
+    private ReviewStatus status;
 }

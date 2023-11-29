@@ -1,25 +1,26 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 
+@Data
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@DiscriminatorValue("owner_review")
 public class OwnerReview extends Review{
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User owner;
 
-    private String owner;
-
-    public OwnerReview(int id, String guest, String description, int rating, LocalDate date, boolean reported, String owner) {
+    public OwnerReview(Long id, User guest, String description, int rating, LocalDate date, boolean reported, User owner) {
         super(id, guest, description, rating, date, reported);
-        this.owner = owner;
-    }
-
-    public OwnerReview(String owner) {
-        this.owner = owner;
-    }
-
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
         this.owner = owner;
     }
 }

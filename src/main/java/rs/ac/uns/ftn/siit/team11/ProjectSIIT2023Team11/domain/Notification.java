@@ -1,52 +1,24 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.NotificationType;
+
+@Data
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name="notifications")
 public class Notification {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String receiver;
-    private String type;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User receiver;
+    private NotificationType type;
     private String message;
-
-    public Notification() {
-    }
-
-    public Notification(Long id, String receiver, String type, String message) {
-        this.id = id;
-        this.receiver = receiver;
-        this.type = type;
-        this.message = message;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
 
 }

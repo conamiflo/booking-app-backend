@@ -3,42 +3,35 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.UserRepository;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IUserRepository;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService implements IUserService {
 
     @Autowired
-    private UserRepository userRepository;
-    @Override
-    public Collection<User> findAll() {
+    private IUserRepository userRepository;
+
+    public List<User> findAll() {
         return userRepository.findAll();
     }
 
-    @Override
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public <S extends User> S save(S entity) {
+        return userRepository.save(entity);
     }
 
-    @Override
-    public User create(User user) throws Exception {
-        return user;
+    public Optional<User> findById(String s) {
+        return userRepository.findById(s);
     }
 
-    @Override
-    public User update(User user) throws Exception {
-        return null;
+    public void deleteById(String s) {
+        userRepository.deleteById(s);
     }
 
-    @Override
-    public void delete(String email) {
-
-    }
-    @Override
     public boolean isLoginValid(String email, String password) {
-        User user = userRepository.findByEmail(email);
-        return user != null && user.getPassword().equals(password);
+        Optional<User> user = userRepository.findById(email);
+        return user.isPresent() && user.get().getPassword().equals(password);
     }
 }

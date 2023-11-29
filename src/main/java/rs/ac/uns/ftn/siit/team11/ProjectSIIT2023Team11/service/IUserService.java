@@ -2,20 +2,18 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 public interface IUserService {
 
-    Collection<User> findAll();
+    List<User> findAll();
 
-    User findByEmail(String email);
+    <S extends User> S save(S entity);
 
-    User create(User user) throws Exception;
+    Optional<User> findById(String s);
 
-    User update(User user) throws Exception;
-
-    void delete(String email);
-
+    void deleteById(String s);
     boolean isLoginValid(String email, String password);
 
 }

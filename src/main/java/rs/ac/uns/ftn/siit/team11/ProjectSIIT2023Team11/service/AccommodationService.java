@@ -3,58 +3,55 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Owner;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AccommodationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IAccommodationRepository;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @Service
-public class AccommodationService implements IAccommodationService {
-
-    private final IAccommodationRepository accommodationRepository;
+public class AccommodationService implements IAccommodationService{
 
     @Autowired
-    public AccommodationService(IAccommodationRepository accommodationRepository) {
-        this.accommodationRepository = accommodationRepository;
+    private IAccommodationRepository accommodationRepository;
+    public <S extends Accommodation> S save(S entity) {
+        return accommodationRepository.save(entity);
     }
 
-    @Override
-    public Collection<Accommodation> findAll() {
+    public List<Accommodation> findAll() {
         return accommodationRepository.findAll();
     }
 
-    @Override
-    public Accommodation findById(Long id) {
-        return accommodationRepository.findById(id);
+    public Optional<Accommodation> findById(Long aLong) {
+        return accommodationRepository.findById(aLong);
     }
 
-    @Override
-    public Accommodation save(Accommodation accommodation) {
-        return accommodationRepository.save(accommodation);
+    public void deleteById(Long aLong) {
+        accommodationRepository.deleteById(aLong);
     }
-
-    @Override
-    public Accommodation update(Accommodation accommodation) {
-        return accommodationRepository.update(accommodation);
-    }
-
-    @Override
-    public void delete(Long id) {
-        accommodationRepository.delete(id);
-    }
-
-    @Override
-    public Collection<Accommodation> search(String location, int guests, String startDate, String endDate) {
-        return accommodationRepository.search(location, guests, startDate, endDate);
-    }
-
-    @Override
-    public Accommodation create(Accommodation accommodation) {
-        if (accommodation.getId() != null) {
-            throw new IllegalArgumentException("Amenity ID should be null for creation.");
+    public Optional<AccommodationDetailsDTO> create(AccommodationDetailsDTO accommodationDetailsDTO, IUserService userService){
+        Optional<User> user =  userService.findById(accommodationDetailsDTO.ownerEmail());
+        if(user.isEmpty()){
+            return Optional.empty();
         }
+        Owner owner = (Owner) user.get();
+        Accommodation accommodation = AccommodationMapper.mapDetailsDtoToNewAccommodation(accommodationDetailsDTO,owner);
+        return Optional.of(AccommodationMapper.mapToAccommodationDetailsDto(save(accommodation)));
+    }
 
-        return accommodationRepository.save(accommodation);
+    @Override
+    public void deletePriceFromAllAccommodations(Price price) {
+        List<Accommodation> accommodations = findAll();
+        for(Accommodation accommodation : accommodations){
+            if(accommodation.containsPrice(price)){
+                accommodation.getPriceList().remove(price);
+                save(accommodation);
+            }
+        }
     }
 
 }

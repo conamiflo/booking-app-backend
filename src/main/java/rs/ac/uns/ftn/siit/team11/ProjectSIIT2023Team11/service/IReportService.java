@@ -2,19 +2,15 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Report;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 public interface IReportService {
+    List<Report> findAll();
 
-    Collection<Report> findAll();
+    <S extends Report> S save(S entity);
 
-    Report findById(Long id);
+    Optional<Report> findById(Long aLong);
 
-    Report create(Report report) throws Exception;
-
-    Report update(Report report) throws Exception;
-
-    void delete(Long id);
-
-    Collection<Report> search(String sender, String receiver);
+    void deleteById(Long aLong);
 }

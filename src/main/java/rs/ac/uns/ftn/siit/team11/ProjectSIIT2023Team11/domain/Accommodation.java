@@ -1,151 +1,72 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 
-import java.util.Date;
-import java.util.List;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.PriceType;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name="accommodations")
+@Entity
 public class Accommodation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long ownerId;
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    private Owner owner;
     private String name;
     private String description;
     private String location;
-    private List<String> amenities;
+    @JoinTable(name = "amenities")
+    @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
+    private List<Amenity> amenities;
+    @JoinTable(name = "priceList")
+    @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
+    private List<Price> priceList;
+    @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
+    private List<Availability> availability;
+    @ElementCollection
     private List<String> photos;
     private int minGuests;
     private int maxGuests;
     private String type;
-    private double price;
+    private Double defaultPrice;
     private boolean automaticApproval;
     private boolean active;
-    private Date created;
+    private int cancelationDays;
+    private LocalDate created;
+    private PriceType priceType;
 
-
-    public Accommodation(Long id, Long ownerId, String name, String description, String location, List<String> amenities, List<String> photos, int minGuests, int maxGuests, String type, double price, boolean automaticApproval, boolean active, Date created) {
-        this.id = id;
-        this.ownerId = ownerId;
-        this.name = name;
-        this.description = description;
-        this.location = location;
-        this.amenities = amenities;
-        this.photos = photos;
-        this.minGuests = minGuests;
-        this.maxGuests = maxGuests;
-        this.type = type;
-        this.price = price;
-        this.automaticApproval = automaticApproval;
-        this.active = active;
-        this.created = created;
+    public Double calculatePrice() {
+        LocalDate today = LocalDate.now();
+        if (priceList == null){
+            priceList = new ArrayList<Price>();
+        }
+        for (Price price : priceList) {
+            if (price.getTimeSlot().contains(today)) {
+                return price.getPrice();
+            }
+        }
+        return defaultPrice;
     }
 
-    public Long getId() {
-        return id;
+    public Boolean containsPrice(Price price){
+        for (Price accommodationPrice : priceList) {
+            if (Objects.equals(price.getId(), accommodationPrice.getId())){
+                return true;
+            }
+        }
+        return false;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public List<String> getAmenities() {
-        return amenities;
-    }
-
-    public void setAmenities(List<String> amenities) {
-        this.amenities = amenities;
-    }
-
-    public List<String> getPhotos() {
-        return photos;
-    }
-
-    public void setPhotos(List<String> photos) {
-        this.photos = photos;
-    }
-
-    public int getMinGuests() {
-        return minGuests;
-    }
-
-    public void setMinGuests(int minGuests) {
-        this.minGuests = minGuests;
-    }
-
-    public int getMaxGuests() {
-        return maxGuests;
-    }
-
-    public void setMaxGuests(int maxGuests) {
-        this.maxGuests = maxGuests;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public boolean isAutomaticApproval() {
-        return automaticApproval;
-    }
-
-    public void setAutomaticApproval(boolean automaticApproval) {
-        this.automaticApproval = automaticApproval;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
 }

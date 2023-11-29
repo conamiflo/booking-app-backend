@@ -5,58 +5,32 @@ import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Report;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IReportRepository;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @Service
-public class ReportService implements IReportService {
-
-    private final IReportRepository reportRepository;
-
+public class ReportService implements IReportService{
     @Autowired
-    public ReportService(IReportRepository reportRepository) {
-        this.reportRepository = reportRepository;
-    }
+    private IReportRepository reportRepository;
+
 
     @Override
-    public Collection<Report> findAll() {
+    public List<Report> findAll() {
         return reportRepository.findAll();
     }
 
     @Override
-    public Report findById(Long id) {
-        return reportRepository.findById(id);
+    public <S extends Report> S save(S entity) {
+        return reportRepository.save(entity);
     }
 
     @Override
-    public Report create(Report report) throws Exception {
-        if (report.getId() != null) {
-            throw new IllegalArgumentException("Report ID should be null for creation.");
-        }
-
-        return reportRepository.save(report);
+    public Optional<Report> findById(Long aLong) {
+        return reportRepository.findById(aLong);
     }
 
     @Override
-    public Report update(Report report) throws Exception {
-        if (report.getId() == null) {
-            throw new IllegalArgumentException("Report ID cannot be null for update.");
-        }
-
-        Report existingReport = reportRepository.findById(report.getId());
-        if (existingReport == null) {
-            throw new IllegalArgumentException("Report with ID " + report.getId() + " not found.");
-        }
-
-        return reportRepository.update(report);
-    }
-
-    @Override
-    public void delete(Long id) {
-        reportRepository.delete(id);
-    }
-
-    @Override
-    public Collection<Report> search(String sender, String receiver) {
-        return reportRepository.search(sender, receiver);
+    public void deleteById(Long aLong) {
+        reportRepository.deleteById(aLong);
     }
 }

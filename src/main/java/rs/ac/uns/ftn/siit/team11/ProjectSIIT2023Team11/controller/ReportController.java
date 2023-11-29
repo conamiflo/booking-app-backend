@@ -6,62 +6,67 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Report;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReportDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.ReportMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IReportService;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/reports")
 public class ReportController {
-
-    private final IReportService reportService;
+    @Autowired
+    private IReportService reportService;
 
     @Autowired
-    public ReportController(IReportService reportService) {
-        this.reportService = reportService;
-    }
+    private IUserService userService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Report>> getReports() {
+    public ResponseEntity<Collection<ReportDTO>> getReports() {
         Collection<Report> reports = reportService.findAll();
-        return new ResponseEntity<>(reports, HttpStatus.OK);
+        return new ResponseEntity<Collection<ReportDTO>>(ReportMapper.mapToReportsDTO(reports), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Report> getReportById(@PathVariable("id") Long id) {
-        Report report = reportService.findById(id);
-        if (report == null) {
+    public ResponseEntity<ReportDTO> getReportById(@PathVariable("id") Long id) {
+        Optional<Report> report = reportService.findById(id);
+        if (report.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(report, HttpStatus.OK);
+        return new ResponseEntity<>(ReportMapper.mapToReportDTO(report.get()), HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Report> createReport(@RequestBody Report report) throws Exception {
-        Report newReport = reportService.create(report);
-        return new ResponseEntity<>(newReport, HttpStatus.CREATED);
+    public ResponseEntity<ReportDTO> createReport(@RequestBody ReportDTO reportDTO) throws Exception {
+
+        if (userService.findById(reportDTO.getSenderEmail()).isEmpty() ||
+                userService.findById(reportDTO.getReceiverEmail()).isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        try{
+            reportService.save(ReportMapper.mapDtoToReport(reportDTO, userService));
+            return new ResponseEntity<>(reportDTO, HttpStatus.CREATED);
+        } catch (Exception exception){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Report> updateReport(@RequestBody Report report, @PathVariable Long id) throws Exception {
-        Report existingReport = reportService.findById(id);
-        if (existingReport == null) {
+    public ResponseEntity<ReportDTO> updateReport(@RequestBody ReportDTO reportDTO, @PathVariable Long id) throws Exception {
+        Optional<Report> existingReport = reportService.findById(id);
+        if (existingReport.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Report updatedReport = reportService.update(report);
-        return new ResponseEntity<>(updatedReport, HttpStatus.OK);
+        Report updatedReport = reportService.save(ReportMapper.mapDtoToReport(reportDTO, userService));
+        return new ResponseEntity<>(ReportMapper.mapToReportDTO(updatedReport), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteReport(@PathVariable("id") Long id) {
-        reportService.delete(id);
+        reportService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Report>> searchReports(@RequestParam("sender") String sender,
-                                                            @RequestParam("receiver") String receiver) {
-        Collection<Report> foundReports = reportService.search(sender, receiver);
-        return new ResponseEntity<>(foundReports, HttpStatus.OK);
     }
 }

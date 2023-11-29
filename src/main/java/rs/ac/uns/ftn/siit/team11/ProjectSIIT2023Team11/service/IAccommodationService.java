@@ -1,22 +1,22 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 public interface IAccommodationService {
+    <S extends Accommodation> S save(S entity);
 
-    Collection<Accommodation> findAll();
+    List<Accommodation> findAll();
 
-    Accommodation findById(Long id);
+    Optional<Accommodation> findById(Long aLong);
 
-    Accommodation save(Accommodation accommodation);
+    void deleteById(Long aLong);
 
-    Accommodation update(Accommodation accommodation);
+    Optional<AccommodationDetailsDTO> create(AccommodationDetailsDTO accommodation, IUserService userService);
 
-    void delete(Long id);
-
-    Collection<Accommodation> search(String location, int guests, String startDate, String endDate);
-    Accommodation create(Accommodation accommodation);
+    void deletePriceFromAllAccommodations(Price price);
 }

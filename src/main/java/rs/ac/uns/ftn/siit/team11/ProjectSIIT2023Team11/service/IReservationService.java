@@ -1,22 +1,27 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 
+import org.springframework.data.repository.query.Param;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 public interface IReservationService {
+    List<Reservation> findAll();
 
-    Collection<Reservation> findAll();
+    <S extends Reservation> S save(S entity);
 
-    Collection<Reservation> findByUserEmail(String email);
+    Optional<Reservation> findById(Long id);
 
-    Collection<Reservation> findByAccommodationId(int accommodationId);
+    void deleteById(Long id);
 
-    Reservation findById(int reservationId);
+    Collection<Reservation> findAllByGuestEmail(String email);
+    Collection<Reservation> findAllByAccommodationOwnerEmail(String email);
 
-    Reservation create(Reservation reservation);
+    Collection<Reservation> findByStatusAndGuestEmail(@Param("status") ReservationStatus status, @Param("email") String email);
+    Collection<Reservation> findByStatusAndOwnerEmail(@Param("status") ReservationStatus status, @Param("email") String email);
 
-    Reservation update(Reservation reservation);
 
-    void delete(int reservationId);
 }
