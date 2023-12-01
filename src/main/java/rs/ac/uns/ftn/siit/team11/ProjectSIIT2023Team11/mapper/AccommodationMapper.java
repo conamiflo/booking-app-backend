@@ -54,7 +54,6 @@ public class AccommodationMapper {
         accommodation.setMinGuests(accommodationDetailsDTO.minGuests());
         accommodation.setMaxGuests(accommodationDetailsDTO.maxGuests());
         accommodation.setDefaultPrice(accommodationDetailsDTO.defaultPrice());
-        accommodation.setPhotos(accommodationDetailsDTO.photos());
         return accommodation;
     }
     public static Collection<AccommodationDetailsDTO> mapToAccommodationsDetailsDto(Collection<Accommodation> accommodations){
