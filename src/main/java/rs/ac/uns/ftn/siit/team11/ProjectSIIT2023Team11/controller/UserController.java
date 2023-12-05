@@ -15,6 +15,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserDTO.UserRegistrat
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.UserMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.EmailSender;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -43,6 +44,7 @@ public class UserController {
     }
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserRegistrationDTO> registerUserWithRole(@RequestBody UserRegistrationDTO registeredUser) throws Exception {
+        EmailSender emailSender = new EmailSender();
         if (userService.findById(registeredUser.getEmail()).isPresent()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -54,6 +56,7 @@ public class UserController {
             } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
+            emailSender.sendActivationEmail(registeredUser.getEmail(),"activationlink");
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception exception) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
