@@ -25,5 +25,17 @@ public class User {
     private String address;
     private String phoneNumber;
     private boolean notifications;
+    @Transient
+    private String jwt;
 
+    public User(String email, String password, boolean isActive, String name, String lastName, String address, String phoneNumber, boolean notifications) {
+        this.email = email;
+        this.password = password;
+        this.isActive = isActive;
+        this.name = name;
+        this.lastName = lastName;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.notifications = notifications;
+    }
 }
