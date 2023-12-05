@@ -28,9 +28,11 @@ public class WebSecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(request -> request.requestMatchers("api/auth/**")
-                        .permitAll()
-                        .requestMatchers("api/users").authenticated()) // csrf->disabled, pošto nam JWT odrađuje zaštitu od CSRF napada
+        http.csrf(AbstractHttpConfigurer::disable).authorizeRequests(authorize -> authorize
+                        .requestMatchers("/v2/api-docs", "/swagger-ui.html", "/swagger-ui/index.html", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**")
+                        .permitAll().requestMatchers("/api/login").permitAll()
+                        // Add more antMatchers as needed for other endpoints
+                       ) // csrf->disabled, pošto nam JWT odrađuje zaštitu od CSRF napada
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS));// ne koristimo HttpSession i kukije
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class); // JWT procesiramo pre autentikacije
 
