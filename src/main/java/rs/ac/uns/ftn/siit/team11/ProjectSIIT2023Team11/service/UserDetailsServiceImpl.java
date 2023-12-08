@@ -22,15 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Optional<User> ret = allUsers.findById(username);
         if (ret.isEmpty() ) {
             throw new UsernameNotFoundException("User not found with this username: " + username);
-
         }
-        if (ret.get() instanceof Guest){
-            return org.springframework.security.core.userdetails.User.withUsername(username).password(ret.get().getPassword()).roles("GUEST").build();
-        }else if(ret.get() instanceof Owner){
-            return org.springframework.security.core.userdetails.User.withUsername(username).password(ret.get().getPassword()).roles("OWNER").build();
-        }
-        return org.springframework.security.core.userdetails.User.withUsername(username).password(ret.get().getPassword()).roles("ADMIN").build();
-
-
+        return org.springframework.security.core.userdetails.User.withUsername(username).password(ret.get().getPassword()).roles(ret.get().getRole()).build();
     }
 }
