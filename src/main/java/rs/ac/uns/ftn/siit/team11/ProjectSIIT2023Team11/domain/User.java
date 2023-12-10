@@ -38,4 +38,14 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.notifications = notifications;
     }
+
+    public String getRole(){
+        if (this instanceof Owner) {
+            return "Owner";
+        } else if (this instanceof Admin) {
+            return "Admin";
+        } else {
+            return "Guest";
+        }
+    }
 }

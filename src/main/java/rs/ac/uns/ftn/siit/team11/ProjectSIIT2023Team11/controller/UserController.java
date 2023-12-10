@@ -50,9 +50,9 @@ public class UserController {
         }
         try {
             if (registeredUser.getRole().equalsIgnoreCase("Guest")) {
-                userService.save(UserMapper.mapToGuest(registeredUser));
+                userService.register(UserMapper.mapToGuest(registeredUser));
             } else if (registeredUser.getRole().equalsIgnoreCase("Owner")) {
-                userService.save(UserMapper.mapToOwner(registeredUser));
+                userService.register(UserMapper.mapToOwner(registeredUser));
             } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
