@@ -6,6 +6,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IReservationRepository;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +37,16 @@ public class ReservationService implements IReservationService {
     }
     public Collection<Reservation> findAllByAccommodationOwnerEmail(String email) {
         return reservationRepository.findAllByAccommodationOwnerEmail(email);
+    }
+
+    @Override
+    public Collection<Reservation> searchGuestReservations(LocalDate startDate, LocalDate endDate, String accommodationName,String email) {
+        return reservationRepository.searchGuestReservations(startDate,endDate,accommodationName,email);
+    }
+
+    @Override
+    public Collection<Reservation> searchOwnerReservations(LocalDate startDate, LocalDate endDate, String accommodationName, String email) {
+        return reservationRepository.searchOwnerReservations(startDate,endDate,accommodationName,email);
     }
 
     public Collection<Reservation> findByStatusAndGuestEmail(ReservationStatus status, String email) {
