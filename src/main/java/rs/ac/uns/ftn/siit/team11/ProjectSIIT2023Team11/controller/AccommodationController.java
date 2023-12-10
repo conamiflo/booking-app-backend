@@ -36,8 +36,6 @@ public class AccommodationController {
     private IPriceService priceService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAuthority('ROLE_Guest')")
-    @Operation(summary = "My endpoint", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Collection<AccommodationDetailsDTO>> getAccommodations() {
         Collection<AccommodationDetailsDTO> accommodations = accommodationService.findAll().stream()
                 .map(AccommodationMapper::mapToAccommodationDetailsDto)
@@ -56,7 +54,8 @@ public class AccommodationController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAuthority('ROLE_Guest')")
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
+    @Operation(summary = "My endpoint", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<AccommodationDetailsDTO> createAccommodation(@RequestBody AccommodationDetailsDTO accommodation) throws Exception {
         Optional<AccommodationDetailsDTO> newAccommodation = accommodationService.create(accommodation, userService);
         if(newAccommodation.isEmpty()){
