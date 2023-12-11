@@ -36,6 +36,7 @@ public class AccommodationController {
     private IPriceService priceService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('ROLE_Guest')")
     public ResponseEntity<Collection<AccommodationDetailsDTO>> getAccommodations() {
         Collection<AccommodationDetailsDTO> accommodations = accommodationService.findAll().stream()
                 .map(AccommodationMapper::mapToAccommodationDetailsDto)

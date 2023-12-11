@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -8,36 +9,48 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserDTO.AuthResponseDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserDTO.UserLoginDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.exceptions.BadRequestException;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.security.JwtTokenUtil;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.UserService;
+
+import java.util.Optional;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/auth")
 public class LoginController {
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/logIn")
-    public User login(@RequestBody User user) {
-        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(user.getEmail(),
-                user.getPassword());
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody UserLoginDTO loginDTO) {
+
+        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(),
+                loginDTO.getPassword());
         Authentication auth = authenticationManager.authenticate(authReq);
 
         SecurityContext sc = SecurityContextHolder.getContext();
         sc.setAuthentication(auth);
 
-        String token = jwtTokenUtil.generateToken(user.getEmail());
-        user.setJwt(token);
+        String token = jwtTokenUtil.generateToken(loginDTO.getEmail());
 
-        return user;
+        Optional<User> user = userService.findById(loginDTO.getEmail());
+        if(user.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        user.get().setJwt(token);
+
+        return new ResponseEntity<>(new AuthResponseDTO(token), HttpStatus.OK);
     }
     @PostMapping("/logOut")
     public ResponseEntity logout() {
