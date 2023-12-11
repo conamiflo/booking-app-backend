@@ -25,10 +25,23 @@ public class User {
     private String address;
     private String phoneNumber;
     private boolean notifications;
+    private String photo;
     @Transient
     private String jwt;
 
-    public User(String email, String password, boolean isActive, String name, String lastName, String address, String phoneNumber, boolean notifications) {
+    public User(String email, String password, boolean isActive, String name, String lastName, String address, String phoneNumber, boolean notifications, String photo) {
+        this.email = email;
+        this.password = password;
+        this.isActive = isActive;
+        this.name = name;
+        this.lastName = lastName;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.notifications = notifications;
+        this.photo = photo;
+    }
+
+    public User(String email, String password, boolean isActive, String name, String lastName, String address, String phoneNumber, boolean b) {
         this.email = email;
         this.password = password;
         this.isActive = isActive;
