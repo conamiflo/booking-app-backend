@@ -21,6 +21,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.EmailSender;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -96,7 +97,13 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        User updatedUser = userService.save(UserMapper.mapDtoToUser(user, userService));
+        if(Objects.equals(user.getPassword(), "")){
+            user.setPassword(existingUser.get().getPassword());
+            User updatedUser = userService.save(UserMapper.mapDtoToUser(user, userService));
+        }else{
+            User updatedUser = userService.register(UserMapper.mapDtoToUser(user, userService));
+        }
+
 
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
