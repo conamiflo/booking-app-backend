@@ -9,12 +9,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserForShowDTO {
-    private String email;
 
-    private String name;
+    private String firstName;
 
     private String lastName;
 
-    private String role;
+    private String email;
 
+    private String address;
+
+    private String phoneNumber;
+
+    private String password;
+
+    private boolean notifications;
+
+    private String photo;
 }
