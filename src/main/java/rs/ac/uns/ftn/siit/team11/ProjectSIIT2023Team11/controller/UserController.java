@@ -7,17 +7,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Guest;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Owner;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserDTO.GuestForShowDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserDTO.UserForShowDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserDTO.UserLoginDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserDTO.UserRegistrationDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AccommodationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.UserMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.EmailSender;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -64,6 +68,8 @@ public class UserController {
         }
     }
 
+
+
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody UserLoginDTO loginDTO) {
         if (userService.isLoginValid(loginDTO.getEmail(), loginDTO.getPassword())) {
@@ -82,6 +88,27 @@ public class UserController {
         userService.save(user.get());
         return new ResponseEntity<UserForShowDTO>(UserMapper.mapToUserDto(user.get()), HttpStatus.OK);
     }
+
+    @PutMapping(value = "/{email}/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserForShowDTO> updateProfile(@RequestBody UserForShowDTO user, @PathVariable String email) throws Exception {
+        System.out.println(user);
+        Optional<User> existingUser = userService.findById(email);
+        if (existingUser.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if(Objects.equals(user.getPassword(), "")){
+            user.setPassword(existingUser.get().getPassword());
+            User updatedUser = userService.save(UserMapper.mapDtoToUser(user, userService));
+        }else{
+            User updatedUser = userService.register(UserMapper.mapDtoToUser(user, userService));
+        }
+
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+
     @PutMapping("/{email}/favorite_accommodation/{accommodationId}")
     public ResponseEntity<GuestForShowDTO> addFavoriteAccommodation(@PathVariable("email") String email, @PathVariable("accommodationId") Long accommodationId){
         Optional<User> user = userService.findById(email);

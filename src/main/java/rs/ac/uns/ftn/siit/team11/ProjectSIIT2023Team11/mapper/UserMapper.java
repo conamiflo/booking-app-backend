@@ -8,6 +8,8 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserDTO.GuestForShowDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserDTO.UserForShowDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserDTO.UserRegistrationDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.UserService;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,12 +18,31 @@ import java.util.Collection;
 public class UserMapper {
     public static UserForShowDTO mapToUserDto(User user) {
         return new UserForShowDTO(
-                user.getEmail(),
                 user.getName(),
                 user.getLastName(),
-                getRole(user)
+                user.getEmail(),
+                user.getAddress(),
+                user.getPhoneNumber(),
+                user.getPassword(),
+                user.isNotifications(),
+                user.getPhoto()
         );
     }
+
+
+    public static User mapDtoToUser(UserForShowDTO dto, IUserService userService){
+        Owner owner = (Owner)userService.findById(dto.getEmail()).get();
+        owner.setPassword(dto.getPassword());
+        owner.setName(dto.getFirstName());
+        owner.setLastName(dto.getLastName());
+        owner.setAddress(dto.getAddress());
+        owner.setPhoneNumber(dto.getPhoneNumber());
+        owner.setNotifications(dto.isNotifications());
+        owner.setPhoto(dto.getPhoto());
+
+        return owner;
+    }
+
 
     public static Guest mapToGuest(UserRegistrationDTO registeredUser) {
         return new Guest(

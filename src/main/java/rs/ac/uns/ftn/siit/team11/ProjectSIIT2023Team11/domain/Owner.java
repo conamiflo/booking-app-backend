@@ -25,4 +25,8 @@ public class Owner extends User{
         this.averageScore = 0.0;
     }
 
+    public Owner(String email, String password, boolean active, String firstName, String lastName, String address, String phoneNumber, boolean notifications, String photo, Double averageScore) {
+        super(email, password, active, firstName, lastName, address, phoneNumber, notifications);
+        this.averageScore = averageScore;
+    }
 }
