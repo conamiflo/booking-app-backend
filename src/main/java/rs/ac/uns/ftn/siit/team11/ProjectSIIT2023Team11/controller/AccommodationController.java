@@ -35,8 +35,8 @@ public class AccommodationController {
     @Autowired
     private IPriceService priceService;
 
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAuthority('ROLE_Guest')")
     public ResponseEntity<Collection<AccommodationDetailsDTO>> getAccommodations() {
         Collection<AccommodationDetailsDTO> accommodations = accommodationService.findAll().stream()
                 .map(AccommodationMapper::mapToAccommodationDetailsDto)
@@ -46,6 +46,7 @@ public class AccommodationController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get accommodation by id")
     public ResponseEntity<AccommodationDetailsDTO> getAccommodationById(@PathVariable("id") Long id) {
         Optional<Accommodation> accommodation = accommodationService.findById(id);
         if (accommodation.isEmpty()) {
@@ -56,7 +57,7 @@ public class AccommodationController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('ROLE_Owner')")
-    @Operation(summary = "My endpoint", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Create accommodation", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<AccommodationDetailsDTO> createAccommodation(@RequestBody AccommodationDetailsDTO accommodation) throws Exception {
         Optional<AccommodationDetailsDTO> newAccommodation = accommodationService.create(accommodation, userService);
         if(newAccommodation.isEmpty()){
@@ -66,6 +67,8 @@ public class AccommodationController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
+    @Operation(summary = "Update accommodation", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<AccommodationDetailsDTO> updateAccommodation(@RequestBody AccommodationDetailsDTO accommodation, @PathVariable Long id) throws Exception {
         Optional<Accommodation> existingAccommodation = accommodationService.findById(id);
         if (existingAccommodation.isEmpty()) {
@@ -77,6 +80,8 @@ public class AccommodationController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
+    @Operation(summary = "Delete accommodation", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Void> deleteAccommodation(@PathVariable("id") Long id) {
         accommodationService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

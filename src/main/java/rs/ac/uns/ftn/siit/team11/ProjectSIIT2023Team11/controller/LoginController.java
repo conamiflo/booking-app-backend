@@ -34,6 +34,10 @@ public class LoginController {
 
     @PostMapping("/logIn")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody UserLoginDTO loginDTO) {
+        Optional<User> user = userService.findById(loginDTO.getEmail());
+        if(user.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
 
         UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(),
                 loginDTO.getPassword());
@@ -42,12 +46,8 @@ public class LoginController {
         SecurityContext sc = SecurityContextHolder.getContext();
         sc.setAuthentication(auth);
 
-        String token = jwtTokenUtil.generateToken(loginDTO.getEmail());
+        String token = jwtTokenUtil.generateToken(loginDTO.getEmail(), user.get().getRole());
 
-        Optional<User> user = userService.findById(loginDTO.getEmail());
-        if(user.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
         user.get().setJwt(token);
 
         return new ResponseEntity<>(new AuthResponseDTO(token), HttpStatus.OK);
