@@ -1,9 +1,12 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Guest;
@@ -17,10 +20,12 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserDTO.UserRegistrat
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AccommodationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.UserMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IReservationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.EmailSender;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -33,6 +38,9 @@ public class UserController {
     private IUserService userService;
     @Autowired
     private IAccommodationService accommodationService;
+    @Autowired
+    private IReservationService reservationService;
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<UserForShowDTO>> getUsers(){
         Collection<User> users = userService.findAll();
@@ -154,8 +162,29 @@ public class UserController {
         return new ResponseEntity<>(UserMapper.mapGuestToGuestForShowDTO(guest), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_Guest', 'ROLE_Owner')")
+    @Operation(summary = "Delete user", security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping(value = "/{email}")
     public ResponseEntity<Void> deleteUser(@PathVariable("email") String email) {
+        Optional<User> user = userService.findById(email);
+        if(user.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if(user.get() instanceof Owner){
+            List<Accommodation> ownersAccommodations = accommodationService.findByOwnersId(email);
+            for (Accommodation accommodation : ownersAccommodations) {
+                if(reservationService.anyReservationInFuture(accommodation)){
+                    return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+                }
+            }
+            accommodationService.deleteAccommodations(ownersAccommodations);
+        } else if (user.get() instanceof Guest) {
+            if(reservationService.guestHasActiveReservations(email)){
+                return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+            }
+        }
+
         userService.deleteById(email);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
