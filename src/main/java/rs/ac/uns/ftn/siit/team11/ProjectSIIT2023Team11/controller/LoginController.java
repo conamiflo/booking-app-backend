@@ -32,6 +32,9 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
+    private final SecurityContext securityContext = SecurityContextHolder.getContext();
+
+
     @PostMapping("/logIn")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody UserLoginDTO loginDTO) {
         Optional<User> user = userService.findById(loginDTO.getEmail());
@@ -43,8 +46,7 @@ public class LoginController {
                 loginDTO.getPassword());
         Authentication auth = authenticationManager.authenticate(authReq);
 
-        SecurityContext sc = SecurityContextHolder.getContext();
-        sc.setAuthentication(auth);
+        securityContext.setAuthentication(auth);
 
         String token = jwtTokenUtil.generateToken(loginDTO.getEmail(), user.get().getRole());
 
@@ -53,14 +55,14 @@ public class LoginController {
         return new ResponseEntity<>(new AuthResponseDTO(token), HttpStatus.OK);
     }
     @PostMapping("/logOut")
-    public ResponseEntity logout() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<String> logout() {
+        Authentication auth = securityContext.getAuthentication();
 
         if (!(auth instanceof AnonymousAuthenticationToken)){
             SecurityContextHolder.clearContext();
 
             return new ResponseEntity<>("You successfully logged out!", HttpStatus.OK);
         } else {
-            throw new BadRequestException("WineUser is not authenticated!");
+            return new ResponseEntity<>("You unsuccessfully logged out!", HttpStatus.BAD_REQUEST);
         } }
 }
