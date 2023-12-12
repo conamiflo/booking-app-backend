@@ -19,4 +19,8 @@ public interface IAccommodationService {
     Optional<AccommodationDetailsDTO> create(AccommodationDetailsDTO accommodation, IUserService userService);
 
     void deletePriceFromAllAccommodations(Price price);
+
+    List<Accommodation> findByOwnersId(String email);
+
+    void deleteAccommodations(List<Accommodation> ownersAccommodations);
 }

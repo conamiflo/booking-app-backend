@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 
 import org.springframework.data.repository.query.Param;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
@@ -24,4 +25,7 @@ public interface IReservationService {
     Collection<Reservation> findByStatusAndOwnerEmail(@Param("status") ReservationStatus status, @Param("email") String email);
 
 
+    boolean anyReservationInFuture(Accommodation accommodation);
+
+    boolean guestHasActiveReservations(String email);
 }

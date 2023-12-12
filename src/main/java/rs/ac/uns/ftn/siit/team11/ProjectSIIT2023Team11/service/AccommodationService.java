@@ -10,6 +10,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.Acco
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AccommodationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IAccommodationRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,6 +52,24 @@ public class AccommodationService implements IAccommodationService{
                 accommodation.getPriceList().remove(price);
                 save(accommodation);
             }
+        }
+    }
+
+    @Override
+    public List<Accommodation> findByOwnersId(String email) {
+        List<Accommodation> accommodations = new ArrayList<>();
+        for (Accommodation accommodation: accommodationRepository.findAll()) {
+            if (accommodation.getOwner().getEmail().equals(email)){
+                accommodations.add(accommodation);
+            }
+        }
+        return accommodations;
+    }
+
+    @Override
+    public void deleteAccommodations(List<Accommodation> accommodations) {
+        for(Accommodation accommodation : accommodations){
+            deleteById(accommodation.getId());
         }
     }
 
