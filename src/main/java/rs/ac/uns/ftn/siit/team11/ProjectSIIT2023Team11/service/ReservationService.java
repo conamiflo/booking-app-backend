@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IReservationRepository;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
@@ -55,5 +56,26 @@ public class ReservationService implements IReservationService {
 
     public List<Reservation> findByStatusAndOwnerEmail(ReservationStatus status, String email) {
         return reservationRepository.findByStatusAndOwnerEmail(status, email);
+    }
+
+    @Override
+    public boolean anyReservationInFuture(Accommodation accommodation) {
+        for(Reservation reservation : reservationRepository.findAll()){
+            if(reservation.getEndDate().isAfter(LocalDate.now()) && reservation.getStatus().equals(ReservationStatus.Accepted)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean guestHasActiveReservations(String email) {
+        for(Reservation reservation : reservationRepository.findAll()){
+            if(email.equals(reservation.getGuest().getEmail()) && reservation.getStatus().equals(ReservationStatus.Accepted)
+                    && reservation.getEndDate().isAfter(LocalDate.now())){
+                return true;
+            }
+        }
+        return false;
     }
 }
