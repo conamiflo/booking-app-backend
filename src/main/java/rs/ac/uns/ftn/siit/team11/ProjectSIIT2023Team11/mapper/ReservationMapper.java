@@ -8,6 +8,8 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.Reserv
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 
+import java.time.format.DateTimeFormatter;
+
 @Component
 public class ReservationMapper {
     public static ReservationForShowDTO mapToReservationDTO(Reservation reservation) {
@@ -15,8 +17,8 @@ public class ReservationMapper {
                 reservation.getId(),
                 reservation.getAccommodation().getName(),
                 reservation.getGuest().getEmail(),
-                reservation.getStartDate(),
-                reservation.getEndDate(),
+                reservation.getStartDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                reservation.getEndDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
                 reservation.getNumberOfGuests(),
                 reservation.getStatus(),
                 reservation.getPrice()

@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.GuestReservationDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.OwnerReservationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,6 @@ public class ReservationController {
                 .map(OwnerReservationMapper::mapToOwnerReservationDTO)
                 .collect(Collectors.toList()), HttpStatus.OK);
     }
-
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Reservation> createReservation(@RequestBody ReservationDTO reservation) {
         Optional<Reservation> newReservation = Optional.ofNullable(reservationService.save(ReservationMapper.mapToReservation(reservation, userService, accommodationService)));
