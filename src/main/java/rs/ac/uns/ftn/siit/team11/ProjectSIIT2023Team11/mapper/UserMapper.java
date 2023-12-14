@@ -31,16 +31,16 @@ public class UserMapper {
 
 
     public static User mapDtoToUser(UserForShowDTO dto, IUserService userService){
-        Owner owner = (Owner)userService.findById(dto.getEmail()).get();
-        owner.setPassword(dto.getPassword());
-        owner.setName(dto.getFirstName());
-        owner.setLastName(dto.getLastName());
-        owner.setAddress(dto.getAddress());
-        owner.setPhoneNumber(dto.getPhoneNumber());
-        owner.setNotifications(dto.isNotifications());
-        owner.setPhoto(dto.getPhoto());
+        User user = userService.findById(dto.getEmail()).get();
+        user.setPassword(dto.getPassword());
+        user.setName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setAddress(dto.getAddress());
+        user.setPhoneNumber(dto.getPhoneNumber());
+        user.setNotifications(dto.isNotifications());
+        user.setPhoto(dto.getPhoto());
 
-        return owner;
+        return user;
     }
 
 
