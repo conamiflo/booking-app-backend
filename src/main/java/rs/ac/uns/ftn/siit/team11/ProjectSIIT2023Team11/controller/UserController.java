@@ -67,12 +67,12 @@ public class UserController {
             } else if (registeredUser.getRole().equalsIgnoreCase("Owner")) {
                 userService.register(UserMapper.mapToOwner(registeredUser));
             } else {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<UserRegistrationDTO>(registeredUser, HttpStatus.BAD_REQUEST);
             }
-            emailSender.sendActivationEmail(registeredUser.getEmail(),"activationlink");
-            return new ResponseEntity<>(HttpStatus.CREATED);
+//            emailSender.sendActivationEmail(registeredUser.getEmail(),"activationlink");
+            return new ResponseEntity<UserRegistrationDTO>(registeredUser, HttpStatus.CREATED);
         } catch (Exception exception) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<UserRegistrationDTO>(registeredUser, HttpStatus.BAD_REQUEST);
         }
     }
 
