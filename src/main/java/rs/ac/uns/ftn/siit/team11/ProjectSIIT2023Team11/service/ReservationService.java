@@ -40,6 +40,16 @@ public class ReservationService implements IReservationService {
         return reservationRepository.findAllByAccommodationOwnerEmail(email);
     }
 
+    @Override
+    public Collection<Reservation> searchGuestReservations(LocalDate startDate, LocalDate endDate, String accommodationName,String email) {
+        return reservationRepository.searchGuestReservations(startDate,endDate,accommodationName,email);
+    }
+
+    @Override
+    public Collection<Reservation> searchOwnerReservations(LocalDate startDate, LocalDate endDate, String accommodationName, String email) {
+        return reservationRepository.searchOwnerReservations(startDate,endDate,accommodationName,email);
+    }
+
     public Collection<Reservation> findByStatusAndGuestEmail(ReservationStatus status, String email) {
         return reservationRepository.findByStatusAndGuestEmail(status, email);
     }

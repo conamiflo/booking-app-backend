@@ -5,6 +5,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,10 @@ public interface IReservationService {
     Collection<Reservation> findAllByGuestEmail(String email);
     Collection<Reservation> findAllByAccommodationOwnerEmail(String email);
 
+    Collection<Reservation> searchGuestReservations(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate,
+                                                           @Param("name") String accommodationName,@Param("email") String email);
+    Collection<Reservation> searchOwnerReservations(@Param("startDate") LocalDate startDate,@Param("endDate") LocalDate endDate,
+                                                    @Param("accommodationName") String accommodationName, @Param("email") String email);
     Collection<Reservation> findByStatusAndGuestEmail(@Param("status") ReservationStatus status, @Param("email") String email);
     Collection<Reservation> findByStatusAndOwnerEmail(@Param("status") ReservationStatus status, @Param("email") String email);
 

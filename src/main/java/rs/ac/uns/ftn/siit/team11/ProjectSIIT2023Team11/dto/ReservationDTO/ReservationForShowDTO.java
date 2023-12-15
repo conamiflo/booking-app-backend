@@ -13,8 +13,8 @@ public class ReservationForShowDTO {
     private Long id;
     private String accommodation;
     private String guest;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private String startDate;
+    private String endDate;
     private int numberOfGuests;
     private ReservationStatus status;
     private Double price;

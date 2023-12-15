@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.GuestReservationDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.OwnerReservationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IReservationServi
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -59,7 +61,6 @@ public class ReservationController {
                 .map(OwnerReservationMapper::mapToOwnerReservationDTO)
                 .collect(Collectors.toList()), HttpStatus.OK);
     }
-
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Reservation> createReservation(@RequestBody ReservationDTO reservation) {
         Optional<Reservation> newReservation = Optional.ofNullable(reservationService.save(ReservationMapper.mapToReservation(reservation, userService, accommodationService)));
@@ -76,9 +77,9 @@ public class ReservationController {
         return new ResponseEntity<>(updatedReservation, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/guest/filter", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/guest/filter",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<GuestReservationDTO>> filterGuestReservations(
-            @RequestParam("status") ReservationStatus status,
+            @RequestParam(value ="status",required = false) ReservationStatus status,
             @RequestParam("email") String email) {
         Collection<Reservation> reservations = reservationService.findByStatusAndGuestEmail(status, email);
         return new ResponseEntity<>(reservations.stream()
@@ -86,9 +87,9 @@ public class ReservationController {
                 .collect(Collectors.toList()), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/owner/filter", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/owner/filter",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<OwnerReservationDTO>> filterOwnerReservations(
-            @RequestParam("status") ReservationStatus status,
+            @RequestParam(value ="status",required = false) ReservationStatus status,
             @RequestParam("email") String email) {
         Collection<Reservation> reservations = reservationService.findByStatusAndOwnerEmail(status, email);
         return new ResponseEntity<>(reservations.stream()
@@ -96,6 +97,29 @@ public class ReservationController {
                 .collect(Collectors.toList()), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/guest/search",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<OwnerReservationDTO>> searchGuestReservations(
+            @RequestParam(value ="startDate",required = false) LocalDate startDate,
+            @RequestParam(value ="endDate",required = false) LocalDate endDate,
+            @RequestParam(value ="accommodationName",required = false) String accommodationName,
+            @RequestParam("email") String email){
+        Collection<Reservation> reservations = reservationService.searchOwnerReservations(startDate,endDate,accommodationName, email);
+        return new ResponseEntity<>(reservations.stream()
+                .map(OwnerReservationMapper::mapToOwnerReservationDTO)
+                .collect(Collectors.toList()), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/owner/search",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<GuestReservationDTO>> searchOwnerReservations(
+            @RequestParam(value ="startDate",required = false) LocalDate startDate,
+            @RequestParam(value ="endDate",required = false) LocalDate endDate,
+            @RequestParam(value ="accommodationName",required = false) String accommodationName,
+            @RequestParam("email") String email){
+        Collection<Reservation> reservations = reservationService.searchGuestReservations(startDate,endDate,accommodationName, email);
+        return new ResponseEntity<>(reservations.stream()
+                .map(GuestReservationMapper::mapToGuestReservationDTO)
+                .collect(Collectors.toList()), HttpStatus.OK);
+    }
 
     @DeleteMapping(value = "/{reservationId}")
     public ResponseEntity<Void> deleteReservation(@PathVariable("reservationId") Long reservationId) {
