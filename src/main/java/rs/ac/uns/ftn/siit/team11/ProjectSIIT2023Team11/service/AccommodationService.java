@@ -7,7 +7,9 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.Acco
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AccommodationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IAccommodationRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,6 +79,11 @@ public class AccommodationService implements IAccommodationService{
                 accommodation.getAmenities().remove(amenity);
             }
         }
+    }
+
+    @Override
+    public Collection<Accommodation> searchAccommodationsByCriteria(Integer guests, String location, LocalDate startDate, LocalDate endDate) {
+        return accommodationRepository.searchAccommodationsByCriteria(guests,location,startDate,endDate);
     }
 
 }

@@ -10,16 +10,21 @@ import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationPricesDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceDTO.InputPriceDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.OwnerReservationDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AccommodationMapper;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.OwnerReservationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.PriceMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAmenityService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IPriceService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
+
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -146,5 +151,22 @@ public class AccommodationController {
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
+    }
+    @Operation(summary = "Delete accommodation")
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<Accommodation>> searchAccommodations(
+            @RequestParam(value = "guests", required = false) Integer guests,
+            @RequestParam(value = "location", required = false) String location,
+            @RequestParam(value = "startDate", required = false) LocalDate startDate,
+            @RequestParam(value = "endDate", required = false) LocalDate endDate) {
+
+        Collection<Accommodation> accommodations = accommodationService.searchAccommodationsByCriteria(
+                guests,
+                location,
+                startDate,
+                endDate
+        );
+
+        return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 }

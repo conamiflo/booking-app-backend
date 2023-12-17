@@ -1,13 +1,17 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
+import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Availability;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AvailabilityDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AvailabilityMapper;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAvailabilityService;
 
 import java.util.Collection;
@@ -21,6 +25,8 @@ public class AvailabilityController {
 
     @Autowired
     private IAvailabilityService availabilityService;
+    @Autowired
+    private IAccommodationService accommodationService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AvailabilityDTO>> getAllAvailabilities() {
@@ -53,6 +59,20 @@ public class AvailabilityController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PostMapping( value = "/accommodation/{accommodation_id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Availability> createAvailability(@RequestBody AvailabilityDTO availability, @PathVariable("accommodation_id") Long accommodationId) {
+        Optional<Accommodation> accommodation = accommodationService.findById(accommodationId);
+        if(accommodation.isEmpty())
+        {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Availability createdAvailability = availabilityService.save(AvailabilityMapper.mapToAvailability(availability));
+        accommodation.get().getAvailability().add(createdAvailability);
+        accommodationService.save(accommodation.get());
+
+        return new ResponseEntity<>(createdAvailability, HttpStatus.CREATED);
+    }
 
 
 }

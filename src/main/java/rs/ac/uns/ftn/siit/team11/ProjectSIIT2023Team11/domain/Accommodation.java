@@ -26,6 +26,8 @@ public class Accommodation {
     private Owner owner;
     private String name;
     private String description;
+    private Double xMapsPosition;
+    private Double yMapsPosition;
     private String location;
     @JoinTable(
             name = "accommodations_amenities",

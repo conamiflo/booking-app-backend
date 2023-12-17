@@ -11,11 +11,17 @@ import java.util.Collection;
 
 public interface IAccommodationRepository extends JpaRepository<Accommodation, Long> {
 
-    @Query("SELECT r FROM Reservation r WHERE " +
-            "(:startDate IS NULL OR :endDate IS NULL OR r.startDate BETWEEN :startDate AND :endDate) " +
-            "AND (:accommodationName IS NULL OR r.accommodation.name LIKE %:accommodationName%) AND r.guest.email = :email")
-    Collection<Reservation> searchAccommodation(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate,
-                                                    @Param("accommodationName") String accommodationName, @Param("email") String email);
+    @Query("SELECT a FROM Accommodation a " +
+            "WHERE :guests IS NULL OR (a.minGuests <= :guests AND a.maxGuests >= :guests )" +
+            "AND (:location IS NULL OR LOWER(a.location) LIKE CONCAT('%', LOWER(:location), '%')) " +
+            "AND (:startDate IS NULL OR :endDate IS NULL OR NOT EXISTS " +
+            "(SELECT av FROM a.availability av " +
+            "WHERE av.timeSlot.startDate <= :endDate AND av.timeSlot.endDate >= :startDate))")
+    Collection<Accommodation> searchAccommodationsByCriteria(
+            @Param("guests") Integer guests,
+            @Param("location") String location,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
 
     @Query("SELECT r FROM Reservation r WHERE " +
             "(:startDate IS NULL OR :endDate IS NULL OR r.startDate BETWEEN :startDate AND :endDate) " +
