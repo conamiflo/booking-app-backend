@@ -12,11 +12,10 @@ import java.util.Collection;
 public interface IAccommodationRepository extends JpaRepository<Accommodation, Long> {
 
     @Query("SELECT a FROM Accommodation a " +
+            "JOIN a.availability av " +
             "WHERE :guests IS NULL OR (a.minGuests <= :guests AND a.maxGuests >= :guests )" +
-            "AND (:location IS NULL OR LOWER(a.location) LIKE CONCAT('%', LOWER(:location), '%')) " +
-            "AND (:startDate IS NULL OR :endDate IS NULL OR NOT EXISTS " +
-            "(SELECT av FROM a.availability av " +
-            "WHERE av.timeSlot.startDate <= :endDate AND av.timeSlot.endDate >= :startDate))")
+            "AND (:location IS NULL OR a.location LIKE %:location%) " +
+            "AND (:startDate IS NULL OR :endDate IS NULL OR (av.timeSlot.startDate <= :endDate AND av.timeSlot.endDate >= :startDate))")
     Collection<Accommodation> searchAccommodationsByCriteria(
             @Param("guests") Integer guests,
             @Param("location") String location,
