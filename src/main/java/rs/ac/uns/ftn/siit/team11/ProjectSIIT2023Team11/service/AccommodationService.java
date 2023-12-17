@@ -2,10 +2,7 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Owner;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AccommodationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IAccommodationRepository;
@@ -70,6 +67,15 @@ public class AccommodationService implements IAccommodationService{
     public void deleteAccommodations(List<Accommodation> accommodations) {
         for(Accommodation accommodation : accommodations){
             deleteById(accommodation.getId());
+        }
+    }
+
+    @Override
+    public void deleteAmenityFromAccommodations(Amenity amenity) {
+        for (Accommodation accommodation: accommodationRepository.findAll()) {
+            while (accommodation.getAmenities().contains(amenity)){
+                accommodation.getAmenities().remove(amenity);
+            }
         }
     }
 

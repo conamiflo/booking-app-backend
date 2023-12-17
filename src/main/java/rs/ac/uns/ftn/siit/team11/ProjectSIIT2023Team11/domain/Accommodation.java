@@ -27,8 +27,11 @@ public class Accommodation {
     private String name;
     private String description;
     private String location;
-    @JoinTable(name = "amenities")
-    @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "accommodations_amenities",
+            joinColumns = @JoinColumn(name = "accommodation_id"),
+            inverseJoinColumns = @JoinColumn(name = "amenity_id"))
+    @ManyToMany
     private List<Amenity> amenities;
     @JoinTable(name = "priceList")
     @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)

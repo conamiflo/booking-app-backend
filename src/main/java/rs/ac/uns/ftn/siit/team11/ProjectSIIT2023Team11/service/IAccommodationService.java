@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
 
@@ -23,4 +24,6 @@ public interface IAccommodationService {
     List<Accommodation> findByOwnersId(String email);
 
     void deleteAccommodations(List<Accommodation> ownersAccommodations);
+
+    void deleteAmenityFromAccommodations(Amenity existingAmenity);
 }
