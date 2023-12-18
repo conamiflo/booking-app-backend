@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -26,9 +27,14 @@ public class Accommodation {
     private Owner owner;
     private String name;
     private String description;
+    private Double xMapsPosition;
+    private Double yMapsPosition;
     private String location;
-    @JoinTable(name = "amenities")
-    @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "accommodations_amenities",
+            joinColumns = @JoinColumn(name = "accommodation_id"),
+            inverseJoinColumns = @JoinColumn(name = "amenity_id"))
+    @ManyToMany
     private List<Amenity> amenities;
     @JoinTable(name = "priceList")
     @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
@@ -69,4 +75,12 @@ public class Accommodation {
         return false;
     }
 
+    public boolean AddAvailability(TimeSlot newAvailability) {
+        for (Availability availability :
+                availability) {
+            if(newAvailability.overlapsWith(availability.getTimeSlot())) return true;
+        }
+
+        return false;
+    }
 }

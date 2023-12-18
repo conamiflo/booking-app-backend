@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.apache.catalina.valves.rewrite.InternalRewriteMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -8,20 +9,30 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationPricesDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceDTO.InputPriceDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.OwnerReservationDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AccommodationMapper;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.OwnerReservationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.PriceMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAmenityService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IPriceService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 
 @RestController
@@ -30,6 +41,8 @@ import java.util.stream.Collectors;
 public class AccommodationController {
     @Autowired
     private IAccommodationService accommodationService;
+    @Autowired
+    private IAmenityService amenityService;
     @Autowired
     private IUserService userService;
     @Autowired
@@ -79,10 +92,35 @@ public class AccommodationController {
         return new ResponseEntity<>(AccommodationMapper.mapToAccommodationDetailsDto(updatedAccommodation), HttpStatus.OK);
     }
 
+    @PutMapping(value = "/{id}/amenity/{amenity_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Add amenity to accommodation")
+    public ResponseEntity<AccommodationDetailsDTO> addAmenityToAccommodation(@PathVariable("amenity_id") Long amenityId, @PathVariable Long id) {
+        Optional<Accommodation> existingAccommodation = accommodationService.findById(id);
+        Optional<Amenity> existingAmenity = amenityService.findById(amenityId);
+        if (existingAccommodation.isEmpty() || existingAmenity.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if (!existingAccommodation.get().getAmenities().contains(existingAmenity.get())){
+            existingAccommodation.get().getAmenities().add(existingAmenity.get());
+            existingAmenity.get().getAccommodations().add(existingAccommodation.get());
+            Accommodation updatedAccommodation = accommodationService.save(existingAccommodation.get());
+            amenityService.save(existingAmenity.get());
+            return new ResponseEntity<>(AccommodationMapper.mapToAccommodationDetailsDto(updatedAccommodation), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+    }
+
+
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasAuthority('ROLE_Owner')")
     @Operation(summary = "Delete accommodation", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Void> deleteAccommodation(@PathVariable("id") Long id) {
+        Optional<Accommodation> accommodation = accommodationService.findById(id);
+        if(accommodation.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        amenityService.deleteAccommodationFromAmenities(accommodation.get());
         accommodationService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -117,5 +155,27 @@ public class AccommodationController {
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
+    }
+
+    @Operation(summary = "Search accommodation")
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<AccommodationDetailsDTO>> searchAccommodations(
+            @RequestParam(value = "guests", required = false) Integer guests,
+            @RequestParam(value = "location", required = false) String location,
+            @RequestParam(value = "startDate", required = false) LocalDate startDate,
+            @RequestParam(value = "endDate", required = false) LocalDate endDate) {
+
+        Collection<Accommodation> accommodations = accommodationService.searchAccommodationsByCriteria(
+                guests,
+                lowerCase(location),
+                startDate,
+                endDate
+        );
+        List<AccommodationDetailsDTO> accommodationDetailsDTOS = new ArrayList<>();
+        for (Accommodation accommodation: accommodations) {
+            accommodationDetailsDTOS.add(AccommodationMapper.mapToAccommodationDetailsDto(accommodation));
+        }
+
+        return new ResponseEntity<>(accommodationDetailsDTOS, HttpStatus.OK);
     }
 }

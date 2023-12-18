@@ -2,15 +2,14 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Owner;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AccommodationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IAccommodationRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,4 +72,27 @@ public class AccommodationService implements IAccommodationService{
         }
     }
 
+    @Override
+    public void deleteAmenityFromAccommodations(Amenity amenity) {
+        for (Accommodation accommodation: accommodationRepository.findAll()) {
+            while (accommodation.getAmenities().contains(amenity)){
+                accommodation.getAmenities().remove(amenity);
+            }
+        }
+    }
+
+    @Override
+    public Collection<Accommodation> searchAccommodationsByCriteria(Integer guests, String location, LocalDate startDate, LocalDate endDate) {
+        return accommodationRepository.searchAccommodationsByCriteria(guests,location,startDate,endDate);
+    }
+
+    @Override
+    public void deleteAvailabilityFromAllAccommodations(Availability availability) {
+        for (Accommodation accommodation: accommodationRepository.findAll()) {
+            while (accommodation.getAvailability().contains(availability)) {
+                accommodation.getAvailability().remove(availability);
+            }
+            save(accommodation);
+        }
+    }
 }

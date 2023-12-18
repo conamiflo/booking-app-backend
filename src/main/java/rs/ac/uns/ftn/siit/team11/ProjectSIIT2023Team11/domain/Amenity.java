@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,4 +20,7 @@ public class Amenity {
     private Long id;
 
     private String name;
+
+    @ManyToMany(mappedBy = "amenities")
+    private List<Accommodation> accommodations;
 }

@@ -1,9 +1,13 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Availability;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
 
+import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,4 +27,11 @@ public interface IAccommodationService {
     List<Accommodation> findByOwnersId(String email);
 
     void deleteAccommodations(List<Accommodation> ownersAccommodations);
+
+    void deleteAmenityFromAccommodations(Amenity existingAmenity);
+
+    Collection<Accommodation> searchAccommodationsByCriteria(Integer guests, String location, LocalDate startDate, LocalDate endDate);
+
+    void deleteAvailabilityFromAllAccommodations(Availability availability);
+
 }

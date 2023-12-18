@@ -25,7 +25,6 @@ public class AvailabilityMapper {
     }
     public static Availability mapToAvailability(AvailabilityDTO dto) {
         Availability availability = new Availability();
-        availability.setId(dto.getId());
         availability.setTimeSlot(new TimeSlot(dto.getStartDate(),dto.getEndDate()));
         return availability;
     }
