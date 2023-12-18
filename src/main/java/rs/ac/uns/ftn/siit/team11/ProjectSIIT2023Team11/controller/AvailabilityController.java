@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Availability;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.TimeSlot;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AvailabilityDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AvailabilityMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
@@ -67,7 +68,9 @@ public class AvailabilityController {
         {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        if(accommodation.get().AddAvailability(new TimeSlot(availability.getStartDate(), availability.getEndDate()))) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         Availability createdAvailability = availabilityService.save(AvailabilityMapper.mapToAvailability(availability));
+       
         accommodation.get().getAvailability().add(createdAvailability);
         accommodationService.save(accommodation.get());
 

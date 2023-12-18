@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -74,4 +75,12 @@ public class Accommodation {
         return false;
     }
 
+    public boolean AddAvailability(TimeSlot newAvailability) {
+        for (Availability availability :
+                availability) {
+            if(newAvailability.overlapsWith(availability.getTimeSlot())) return true;
+        }
+
+        return false;
+    }
 }
