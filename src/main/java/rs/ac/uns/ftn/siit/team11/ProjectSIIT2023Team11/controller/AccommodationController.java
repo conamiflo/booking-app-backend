@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.apache.catalina.valves.rewrite.InternalRewriteMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,10 +26,13 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 
 @RestController
@@ -154,7 +158,7 @@ public class AccommodationController {
     }
     @Operation(summary = "Search accommodation")
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Accommodation>> searchAccommodations(
+    public ResponseEntity<List<AccommodationDetailsDTO>> searchAccommodations(
             @RequestParam(value = "guests", required = false) Integer guests,
             @RequestParam(value = "location", required = false) String location,
             @RequestParam(value = "startDate", required = false) LocalDate startDate,
@@ -162,11 +166,15 @@ public class AccommodationController {
 
         Collection<Accommodation> accommodations = accommodationService.searchAccommodationsByCriteria(
                 guests,
-                location,
+                lowerCase(location),
                 startDate,
                 endDate
         );
+        List<AccommodationDetailsDTO> accommodationDetailsDTOS = new ArrayList<>();
+        for (Accommodation accommodation: accommodations) {
+            accommodationDetailsDTOS.add(AccommodationMapper.mapToAccommodationDetailsDto(accommodation));
+        }
 
-        return new ResponseEntity<>(accommodations, HttpStatus.OK);
+        return new ResponseEntity<>(accommodationDetailsDTOS, HttpStatus.OK);
     }
 }

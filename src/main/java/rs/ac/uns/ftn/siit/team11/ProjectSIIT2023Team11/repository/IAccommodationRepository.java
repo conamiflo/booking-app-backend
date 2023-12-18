@@ -14,8 +14,8 @@ public interface IAccommodationRepository extends JpaRepository<Accommodation, L
     @Query("SELECT a FROM Accommodation a " +
             "JOIN a.availability av " +
             "WHERE ((:guests IS NULL OR (a.minGuests <= :guests AND a.maxGuests >= :guests ))" +
-            "AND (:location IS NULL OR a.location LIKE %:location%) " +
-            "AND (:startDate IS NULL OR :endDate IS NULL OR (av.timeSlot.startDate <= :endDate AND av.timeSlot.endDate >= :startDate)))")
+            "AND (:location IS NULL OR lower(a.location) LIKE %:location%) " +
+            "AND (cast(:startDate as date) IS NULL OR cast(:endDate as date) IS NULL OR (av.timeSlot.startDate <= :endDate AND av.timeSlot.endDate >= :startDate)))")
     Collection<Accommodation> searchAccommodationsByCriteria(
             @Param("guests") Integer guests,
             @Param("location") String location,
