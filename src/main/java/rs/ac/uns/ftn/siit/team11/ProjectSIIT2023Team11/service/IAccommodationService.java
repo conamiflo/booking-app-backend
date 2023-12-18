@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Availability;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
 
@@ -30,4 +31,6 @@ public interface IAccommodationService {
     void deleteAmenityFromAccommodations(Amenity existingAmenity);
 
     Collection<Accommodation> searchAccommodationsByCriteria(Integer guests, String location, LocalDate startDate, LocalDate endDate);
+
+    void deleteAvailabilityFromAllAccommodations(Availability availability);
 }

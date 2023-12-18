@@ -86,4 +86,13 @@ public class AccommodationService implements IAccommodationService{
         return accommodationRepository.searchAccommodationsByCriteria(guests,location,startDate,endDate);
     }
 
+    @Override
+    public void deleteAvailabilityFromAllAccommodations(Availability availability) {
+        for (Accommodation accommodation: accommodationRepository.findAll()) {
+            while (accommodation.getAvailability().contains(availability)){
+                accommodation.getAvailability().remove(availability);
+            }
+        }
+    }
+
 }

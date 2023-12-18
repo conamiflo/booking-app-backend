@@ -56,6 +56,11 @@ public class AvailabilityController {
     }
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteAvailability(@PathVariable("id") Long id) {
+        Optional<Availability> availability = availabilityService.findById(id);
+        if(availability.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        accommodationService.deleteAvailabilityFromAllAccommodations(availability.get());
         availabilityService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -68,9 +73,9 @@ public class AvailabilityController {
         {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        if(accommodation.get().AddAvailability(new TimeSlot(availability.getStartDate(), availability.getEndDate()))) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(accommodation.get().AddAvailability(new TimeSlot(availability.getStartDate().plusDays(1), availability.getEndDate().plusDays(1)))) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         Availability createdAvailability = availabilityService.save(AvailabilityMapper.mapToAvailability(availability));
-       
+
         accommodation.get().getAvailability().add(createdAvailability);
         accommodationService.save(accommodation.get());
 
