@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Availability;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.TimeSlot;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AvailabilityDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AvailabilityMapper;
@@ -82,5 +83,24 @@ public class AvailabilityController {
         return new ResponseEntity<>(createdAvailability, HttpStatus.CREATED);
     }
 
+    @DeleteMapping(value = "/{id}/accommodation/{accommodationId}")
+    public ResponseEntity<Void> deleteAccommodationAvailability(@PathVariable("id") Long id, @PathVariable("accommodationId") Long accommodationId) {
+
+        Optional<Accommodation> accommodation = accommodationService.findById(accommodationId);
+        Optional<Availability> availability = availabilityService.findById(id);
+        if(accommodation.isEmpty() || availability.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        while(accommodation.get().getAvailability().contains(availability.get())){
+            accommodation.get().getAvailability().remove(availability.get());
+
+        }
+
+        availabilityService.deleteById(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
 
 }

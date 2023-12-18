@@ -156,6 +156,7 @@ public class AccommodationController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
     }
+
     @Operation(summary = "Search accommodation")
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<AccommodationDetailsDTO>> searchAccommodations(

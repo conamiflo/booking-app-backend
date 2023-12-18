@@ -89,10 +89,10 @@ public class AccommodationService implements IAccommodationService{
     @Override
     public void deleteAvailabilityFromAllAccommodations(Availability availability) {
         for (Accommodation accommodation: accommodationRepository.findAll()) {
-            while (accommodation.getAvailability().contains(availability)){
+            while (accommodation.getAvailability().contains(availability)) {
                 accommodation.getAvailability().remove(availability);
             }
+            save(accommodation);
         }
     }
-
 }

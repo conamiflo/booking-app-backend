@@ -33,4 +33,5 @@ public interface IAccommodationService {
     Collection<Accommodation> searchAccommodationsByCriteria(Integer guests, String location, LocalDate startDate, LocalDate endDate);
 
     void deleteAvailabilityFromAllAccommodations(Availability availability);
+
 }
