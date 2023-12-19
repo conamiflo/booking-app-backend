@@ -1,5 +1,7 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO;
 
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.PriceType;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -13,8 +15,20 @@ public record AccommodationDetailsDTO (
         List<String> photos,
         int minGuests,
         int maxGuests,
-        LocalDate created
+        LocalDate created,
+        String type,
+        PriceType priceType
 ){
+    @Override
+    public PriceType priceType() {
+        return priceType;
+    }
+
+    @Override
+    public String type() {
+        return type;
+    }
+
     @Override
     public Long id() {
         return id;

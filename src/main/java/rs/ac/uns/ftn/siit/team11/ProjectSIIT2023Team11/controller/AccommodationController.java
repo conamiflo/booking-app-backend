@@ -79,6 +79,7 @@ public class AccommodationController {
         return new ResponseEntity<>(newAccommodation.get(), HttpStatus.CREATED);
     }
 
+
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('ROLE_Owner')")
     @Operation(summary = "Update accommodation", security = @SecurityRequirement(name = "bearerAuth"))

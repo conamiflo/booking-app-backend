@@ -43,7 +43,9 @@ public class AccommodationMapper {
                 accommodation.getPhotos(),
                 accommodation.getMinGuests(),
                 accommodation.getMaxGuests(),
-                accommodation.getCreated()
+                accommodation.getCreated(),
+                accommodation.getType(),
+                accommodation.getPriceType()
         );
     }
     public static Accommodation mapDetailsDtoToAccommodation(AccommodationDetailsDTO accommodationDetailsDTO, IUserService userService, Accommodation accommodation){
@@ -55,6 +57,8 @@ public class AccommodationMapper {
         accommodation.setMaxGuests(accommodationDetailsDTO.maxGuests());
         accommodation.setDefaultPrice(accommodationDetailsDTO.defaultPrice());
         accommodation.setPhotos(accommodationDetailsDTO.photos());
+        accommodation.setType(accommodationDetailsDTO.type());
+        accommodation.setPriceType(accommodationDetailsDTO.priceType());
         return accommodation;
     }
     public static Collection<AccommodationDetailsDTO> mapToAccommodationsDetailsDto(Collection<Accommodation> accommodations){
@@ -74,7 +78,11 @@ public class AccommodationMapper {
         accommodation.setLocation(accommodationDetailsDTO.location());
         accommodation.setMinGuests(accommodationDetailsDTO.minGuests());
         accommodation.setMaxGuests(accommodationDetailsDTO.maxGuests());
+        accommodation.setType(accommodationDetailsDTO.type());
+        accommodation.setPhotos(accommodationDetailsDTO.photos());
+        accommodation.setCreated(accommodationDetailsDTO.created());
         accommodation.setActive(false);
+        accommodation.setPriceType(accommodationDetailsDTO.priceType());
         return accommodation;
     }
 
