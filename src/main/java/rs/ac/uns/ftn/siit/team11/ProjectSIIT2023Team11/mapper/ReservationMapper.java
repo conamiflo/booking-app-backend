@@ -26,16 +26,16 @@ public class ReservationMapper {
     }
 
     public static Reservation mapToReservation(ReservationDTO reservationDTO, IUserService userService, IAccommodationService accommodationService){
-        return new Reservation(
-                reservationDTO.getId(),
-                accommodationService.findById(reservationDTO.getAccommodation()).get(),
-                (Guest)userService.findById(reservationDTO.getGuest()).get(),
-                reservationDTO.getStartDate(),
-                reservationDTO.getEndDate(),
-                reservationDTO.getNumberOfGuests(),
-                reservationDTO.getStatus(),
-                reservationDTO.getPrice()
-        );
+
+        Reservation reservation = new Reservation();
+        reservation.setId(reservationDTO.getId());
+        reservation.setAccommodation(accommodationService.findById(reservationDTO.getAccommodation()).get());
+        reservation.setGuest((Guest)userService.findById(reservationDTO.getGuest()).get());
+        reservation.setStartDate(reservationDTO.getStartDate());
+        reservation.setEndDate(reservationDTO.getEndDate());
+        reservation.setNumberOfGuests(reservationDTO.getNumberOfGuests());
+
+        return reservation;
     }
 
 }

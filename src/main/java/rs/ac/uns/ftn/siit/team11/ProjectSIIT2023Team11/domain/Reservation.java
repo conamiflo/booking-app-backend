@@ -29,4 +29,47 @@ public class Reservation {
     private ReservationStatus status;
     private Double price;
 
+    public Double calculatePrice() {
+        Double totalPrice = 0.0;
+
+        LocalDate currentDate = startDate;
+        while (!currentDate.isAfter(endDate)) {
+            Double dailyPrice = findPriceForDate(currentDate);
+            if (dailyPrice == null) {
+                dailyPrice = accommodation.getDefaultPrice();
+            }
+            totalPrice += dailyPrice;
+            currentDate = currentDate.plusDays(1); // Move to the next day
+        }
+        setPrice(totalPrice);
+        return totalPrice;
+    }
+
+    private Double findPriceForDate(LocalDate date) {
+        for (Price price : accommodation.getPriceList()) {
+            if (price.getTimeSlot().contains(date)) {
+                return price.getPrice();
+            }
+        }
+        return null; // If no price is found for the date
+    }
+
+    public boolean isAvailable() {
+        LocalDate currentDate = startDate;
+        while (!currentDate.isAfter(endDate)) {
+            boolean isAvailable = false;
+            for (Availability availability : accommodation.getAvailability()) {
+                if (availability.getTimeSlot().contains(currentDate)) {
+                    isAvailable = true;
+                    break; // No need to check other availabilities once found available
+                }
+            }
+            if (!isAvailable) {
+                return false; // If not available for any date, return false
+            }
+            currentDate = currentDate.plusDays(1); // Move to the next day
+        }
+
+        return true;
+    }
 }

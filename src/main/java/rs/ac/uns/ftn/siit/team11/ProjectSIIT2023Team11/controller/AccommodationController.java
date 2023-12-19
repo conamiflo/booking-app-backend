@@ -149,7 +149,7 @@ public class AccommodationController {
     }
 
     @PostMapping(value = "/{id}/price", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AccommodationPricesDTO> createAccommodationPrice(@RequestBody InputPriceDTO inputPrice, @PathVariable("id") Long id) throws Exception {
+    public ResponseEntity<AccommodationPricesDTO> createAccommodationPrice(@RequestBody InputPriceDTO inputPrice, @PathVariable("id") Long id) {
         Optional<Accommodation> accommodation = accommodationService.findById(id);
         if(accommodation.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
