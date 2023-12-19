@@ -1,8 +1,10 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceDTO;
 
 import jakarta.persistence.Embedded;
+import lombok.NoArgsConstructor;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.TimeSlot;
 
+@NoArgsConstructor
 public class InputPriceDTO {
     @Embedded
     private TimeSlot timeSlot;
