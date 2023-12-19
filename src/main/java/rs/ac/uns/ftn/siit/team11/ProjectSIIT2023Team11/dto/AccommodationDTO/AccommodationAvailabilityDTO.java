@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class AccommodationAvailabilityDTO {
 
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private String from;
+    private String to;
 
 }

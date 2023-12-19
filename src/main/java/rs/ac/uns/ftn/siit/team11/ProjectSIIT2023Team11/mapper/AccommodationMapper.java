@@ -1,11 +1,9 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper;
 
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.AccommodationRequest;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Owner;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationCardDTO;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsWithAmenitiesDTO;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationPricesDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 
 import java.util.ArrayList;
@@ -91,6 +89,18 @@ public class AccommodationMapper {
         accommodation.setType(accommodationDetailsDTO.type());
         return accommodation;
     }
+
+    public static AccommodationRequest mapRequestDtoToNewRequest(AccommodationRequestsDTO accommodationRequestsDTO){
+        AccommodationRequest accRequest = new AccommodationRequest();
+        accRequest.setCreationType(accommodationRequestsDTO.creationType());
+        accRequest.setEditedAccommodation(accommodationRequestsDTO.editedAccommodation());
+        return accRequest;
+    }
+
+    public static AccommodationRequest mapRequestDtoToEditRequest(AccommodationRequestsDTO accommodationRequestsDTO){
+        return null;
+    }
+
     public static Collection<AccommodationDetailsWithAmenitiesDTO> mapToAccommodationsDetailsAmenityDto(Collection<Accommodation> accommodations){
 
         Collection<AccommodationDetailsWithAmenitiesDTO> accommodationDetailsDto = new ArrayList<>();

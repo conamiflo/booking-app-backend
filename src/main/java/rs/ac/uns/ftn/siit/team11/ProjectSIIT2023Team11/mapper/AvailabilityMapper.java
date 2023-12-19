@@ -6,6 +6,8 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.TimeSlot;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationAvailabilityDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AvailabilityDTO;
 
+import java.time.format.DateTimeFormatter;
+
 @Component
 public class AvailabilityMapper {
 
@@ -19,8 +21,8 @@ public class AvailabilityMapper {
 
     public static AccommodationAvailabilityDTO mapToAccommodationAvailabilityDto(Availability availability) {
         return new AccommodationAvailabilityDTO(
-                availability.getTimeSlot().getStartDate(),
-                availability.getTimeSlot().getEndDate()
+                availability.getTimeSlot().getStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                availability.getTimeSlot().getEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         );
     }
     public static Availability mapToAvailability(AvailabilityDTO dto) {

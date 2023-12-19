@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper;
 
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceDTO.InputPriceDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceDTO.PriceForEditDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceDTO.PriceForShowDTO;
 
 public class PriceMapper {
@@ -22,4 +23,14 @@ public class PriceMapper {
         price.setPrice(priceInput.getPrice());
         price.setTimeSlot(priceInput.getTimeSlot());
     }
+
+    public static PriceForEditDTO mapToPriceDto(Price price) {
+        PriceForEditDTO priceDto = new PriceForEditDTO();
+        priceDto.setFrom(price.getTimeSlot().getStartDate().toString());
+        priceDto.setTo(price.getTimeSlot().getEndDate().toString());
+        priceDto.setPrice(price.getPrice());
+        return priceDto;
+    }
+
+
 }

@@ -1,13 +1,11 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO;
 
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AmenityOutputDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.PriceType;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public record AccommodationDetailsDTO (
+public record AccommodationRequestsDTO (
         Long id,
         String ownerEmail,
         String name,
@@ -19,7 +17,10 @@ public record AccommodationDetailsDTO (
         int maxGuests,
         LocalDate created,
         String type,
-        PriceType priceType
+        PriceType priceType,
+        Long editedAccommodation,
+        String creationType
+
 ){
 
     @Override
@@ -80,5 +81,15 @@ public record AccommodationDetailsDTO (
     @Override
     public LocalDate created() {
         return created;
+    }
+
+    @Override
+    public Long editedAccommodation() {
+        return editedAccommodation;
+    }
+
+    @Override
+    public String creationType() {
+        return creationType;
     }
 }

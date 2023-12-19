@@ -17,11 +17,9 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.Acco
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationPricesDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AmenityOutputDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceDTO.InputPriceDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceDTO.PriceForEditDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.OwnerReservationDTO;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AccommodationMapper;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AmenityMapper;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.OwnerReservationMapper;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.PriceMapper;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAmenityService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IPriceService;
@@ -130,9 +128,7 @@ public class AccommodationController {
         if(existingAccommodation.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-        return new ResponseEntity<>(AmenityMapper.mapAmenitiesToAmenityOutputDTOs(existingAccommodation.get().getAmenities()),HttpStatus.BAD_REQUEST);
-
+        return new ResponseEntity<>(AmenityMapper.mapAmenitiesToAmenityOutputDTOs(existingAccommodation.get().getAmenities()),HttpStatus.OK);
     }
 
 
@@ -162,6 +158,9 @@ public class AccommodationController {
 
         return new ResponseEntity<>(accommodationPrice, HttpStatus.CREATED);
     }
+
+
+
     @DeleteMapping(value = "/{id}/prices/{priceId}")
     public ResponseEntity<Void> deleteAccommodationPrice(@PathVariable("id") Long id, @PathVariable("priceId") Long priceId) {
 
@@ -179,6 +178,20 @@ public class AccommodationController {
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
+    @Operation(summary = "Get prices", security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping(value = "/prices/{id}")
+    public ResponseEntity<Collection<PriceForEditDTO>> getAccommodationPrices(@PathVariable("id") Long id) {
+        Optional<Accommodation> accommodation = accommodationService.findById(id);
+
+        if (accommodation.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(accommodation.get().getPriceList().stream().map(PriceMapper::mapToPriceDto)
+                .collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @Operation(summary = "Search accommodation")

@@ -9,22 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 //@Service
-//public class AccountRequestService implements  IAccountRequestService{
-//
-//    @Autowired
-//    private IAccountRequestRepository accountRequestRepository;
-//
-//    public List<AccountRequest> findAll() {
-//        return accountRequestRepository.findAll();
-//    }
-//    public <S extends AccountRequest> S save(S entity) {
-//        return accountRequestRepository.save(entity);
-//    }
-//    public Optional<AccountRequest> findById(String s) {
-//        return accountRequestRepository.findById(s);
-//    }
-//
-//    public void deleteById(String s) {
-//        accountRequestRepository.deleteById(s);
-//    }
-//}
+public class AccountRequestService{
+
+}

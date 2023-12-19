@@ -1,16 +1,19 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Availability;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.TimeSlot;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationAvailabilityDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AvailabilityDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AvailabilityMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
@@ -82,6 +85,19 @@ public class AvailabilityController {
 
         return new ResponseEntity<>(createdAvailability, HttpStatus.CREATED);
     }
+
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
+    @Operation(summary = "Get availabilities", security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping(value = "/available/{accommodation_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationAvailabilityDTO>> getAvailabilitiesForAccommodation(@PathVariable("accommodation_id") Long accommodationId) {
+        Optional<Accommodation> accommodation = accommodationService.findById(accommodationId);
+        if (accommodation.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(accommodation.get().getAvailability().stream().map(AvailabilityMapper::mapToAccommodationAvailabilityDto)
+                .collect(Collectors.toList()), HttpStatus.OK);
+    }
+
 
     @DeleteMapping(value = "/{id}/accommodation/{accommodationId}")
     public ResponseEntity<Void> deleteAccommodationAvailability(@PathVariable("id") Long id, @PathVariable("accommodationId") Long accommodationId) {
