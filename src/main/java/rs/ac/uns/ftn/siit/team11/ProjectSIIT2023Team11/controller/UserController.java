@@ -55,6 +55,19 @@ public class UserController {
         }
         return new ResponseEntity<>(UserMapper.mapToUserDto(user.get()), HttpStatus.OK);
     }
+
+    @GetMapping(value = "/activation/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> activateUser(@PathVariable("email") String email) {
+        Optional<User> user = userService.findById(email);
+        if (user.isEmpty() || user.get().isActive()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }else{
+            user.get().setActive(true);
+            userService.save(user.get());
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserRegistrationDTO> registerUserWithRole(@RequestBody UserRegistrationDTO registeredUser) throws Exception {
         EmailSender emailSender = new EmailSender();
@@ -69,14 +82,13 @@ public class UserController {
             } else {
                 return new ResponseEntity<UserRegistrationDTO>(registeredUser, HttpStatus.BAD_REQUEST);
             }
-//            emailSender.sendActivationEmail(registeredUser.getEmail(),"activationlink");
+            emailSender.sendActivationEmail(registeredUser.getEmail(),"localhost:4200/activation/" + registeredUser.getEmail());
+
             return new ResponseEntity<UserRegistrationDTO>(registeredUser, HttpStatus.CREATED);
         } catch (Exception exception) {
             return new ResponseEntity<UserRegistrationDTO>(registeredUser, HttpStatus.BAD_REQUEST);
         }
     }
-
-
 
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody UserLoginDTO loginDTO) {
@@ -162,7 +174,7 @@ public class UserController {
         return new ResponseEntity<>(UserMapper.mapGuestToGuestForShowDTO(guest), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_Guest', 'ROLE_Owner')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_Guest', 'ROLE_Owner')")
     @Operation(summary = "Delete user", security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping(value = "/{email}")
     public ResponseEntity<Void> deleteUser(@PathVariable("email") String email) {

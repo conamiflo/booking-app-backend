@@ -10,18 +10,23 @@ import java.io.IOException;
 public class EmailSender {
     public EmailSender() {
     }
-    @Value("${sendgrid.api.key}")
-    private String sendgridApiKey;
     public void sendActivationEmail(String userEmail, String activationLink) throws IOException {
         Email from = new Email("nemanjamc8@gmail.com");
         String subject = "Account activation";
         Email to = new Email(userEmail);
-        Content content = new Content("text/plain", "Verify your account by clicking on a link: " + activationLink);
+        String htmlContent = "<!DOCTYPE html>"
+                + "<html>"
+                + "<head>"
+                + "<title>Activate your account</title>"
+                + "</head>"
+                + "<body>"
+                + "<p>Verify your account by clicking on a link: <a href=\"" + activationLink + "\">" + activationLink + "</a></p>"
+                + "</body>"
+                + "</html>";
+        Content content = new Content("text/html", htmlContent);
         Mail mail = new Mail(from, subject, to, content);
-
-        SendGrid sg = new SendGrid(sendgridApiKey);
+        SendGrid sg = new SendGrid("paste_api_key_here");
         Request request = new Request();
-
         try {
             request.setMethod(Method.POST);
             request.setEndpoint("mail/send");
