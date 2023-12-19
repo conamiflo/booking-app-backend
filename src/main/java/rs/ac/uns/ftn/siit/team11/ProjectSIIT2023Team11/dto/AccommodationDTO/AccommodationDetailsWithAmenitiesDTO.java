@@ -1,12 +1,12 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO;
 
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AmenityOutputDTO;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
-public record AccommodationDetailsDTO (
+public record AccommodationDetailsWithAmenitiesDTO (
         Long id,
         String ownerEmail,
         String name,
@@ -17,8 +17,13 @@ public record AccommodationDetailsDTO (
         int minGuests,
         int maxGuests,
         LocalDate created,
-        String type
+        String type,
+        Collection<AmenityOutputDTO> amenities
 ){
+    @Override
+    public Collection<AmenityOutputDTO> amenities() {
+        return amenities;
+    }
 
     @Override
     public String type() {

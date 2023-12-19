@@ -12,6 +12,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AmenityInputDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AmenityOutputDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AccommodationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AmenityMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
@@ -32,9 +33,9 @@ public class AmenityController {
     private IAccommodationService accommodationService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Amenity>> getAccommodations() {
+    public ResponseEntity<Collection<AmenityOutputDTO>> getAccommodations() {
         Collection<Amenity> amenities = amenityService.findAll();
-        return new ResponseEntity<>(amenities, HttpStatus.OK);
+        return new ResponseEntity<>(AmenityMapper.mapAmenitiesToAmenityOutputDTOs(amenities), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
