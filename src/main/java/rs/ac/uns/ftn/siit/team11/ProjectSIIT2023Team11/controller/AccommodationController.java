@@ -13,10 +13,13 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsWithAmenitiesDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationPricesDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AmenityOutputDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceDTO.InputPriceDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.OwnerReservationDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AccommodationMapper;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AmenityMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.OwnerReservationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.PriceMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
@@ -58,6 +61,14 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/amenities", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationDetailsWithAmenitiesDTO>> getAccommodationsWithAmenities() {
+        Collection<AccommodationDetailsWithAmenitiesDTO> accommodations = accommodationService.findAll().stream()
+                .map(AccommodationMapper::mapToAccommodationDetailsAmenityDto)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(accommodations, HttpStatus.OK);
+    }
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get accommodation by id")
     public ResponseEntity<AccommodationDetailsDTO> getAccommodationById(@PathVariable("id") Long id) {
@@ -111,6 +122,18 @@ public class AccommodationController {
 
     }
 
+    @GetMapping(value = "/{id}/amenity", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get amenities from accommodation")
+    public ResponseEntity<Collection<AmenityOutputDTO>> getAmenitiesFromAccommodation(@PathVariable Long id) {
+        Optional<Accommodation> existingAccommodation = accommodationService.findById(id);
+        if(existingAccommodation.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(AmenityMapper.mapAmenitiesToAmenityOutputDTOs(existingAccommodation.get().getAmenities()),HttpStatus.BAD_REQUEST);
+
+    }
+
 
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasAuthority('ROLE_Owner')")
@@ -159,7 +182,7 @@ public class AccommodationController {
 
     @Operation(summary = "Search accommodation")
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<AccommodationDetailsDTO>> searchAccommodations(
+    public ResponseEntity<List<AccommodationDetailsWithAmenitiesDTO>> searchAccommodations(
             @RequestParam(value = "guests", required = false) Integer guests,
             @RequestParam(value = "location", required = false) String location,
             @RequestParam(value = "startDate", required = false) LocalDate startDate,
@@ -171,9 +194,9 @@ public class AccommodationController {
                 startDate,
                 endDate
         );
-        List<AccommodationDetailsDTO> accommodationDetailsDTOS = new ArrayList<>();
+        List<AccommodationDetailsWithAmenitiesDTO> accommodationDetailsDTOS = new ArrayList<>();
         for (Accommodation accommodation: accommodations) {
-            accommodationDetailsDTOS.add(AccommodationMapper.mapToAccommodationDetailsDto(accommodation));
+            accommodationDetailsDTOS.add(AccommodationMapper.mapToAccommodationDetailsAmenityDto(accommodation));
         }
 
         return new ResponseEntity<>(accommodationDetailsDTOS, HttpStatus.OK);
