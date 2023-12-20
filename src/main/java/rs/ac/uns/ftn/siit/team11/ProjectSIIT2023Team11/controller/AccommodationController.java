@@ -90,6 +90,7 @@ public class AccommodationController {
         return new ResponseEntity<>(newAccommodation.get(), HttpStatus.CREATED);
     }
 
+
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('ROLE_Owner')")
     @Operation(summary = "Update accommodation", security = @SecurityRequirement(name = "bearerAuth"))
@@ -178,6 +179,15 @@ public class AccommodationController {
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
+    }
+
+    @GetMapping(value = "/owner/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get accommodation by owner")
+    public ResponseEntity<Collection<AccommodationDetailsDTO>> getAccommodationByOwner(@PathVariable("email") String email) {
+        Collection<AccommodationDetailsDTO> accommodations = accommodationService.findByOwnersId(email).stream()
+                .map(AccommodationMapper::mapToAccommodationDetailsDto)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
     @Operation(summary = "Search accommodation")
