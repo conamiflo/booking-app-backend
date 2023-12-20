@@ -16,6 +16,4 @@ public class ReservationDTO {
     private LocalDate startDate;
     private LocalDate endDate;
     private int numberOfGuests;
-    private ReservationStatus status;
-    private Double price;
 }

@@ -149,9 +149,6 @@ public class AccommodationController {
         if (accommodation.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-//        Accommodation existingAccommodation = accommodation.get();
-//        existingAccommodation.getAmenities().clear();
-//        accommodationService.save(accommodation.get());
         Accommodation existingAccommodation = accommodation.get();
         List<Amenity> amenities = existingAccommodation.getAmenities();
         for (Amenity amenity : amenities) {
@@ -189,7 +186,7 @@ public class AccommodationController {
     }
 
     @PostMapping(value = "/{id}/price", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AccommodationPricesDTO> createAccommodationPrice(@RequestBody InputPriceDTO inputPrice, @PathVariable("id") Long id) throws Exception {
+    public ResponseEntity<AccommodationPricesDTO> createAccommodationPrice(@RequestBody InputPriceDTO inputPrice, @PathVariable("id") Long id) {
         Optional<Accommodation> accommodation = accommodationService.findById(id);
         if(accommodation.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -223,6 +220,7 @@ public class AccommodationController {
 
     }
 
+
     @PreAuthorize("hasAuthority('ROLE_Owner')")
     @Operation(summary = "Get prices", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping(value = "/prices/{id}")
@@ -235,6 +233,14 @@ public class AccommodationController {
 
         return new ResponseEntity<>(accommodation.get().getPriceList().stream().map(PriceMapper::mapToPriceDto)
                 .collect(Collectors.toList()), HttpStatus.OK);
+    }
+    @GetMapping(value = "/owner/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get accommodation by owner")
+    public ResponseEntity<Collection<AccommodationDetailsDTO>> getAccommodationByOwner(@PathVariable("email") String email) {
+        Collection<AccommodationDetailsDTO> accommodations = accommodationService.findByOwnersId(email).stream()
+                .map(AccommodationMapper::mapToAccommodationDetailsDto)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
     @Operation(summary = "Search accommodation")

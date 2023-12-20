@@ -20,6 +20,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationSer
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAvailabilityService;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -85,7 +86,18 @@ public class AvailabilityController {
 
         return new ResponseEntity<>(createdAvailability, HttpStatus.CREATED);
     }
+    @GetMapping( value = "/accommodation/{accommodation_id}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<Availability>> getAccommodationAvailability(@PathVariable("accommodation_id") Long accommodationId) {
+        Optional<Accommodation> accommodation = accommodationService.findById(accommodationId);
+        if(accommodation.isEmpty())
+        {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
+        return new ResponseEntity<>(accommodation.get().getAvailability(), HttpStatus.OK);
+    }
+    
     @PreAuthorize("hasAuthority('ROLE_Owner')")
     @Operation(summary = "Get availabilities", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping(value = "/available/{accommodation_id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -97,7 +109,6 @@ public class AvailabilityController {
         return new ResponseEntity<>(accommodation.get().getAvailability().stream().map(AvailabilityMapper::mapToAccommodationAvailabilityDto)
                 .collect(Collectors.toList()), HttpStatus.OK);
     }
-
 
     @DeleteMapping(value = "/{id}/accommodation/{accommodationId}")
     public ResponseEntity<Void> deleteAccommodationAvailability(@PathVariable("id") Long id, @PathVariable("accommodationId") Long accommodationId) {

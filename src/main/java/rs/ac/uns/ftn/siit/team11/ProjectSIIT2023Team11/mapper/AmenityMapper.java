@@ -8,6 +8,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AmenityOutputDTO;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import java.util.List;
 
 public class AmenityMapper {
     public static Amenity mapAmenityInputDTOToAmenity(AmenityInputDTO amenityInputDTO){
@@ -28,4 +29,5 @@ public class AmenityMapper {
                 amenity.getId(),
                 amenity.getName());
     }
+
 }
