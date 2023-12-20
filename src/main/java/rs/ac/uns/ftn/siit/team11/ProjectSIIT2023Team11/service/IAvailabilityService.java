@@ -14,4 +14,6 @@ public interface IAvailabilityService {
 
     void deleteById(Long aLong);
 
+    void deleteAvailabilities(List<Availability> availabilities);
+
 }

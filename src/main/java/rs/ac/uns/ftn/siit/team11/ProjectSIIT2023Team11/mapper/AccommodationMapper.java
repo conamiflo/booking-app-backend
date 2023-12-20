@@ -1,7 +1,6 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper;
 
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.AccommodationRequest;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Owner;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
@@ -88,30 +87,6 @@ public class AccommodationMapper {
         accommodation.setPhotos(accommodationDetailsDTO.photos());
         accommodation.setType(accommodationDetailsDTO.type());
         return accommodation;
-    }
-
-    public static AccommodationRequest mapRequestDtoToNewRequest(AccommodationRequestsDTO accommodationRequestsDTO){
-        AccommodationRequest accRequest = new AccommodationRequest();
-        accRequest.setOwner(accommodationRequestsDTO.ownerEmail());
-        accRequest.setName(accommodationRequestsDTO.name());
-        accRequest.setDescription(accommodationRequestsDTO.description());
-        accRequest.setLocation(accommodationRequestsDTO.location());
-        accRequest.setDefaultPrice(accommodationRequestsDTO.defaultPrice());
-        accRequest.setPhotos(accommodationRequestsDTO.photos());
-        accRequest.setMinGuests(accommodationRequestsDTO.minGuests());
-        accRequest.setMaxGuests(accommodationRequestsDTO.maxGuests());
-        accRequest.setCreated(accommodationRequestsDTO.created());
-        accRequest.setType(accommodationRequestsDTO.type());
-        accRequest.setPriceType(accommodationRequestsDTO.priceType());
-        accRequest.setEditedAccommodation(accommodationRequestsDTO.editedAccommodation());
-        accRequest.setCreationType(accommodationRequestsDTO.creationType());
-        accRequest.setAutomaticApproval(false);
-
-        return accRequest;
-    }
-
-    public static AccommodationRequest mapRequestDtoToEditRequest(AccommodationRequestsDTO accommodationRequestsDTO){
-        return null;
     }
 
     public static Collection<AccommodationDetailsWithAmenitiesDTO> mapToAccommodationsDetailsAmenityDto(Collection<Accommodation> accommodations){

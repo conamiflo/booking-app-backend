@@ -8,10 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsWithAmenitiesDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationPricesDTO;
@@ -20,10 +17,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceDTO.InputPriceDT
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceDTO.PriceForEditDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.OwnerReservationDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.*;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAmenityService;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IPriceService;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 
 import java.time.LocalDate;
@@ -48,7 +42,8 @@ public class AccommodationController {
     private IUserService userService;
     @Autowired
     private IPriceService priceService;
-
+    @Autowired
+    private IAvailabilityService availabilityService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDetailsDTO>> getAccommodations() {
@@ -89,18 +84,22 @@ public class AccommodationController {
     }
 
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('ROLE_Owner')")
     @Operation(summary = "Update accommodation", security = @SecurityRequirement(name = "bearerAuth"))
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDetailsDTO> updateAccommodation(@RequestBody AccommodationDetailsDTO accommodation, @PathVariable Long id) throws Exception {
         Optional<Accommodation> existingAccommodation = accommodationService.findById(id);
         if (existingAccommodation.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Accommodation updatedAccommodation = accommodationService.save(AccommodationMapper.mapDetailsDtoToAccommodation(accommodation, userService,existingAccommodation.get()));
-
+        Accommodation accommodation2 = existingAccommodation.get();
+        amenityService.deleteAmenities(accommodation2.getAmenities(),accommodation2);
+        priceService.deletePrices(accommodation2.getPriceList());
+        availabilityService.deleteAvailabilities(accommodation2.getAvailability());
+        Accommodation updatedAccommodation = accommodationService.save(AccommodationMapper.mapDetailsDtoToAccommodation(accommodation, userService,accommodation2));
         return new ResponseEntity<>(AccommodationMapper.mapToAccommodationDetailsDto(updatedAccommodation), HttpStatus.OK);
     }
+
 
     @PutMapping(value = "/{id}/amenity/{amenity_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Add amenity to accommodation")
@@ -121,6 +120,30 @@ public class AccommodationController {
 
     }
 
+    @DeleteMapping(value = "/amenities/{id}")
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
+    @Operation(summary = "Remove all amenities from accommodation")
+    public ResponseEntity<Void> removeAllAmenitiesFromAccommodation(@PathVariable Long id) {
+        Optional<Accommodation> accommodation = accommodationService.findById(id);
+
+        if (accommodation.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+//        Accommodation existingAccommodation = accommodation.get();
+//        existingAccommodation.getAmenities().clear();
+//        accommodationService.save(accommodation.get());
+        Accommodation existingAccommodation = accommodation.get();
+        List<Amenity> amenities = existingAccommodation.getAmenities();
+        for (Amenity amenity : amenities) {
+            amenity.getAccommodations().remove(accommodation);
+        }
+        amenities.clear();
+        accommodationService.save(existingAccommodation);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
     @GetMapping(value = "/{id}/amenity", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get amenities from accommodation")
     public ResponseEntity<Collection<AmenityOutputDTO>> getAmenitiesFromAccommodation(@PathVariable Long id) {

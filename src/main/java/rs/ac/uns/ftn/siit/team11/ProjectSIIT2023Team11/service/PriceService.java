@@ -28,4 +28,12 @@ public class PriceService implements IPriceService{
     public void deleteById(Long s) {
         repository.deleteById(s);
     }
+
+    public void deletePrices(List<Price> prices){
+        for (Price price : prices) {
+            deleteById(price.getId());
+        }
+        prices.clear();
+    }
+
 }
