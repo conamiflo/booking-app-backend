@@ -158,6 +158,15 @@ public class AccommodationController {
 
     }
 
+    @GetMapping(value = "/owner/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get accommodation by owner")
+    public ResponseEntity<Collection<AccommodationDetailsDTO>> getAccommodationByOwner(@PathVariable("email") String email) {
+        Collection<AccommodationDetailsDTO> accommodations = accommodationService.findByOwnersId(email).stream()
+                .map(AccommodationMapper::mapToAccommodationDetailsDto)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(accommodations, HttpStatus.OK);
+    }
+
     @Operation(summary = "Search accommodation")
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<AccommodationDetailsDTO>> searchAccommodations(
