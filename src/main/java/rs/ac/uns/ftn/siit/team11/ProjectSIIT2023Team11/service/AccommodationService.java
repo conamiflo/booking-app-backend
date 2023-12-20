@@ -33,6 +33,10 @@ public class AccommodationService implements IAccommodationService{
     public void deleteById(Long aLong) {
         accommodationRepository.deleteById(aLong);
     }
+
+    public Collection<Accommodation> getAccommodationsByActiveFalse(){
+       return accommodationRepository.getAccommodationsByActiveFalse();
+    }
     public Optional<AccommodationDetailsDTO> create(AccommodationDetailsDTO accommodationDetailsDTO, IUserService userService){
         Optional<User> user =  userService.findById(accommodationDetailsDTO.ownerEmail());
         if(user.isEmpty()){

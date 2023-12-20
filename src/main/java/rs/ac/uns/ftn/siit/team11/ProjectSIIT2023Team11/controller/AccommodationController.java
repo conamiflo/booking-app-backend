@@ -54,6 +54,15 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/inactive", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationDetailsDTO>> getInactiveAccommodations() {
+        Collection<AccommodationDetailsDTO> accommodations = accommodationService.getAccommodationsByActiveFalse().stream()
+                .map(AccommodationMapper::mapToAccommodationDetailsDto)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(accommodations, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/amenities", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDetailsWithAmenitiesDTO>> getAccommodationsWithAmenities() {
         Collection<AccommodationDetailsWithAmenitiesDTO> accommodations = accommodationService.findAll().stream()
@@ -100,7 +109,18 @@ public class AccommodationController {
         return new ResponseEntity<>(AccommodationMapper.mapToAccommodationDetailsDto(updatedAccommodation), HttpStatus.OK);
     }
 
-
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
+    @Operation(summary = "Update accommodation", security = @SecurityRequirement(name = "bearerAuth"))
+    @PutMapping(value = "/activate/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> activateAccommodation(@PathVariable Long id) throws Exception {
+        Optional<Accommodation> existingAccommodation = accommodationService.findById(id);
+        if (existingAccommodation.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Accommodation accommodation = existingAccommodation.get(); accommodation.setActive(true);
+        accommodationService.save(accommodation);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
     @PutMapping(value = "/{id}/amenity/{amenity_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Add amenity to accommodation")
     public ResponseEntity<AccommodationDetailsDTO> addAmenityToAccommodation(@PathVariable("amenity_id") Long amenityId, @PathVariable Long id) {
