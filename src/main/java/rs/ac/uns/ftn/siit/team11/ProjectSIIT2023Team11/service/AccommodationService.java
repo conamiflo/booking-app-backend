@@ -34,8 +34,8 @@ public class AccommodationService implements IAccommodationService{
         accommodationRepository.deleteById(aLong);
     }
 
-    public Collection<Accommodation> getAccommodationsByActiveFalse(){
-       return accommodationRepository.getAccommodationsByActiveFalse();
+    public Collection<Accommodation> findAccommodationsByPendingStatus(){
+        return accommodationRepository.findAccommodationsByPendingStatus();
     }
     public Optional<AccommodationDetailsDTO> create(AccommodationDetailsDTO accommodationDetailsDTO, IUserService userService){
         Optional<User> user =  userService.findById(accommodationDetailsDTO.ownerEmail());

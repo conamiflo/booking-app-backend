@@ -28,6 +28,8 @@ public interface IAccommodationRepository extends JpaRepository<Accommodation, L
     Collection<Reservation> filterAccommodation(@Param("startDate") LocalDate startDate,@Param("endDate") LocalDate endDate,
                                                     @Param("accommodationName") String accommodationName, @Param("email") String email);
 
-    Collection<Accommodation> getAccommodationsByActiveFalse();
+
+    @Query("SELECT a FROM Accommodation a WHERE a.status = 1")
+    Collection<Accommodation> findAccommodationsByPendingStatus();
 
 }

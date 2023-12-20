@@ -56,7 +56,7 @@ public class AccommodationController {
 
     @GetMapping(value = "/inactive", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDetailsDTO>> getInactiveAccommodations() {
-        Collection<AccommodationDetailsDTO> accommodations = accommodationService.getAccommodationsByActiveFalse().stream()
+        Collection<AccommodationDetailsDTO> accommodations = accommodationService.findAccommodationsByPendingStatus().stream()
                 .map(AccommodationMapper::mapToAccommodationDetailsDto)
                 .collect(Collectors.toList());
 
