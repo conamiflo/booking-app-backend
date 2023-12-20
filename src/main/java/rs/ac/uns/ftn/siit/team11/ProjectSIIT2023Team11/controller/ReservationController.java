@@ -1,6 +1,8 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.GuestReservationDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.OwnerReservationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,9 +64,22 @@ public class ReservationController {
                 .collect(Collectors.toList()), HttpStatus.OK);
     }
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationDTO reservation) {
-        Optional<Reservation> newReservation = Optional.ofNullable(reservationService.save(ReservationMapper.mapToReservation(reservation, userService, accommodationService)));
-        return new ResponseEntity<>(newReservation.get(), HttpStatus.CREATED);
+    public ResponseEntity<ReservationForShowDTO> createReservation(@RequestBody ReservationDTO reservation) {
+        Optional<User> user = userService.findById(reservation.getGuest());
+        Optional<Accommodation> accommodation = accommodationService.findById(reservation.getAccommodation());
+        if(user.isEmpty() || accommodation.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Reservation newReservationEntry = ReservationMapper.mapToReservation(reservation, userService, accommodationService);
+
+        if(!newReservationEntry.isAvailable()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        newReservationEntry.calculatePrice();
+        newReservationEntry.setStatus(ReservationStatus.Waiting);
+        Optional<Reservation> newReservation = Optional.ofNullable(reservationService.save(newReservationEntry));
+        return new ResponseEntity<>(ReservationMapper.mapToReservationDTO(newReservation.get()), HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{reservationId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
