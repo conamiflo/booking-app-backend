@@ -92,8 +92,21 @@ public class AccommodationMapper {
 
     public static AccommodationRequest mapRequestDtoToNewRequest(AccommodationRequestsDTO accommodationRequestsDTO){
         AccommodationRequest accRequest = new AccommodationRequest();
-        accRequest.setCreationType(accommodationRequestsDTO.creationType());
+        accRequest.setOwner(accommodationRequestsDTO.ownerEmail());
+        accRequest.setName(accommodationRequestsDTO.name());
+        accRequest.setDescription(accommodationRequestsDTO.description());
+        accRequest.setLocation(accommodationRequestsDTO.location());
+        accRequest.setDefaultPrice(accommodationRequestsDTO.defaultPrice());
+        accRequest.setPhotos(accommodationRequestsDTO.photos());
+        accRequest.setMinGuests(accommodationRequestsDTO.minGuests());
+        accRequest.setMaxGuests(accommodationRequestsDTO.maxGuests());
+        accRequest.setCreated(accommodationRequestsDTO.created());
+        accRequest.setType(accommodationRequestsDTO.type());
+        accRequest.setPriceType(accommodationRequestsDTO.priceType());
         accRequest.setEditedAccommodation(accommodationRequestsDTO.editedAccommodation());
+        accRequest.setCreationType(accommodationRequestsDTO.creationType());
+        accRequest.setAutomaticApproval(false);
+
         return accRequest;
     }
 

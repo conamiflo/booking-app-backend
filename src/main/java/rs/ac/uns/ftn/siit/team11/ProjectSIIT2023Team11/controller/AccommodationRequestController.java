@@ -45,16 +45,16 @@ public class AccommodationRequestController {
         return new ResponseEntity<>(accommodation.get(), HttpStatus.OK);
     }
 
-//    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    @PreAuthorize("hasAuthority('ROLE_Owner')")
-//    @Operation(summary = "Create accommodation request", security = @SecurityRequirement(name = "bearerAuth"))
-//    public ResponseEntity<AccommodationRequest> createAccommodationRequest(@RequestBody AccommodationRequestsDTO accommodationRequest) {
-//        Optional<AccommodationRequest> accRequest = Optional.ofNullable(accommodationRequestService.create(accommodationRequest));
-//        if(accRequest.isEmpty()){
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//        return new ResponseEntity<>(accRequest.get(), HttpStatus.CREATED);
-//    }
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
+    @Operation(summary = "Create accommodation request", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<AccommodationRequestsDTO> createAccommodationRequest(@RequestBody AccommodationRequestsDTO accommodationRequest) {
+        Optional<AccommodationRequest> accRequest = Optional.ofNullable(accommodationRequestService.create(accommodationRequest));
+        if(accRequest.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(accommodationRequest, HttpStatus.CREATED);
+    }
 
 
 }

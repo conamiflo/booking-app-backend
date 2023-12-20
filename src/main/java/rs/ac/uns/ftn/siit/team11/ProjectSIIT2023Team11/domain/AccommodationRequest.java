@@ -10,7 +10,6 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.PriceType;
 import java.time.LocalDate;
 import java.util.List;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,8 +21,7 @@ public class AccommodationRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    private Owner owner;
+    private String owner;
     private String name;
     private String description;
     private String location;

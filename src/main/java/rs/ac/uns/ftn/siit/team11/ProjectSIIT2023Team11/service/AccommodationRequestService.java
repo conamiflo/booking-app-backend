@@ -25,13 +25,9 @@ public class AccommodationRequestService  implements  IAccommodationRequestServi
     }
 
     public AccommodationRequest create(AccommodationRequestsDTO accommodationRequestDTO){
-
-        if(accommodationRequestDTO.creationType().equals("New")){
-            AccommodationRequest accRequest = AccommodationMapper.mapRequestDtoToNewRequest(accommodationRequestDTO);
-            return save(accRequest);
-        }
-
-        return null;
+        
+        AccommodationRequest accRequest = AccommodationMapper.mapRequestDtoToNewRequest(accommodationRequestDTO);
+        return save(accRequest);
     }
 
     public Optional<AccommodationRequest> findById(Long aLong) {
