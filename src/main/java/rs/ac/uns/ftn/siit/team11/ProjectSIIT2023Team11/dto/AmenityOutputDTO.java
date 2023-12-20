@@ -11,4 +11,6 @@ public record AmenityOutputDTO(Long id, String name) {
     public String name() {
         return name;
     }
+
 }
+
