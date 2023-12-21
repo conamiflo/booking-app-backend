@@ -63,6 +63,15 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/active", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationDetailsDTO>> getActiveAccommodations() {
+        Collection<AccommodationDetailsDTO> accommodations = accommodationService.findActiveAccommodations().stream()
+                .map(AccommodationMapper::mapToAccommodationDetailsDto)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(accommodations, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/amenities", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDetailsWithAmenitiesDTO>> getAccommodationsWithAmenities() {
         Collection<AccommodationDetailsWithAmenitiesDTO> accommodations = accommodationService.findAll().stream()

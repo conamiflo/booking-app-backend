@@ -37,6 +37,11 @@ public class AccommodationService implements IAccommodationService{
     public Collection<Accommodation> findAccommodationsByPendingStatus(){
         return accommodationRepository.findAccommodationsByPendingStatus();
     }
+
+    public Collection<Accommodation> findActiveAccommodations(){
+        return accommodationRepository.findActiveAccommodations();
+    }
+
     public Optional<AccommodationDetailsDTO> create(AccommodationDetailsDTO accommodationDetailsDTO, IUserService userService){
         Optional<User> user =  userService.findById(accommodationDetailsDTO.ownerEmail());
         if(user.isEmpty()){

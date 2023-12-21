@@ -35,5 +35,6 @@ public interface IAccommodationService {
 
     void deleteAvailabilityFromAllAccommodations(Availability availability);
     Collection<Accommodation> findAccommodationsByPendingStatus();
+    Collection<Accommodation> findActiveAccommodations();
 
 }

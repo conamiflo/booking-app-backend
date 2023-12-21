@@ -32,4 +32,7 @@ public interface IAccommodationRepository extends JpaRepository<Accommodation, L
     @Query("SELECT a FROM Accommodation a WHERE a.status = 1")
     Collection<Accommodation> findAccommodationsByPendingStatus();
 
+    @Query("SELECT a FROM Accommodation a WHERE a.status = 0")
+    Collection<Accommodation> findActiveAccommodations();
+
 }
