@@ -36,7 +36,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/files")
 public class FileController {
-    public static final String UPLOAD_DIRECTORY = "./ISS/src/main/resources/pictures/";
+    public static final String UPLOAD_DIRECTORY = "./src/main/resources/pictures/";
 
 //    public static String UPLOAD_DIRECTORY = File.listRoots()[0].getAbsolutePath() + "./ISS/src/main/resources/pictures/";
 
