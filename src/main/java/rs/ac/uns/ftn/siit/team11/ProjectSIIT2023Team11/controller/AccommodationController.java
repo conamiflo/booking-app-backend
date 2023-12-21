@@ -45,7 +45,6 @@ public class AccommodationController {
     @Autowired
     private IAvailabilityService availabilityService;
 
-    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Guest','ROLE_Admin')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDetailsDTO>> getAccommodations() {
         Collection<AccommodationDetailsDTO> accommodations = accommodationService.findAll().stream()
@@ -66,7 +65,6 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Guest','ROLE_Admin')")
     @GetMapping(value = "/active", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDetailsDTO>> getActiveAccommodations() {
         Collection<AccommodationDetailsDTO> accommodations = accommodationService.findActiveAccommodations().stream()
@@ -76,7 +74,6 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Guest','ROLE_Admin')")
     @GetMapping(value = "/amenities", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDetailsWithAmenitiesDTO>> getAccommodationsWithAmenities() {
         Collection<AccommodationDetailsWithAmenitiesDTO> accommodations = accommodationService.findAll().stream()
@@ -86,9 +83,7 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Admin')")
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get accommodation by id")
     public ResponseEntity<AccommodationDetailsDTO> getAccommodationById(@PathVariable("id") Long id) {
         Optional<Accommodation> accommodation = accommodationService.findById(id);
         if (accommodation.isEmpty()) {
@@ -109,7 +104,7 @@ public class AccommodationController {
     }
 
 
-    @PreAuthorize("hasAuthority('ROLE_Owner')")
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Admin')")
     @Operation(summary = "Update accommodation", security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDetailsDTO> updateAccommodation(@RequestBody AccommodationDetailsDTO accommodation, @PathVariable Long id) throws Exception {
