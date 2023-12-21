@@ -45,6 +45,7 @@ public class AccommodationController {
     @Autowired
     private IAvailabilityService availabilityService;
 
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Guest','ROLE_Admin')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDetailsDTO>> getAccommodations() {
         Collection<AccommodationDetailsDTO> accommodations = accommodationService.findAll().stream()
@@ -54,6 +55,8 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Guest','ROLE_Admin')")
+    @Operation(summary = "Get inactive accommodations", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping(value = "/inactive", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDetailsDTO>> getInactiveAccommodations() {
         Collection<AccommodationDetailsDTO> accommodations = accommodationService.findAccommodationsByPendingStatus().stream()
@@ -63,6 +66,7 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Guest','ROLE_Admin')")
     @GetMapping(value = "/active", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDetailsDTO>> getActiveAccommodations() {
         Collection<AccommodationDetailsDTO> accommodations = accommodationService.findActiveAccommodations().stream()
@@ -72,6 +76,7 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Guest','ROLE_Admin')")
     @GetMapping(value = "/amenities", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDetailsWithAmenitiesDTO>> getAccommodationsWithAmenities() {
         Collection<AccommodationDetailsWithAmenitiesDTO> accommodations = accommodationService.findAll().stream()
@@ -80,6 +85,8 @@ public class AccommodationController {
 
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Admin')")
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get accommodation by id")
     public ResponseEntity<AccommodationDetailsDTO> getAccommodationById(@PathVariable("id") Long id) {
@@ -118,7 +125,7 @@ public class AccommodationController {
         return new ResponseEntity<>(AccommodationMapper.mapToAccommodationDetailsDto(updatedAccommodation), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_Owner')")
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Admin')")
     @Operation(summary = "Update accommodation", security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping(value = "/activate/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> activateAccommodation(@PathVariable Long id) throws Exception {
@@ -130,6 +137,8 @@ public class AccommodationController {
         accommodationService.save(accommodation);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
     @PutMapping(value = "/{id}/amenity/{amenity_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Add amenity to accommodation")
     public ResponseEntity<AccommodationDetailsDTO> addAmenityToAccommodation(@PathVariable("amenity_id") Long amenityId, @PathVariable Long id) {
@@ -194,6 +203,8 @@ public class AccommodationController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
+    @Operation(summary = "Create accommodation price", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/{id}/price", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationPricesDTO> createAccommodationPrice(@RequestBody InputPriceDTO inputPrice, @PathVariable("id") Long id) {
         Optional<Accommodation> accommodation = accommodationService.findById(id);
@@ -209,7 +220,8 @@ public class AccommodationController {
     }
 
 
-
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
+    @Operation(summary = "Delete accommodation price", security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping(value = "/{id}/prices/{priceId}")
     public ResponseEntity<Void> deleteAccommodationPrice(@PathVariable("id") Long id, @PathVariable("priceId") Long priceId) {
 
@@ -230,8 +242,6 @@ public class AccommodationController {
     }
 
 
-    @PreAuthorize("hasAuthority('ROLE_Owner')")
-    @Operation(summary = "Get prices", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping(value = "/prices/{id}")
     public ResponseEntity<Collection<PriceForEditDTO>> getAccommodationPrices(@PathVariable("id") Long id) {
         Optional<Accommodation> accommodation = accommodationService.findById(id);
@@ -244,6 +254,7 @@ public class AccommodationController {
                 .collect(Collectors.toList()), HttpStatus.OK);
     }
     @GetMapping(value = "/owner/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
     @Operation(summary = "Get accommodation by owner")
     public ResponseEntity<Collection<AccommodationDetailsDTO>> getAccommodationByOwner(@PathVariable("email") String email) {
         Collection<AccommodationDetailsDTO> accommodations = accommodationService.findByOwnersId(email).stream()
@@ -252,7 +263,6 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
-    @Operation(summary = "Search accommodation")
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<AccommodationDetailsWithAmenitiesDTO>> searchAccommodations(
             @RequestParam(value = "guests", required = false) Integer guests,

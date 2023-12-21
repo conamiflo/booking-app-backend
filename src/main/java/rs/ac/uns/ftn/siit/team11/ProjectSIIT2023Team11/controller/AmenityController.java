@@ -38,8 +38,9 @@ public class AmenityController {
         return new ResponseEntity<>(AmenityMapper.mapAmenitiesToAmenityOutputDTOs(amenities), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Guest','ROLE_Admin')")
+    @Operation(summary = "Search accommodations", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get amenity by id")
     public ResponseEntity<Amenity> getAccommodationById(@PathVariable("id") Long id) {
         Optional<Amenity> amenity = amenityService.findById(id);
         if (amenity.isEmpty()) {
