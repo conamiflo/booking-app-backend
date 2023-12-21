@@ -19,6 +19,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.OwnerR
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.*;
 import io.swagger.v3.oas.annotations.Operation;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.AccommodationStatus;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -128,7 +129,8 @@ public class AccommodationController {
         if (existingAccommodation.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Accommodation accommodation = existingAccommodation.get(); accommodation.setActive(true);
+        Accommodation accommodation = existingAccommodation.get();
+        accommodation.setStatus(AccommodationStatus.Active);
         accommodationService.save(accommodation);
         return new ResponseEntity<>(HttpStatus.OK);
     }
