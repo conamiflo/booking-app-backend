@@ -16,4 +16,5 @@ public interface IAmenityService {
     void deleteById(Long aLong);
 
     void deleteAccommodationFromAmenities(Accommodation accommodation);
+    void deleteAmenities( List<Amenity> amenities, Accommodation accommodation);
 }

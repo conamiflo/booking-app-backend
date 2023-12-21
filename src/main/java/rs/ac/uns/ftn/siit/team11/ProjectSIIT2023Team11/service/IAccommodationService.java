@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 
+import org.springframework.data.jpa.repository.Query;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Availability;
@@ -33,5 +34,7 @@ public interface IAccommodationService {
     Collection<Accommodation> searchAccommodationsByCriteria(Integer guests, String location, LocalDate startDate, LocalDate endDate);
 
     void deleteAvailabilityFromAllAccommodations(Availability availability);
+    Collection<Accommodation> findAccommodationsByPendingStatus();
+    Collection<Accommodation> findActiveAccommodations();
 
 }

@@ -41,6 +41,8 @@ public class UserController {
     @Autowired
     private IReservationService reservationService;
 
+
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<UserForShowDTO>> getUsers(){
         Collection<User> users = userService.findAll();
@@ -55,6 +57,20 @@ public class UserController {
         }
         return new ResponseEntity<>(UserMapper.mapToUserDto(user.get()), HttpStatus.OK);
     }
+
+
+    @GetMapping(value = "/activation/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> activateUser(@PathVariable("email") String email) {
+        Optional<User> user = userService.findById(email);
+        if (user.isEmpty() || user.get().isActive()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }else{
+            user.get().setActive(true);
+            userService.save(user.get());
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserRegistrationDTO> registerUserWithRole(@RequestBody UserRegistrationDTO registeredUser) throws Exception {
         EmailSender emailSender = new EmailSender();
@@ -69,15 +85,16 @@ public class UserController {
             } else {
                 return new ResponseEntity<UserRegistrationDTO>(registeredUser, HttpStatus.BAD_REQUEST);
             }
-//            emailSender.sendActivationEmail(registeredUser.getEmail(),"activationlink");
+            emailSender.sendActivationEmail(registeredUser.getEmail(),"localhost:4200/activation/" + registeredUser.getEmail());
+
             return new ResponseEntity<UserRegistrationDTO>(registeredUser, HttpStatus.CREATED);
         } catch (Exception exception) {
             return new ResponseEntity<UserRegistrationDTO>(registeredUser, HttpStatus.BAD_REQUEST);
         }
     }
 
-
-
+    @PreAuthorize("hasAnyAuthority('ROLE_Guest','ROLE_Owner','ROLE_Admin')")
+    @Operation(summary = "Login", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody UserLoginDTO loginDTO) {
         if (userService.isLoginValid(loginDTO.getEmail(), loginDTO.getPassword())) {
@@ -86,6 +103,9 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_Guest','ROLE_Owner','ROLE_Admin')")
+    @Operation(summary = "Block profile", security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping("/{email}/block")
     public ResponseEntity<UserForShowDTO> blockUser(@PathVariable("email") String userId){
         Optional<User> user = userService.findById(userId);
@@ -97,6 +117,8 @@ public class UserController {
         return new ResponseEntity<UserForShowDTO>(UserMapper.mapToUserDto(user.get()), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_Guest','ROLE_Owner','ROLE_Admin')")
+    @Operation(summary = "Update profile", security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping(value = "/{email}/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserForShowDTO> updateProfile(@RequestBody UserForShowDTO user, @PathVariable String email) throws Exception {
         System.out.println(user);
@@ -116,7 +138,8 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-
+    @PreAuthorize("hasAnyAuthority('ROLE_Guest')")
+    @Operation(summary = "Add favorite accommodations", security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping("/{email}/favorite_accommodation/{accommodationId}")
     public ResponseEntity<GuestForShowDTO> addFavoriteAccommodation(@PathVariable("email") String email, @PathVariable("accommodationId") Long accommodationId){
         Optional<User> user = userService.findById(email);
@@ -132,6 +155,8 @@ public class UserController {
         return new ResponseEntity<>(UserMapper.mapGuestToGuestForShowDTO(guest), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_Guest')")
+    @Operation(summary = "Get favorite accommodations", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/{email}/favorite_accommodation")
     public ResponseEntity<GuestForShowDTO> getGuestsFavoriteAccommodations(@PathVariable("email") String email){
         Optional<User> user = userService.findById(email);
@@ -162,7 +187,7 @@ public class UserController {
         return new ResponseEntity<>(UserMapper.mapGuestToGuestForShowDTO(guest), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_Guest', 'ROLE_Owner')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_Guest', 'ROLE_Owner')")
     @Operation(summary = "Delete user", security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping(value = "/{email}")
     public ResponseEntity<Void> deleteUser(@PathVariable("email") String email) {

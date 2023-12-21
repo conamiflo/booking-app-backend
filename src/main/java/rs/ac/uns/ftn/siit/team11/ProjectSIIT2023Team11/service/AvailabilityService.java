@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Availability;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IAvailabilityRepository;
 
 import java.util.List;
@@ -28,5 +29,12 @@ public class AvailabilityService implements IAvailabilityService{
 
     public void deleteById(Long aLong) {
         availabilityRepository.deleteById(aLong);
+    }
+
+    public void deleteAvailabilities(List<Availability> availabilities){
+        for (Availability availability : availabilities) {
+            deleteById(availability.getId());
+        }
+        availabilities.clear();
     }
 }

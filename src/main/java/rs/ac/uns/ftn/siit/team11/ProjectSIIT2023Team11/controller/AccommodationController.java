@@ -8,24 +8,16 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsWithAmenitiesDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationPricesDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AmenityOutputDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceDTO.InputPriceDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceDTO.PriceForEditDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.OwnerReservationDTO;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AccommodationMapper;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AmenityMapper;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.OwnerReservationMapper;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.PriceMapper;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAmenityService;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IPriceService;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.*;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 
 import java.time.LocalDate;
@@ -50,8 +42,10 @@ public class AccommodationController {
     private IUserService userService;
     @Autowired
     private IPriceService priceService;
+    @Autowired
+    private IAvailabilityService availabilityService;
 
-
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Guest','ROLE_Admin')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDetailsDTO>> getAccommodations() {
         Collection<AccommodationDetailsDTO> accommodations = accommodationService.findAll().stream()
@@ -61,6 +55,28 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Guest','ROLE_Admin')")
+    @Operation(summary = "Get inactive accommodations", security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping(value = "/inactive", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationDetailsDTO>> getInactiveAccommodations() {
+        Collection<AccommodationDetailsDTO> accommodations = accommodationService.findAccommodationsByPendingStatus().stream()
+                .map(AccommodationMapper::mapToAccommodationDetailsDto)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(accommodations, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Guest','ROLE_Admin')")
+    @GetMapping(value = "/active", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationDetailsDTO>> getActiveAccommodations() {
+        Collection<AccommodationDetailsDTO> accommodations = accommodationService.findActiveAccommodations().stream()
+                .map(AccommodationMapper::mapToAccommodationDetailsDto)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(accommodations, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Guest','ROLE_Admin')")
     @GetMapping(value = "/amenities", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDetailsWithAmenitiesDTO>> getAccommodationsWithAmenities() {
         Collection<AccommodationDetailsWithAmenitiesDTO> accommodations = accommodationService.findAll().stream()
@@ -69,6 +85,8 @@ public class AccommodationController {
 
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Admin')")
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get accommodation by id")
     public ResponseEntity<AccommodationDetailsDTO> getAccommodationById(@PathVariable("id") Long id) {
@@ -91,19 +109,36 @@ public class AccommodationController {
     }
 
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('ROLE_Owner')")
     @Operation(summary = "Update accommodation", security = @SecurityRequirement(name = "bearerAuth"))
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDetailsDTO> updateAccommodation(@RequestBody AccommodationDetailsDTO accommodation, @PathVariable Long id) throws Exception {
         Optional<Accommodation> existingAccommodation = accommodationService.findById(id);
         if (existingAccommodation.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Accommodation updatedAccommodation = accommodationService.save(AccommodationMapper.mapDetailsDtoToAccommodation(accommodation, userService,existingAccommodation.get()));
-
+        Accommodation accommodation2 = existingAccommodation.get();
+        amenityService.deleteAmenities(accommodation2.getAmenities(),accommodation2);
+        priceService.deletePrices(accommodation2.getPriceList());
+        availabilityService.deleteAvailabilities(accommodation2.getAvailability());
+        Accommodation updatedAccommodation = accommodationService.save(AccommodationMapper.mapDetailsDtoToAccommodation(accommodation, userService,accommodation2));
         return new ResponseEntity<>(AccommodationMapper.mapToAccommodationDetailsDto(updatedAccommodation), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Admin')")
+    @Operation(summary = "Update accommodation", security = @SecurityRequirement(name = "bearerAuth"))
+    @PutMapping(value = "/activate/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> activateAccommodation(@PathVariable Long id) throws Exception {
+        Optional<Accommodation> existingAccommodation = accommodationService.findById(id);
+        if (existingAccommodation.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Accommodation accommodation = existingAccommodation.get(); accommodation.setActive(true);
+        accommodationService.save(accommodation);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
     @PutMapping(value = "/{id}/amenity/{amenity_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Add amenity to accommodation")
     public ResponseEntity<AccommodationDetailsDTO> addAmenityToAccommodation(@PathVariable("amenity_id") Long amenityId, @PathVariable Long id) {
@@ -123,6 +158,27 @@ public class AccommodationController {
 
     }
 
+    @DeleteMapping(value = "/amenities/{id}")
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
+    @Operation(summary = "Remove all amenities from accommodation")
+    public ResponseEntity<Void> removeAllAmenitiesFromAccommodation(@PathVariable Long id) {
+        Optional<Accommodation> accommodation = accommodationService.findById(id);
+
+        if (accommodation.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Accommodation existingAccommodation = accommodation.get();
+        List<Amenity> amenities = existingAccommodation.getAmenities();
+        for (Amenity amenity : amenities) {
+            amenity.getAccommodations().remove(accommodation);
+        }
+        amenities.clear();
+        accommodationService.save(existingAccommodation);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
     @GetMapping(value = "/{id}/amenity", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get amenities from accommodation")
     public ResponseEntity<Collection<AmenityOutputDTO>> getAmenitiesFromAccommodation(@PathVariable Long id) {
@@ -130,9 +186,7 @@ public class AccommodationController {
         if(existingAccommodation.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-        return new ResponseEntity<>(AmenityMapper.mapAmenitiesToAmenityOutputDTOs(existingAccommodation.get().getAmenities()),HttpStatus.BAD_REQUEST);
-
+        return new ResponseEntity<>(AmenityMapper.mapAmenitiesToAmenityOutputDTOs(existingAccommodation.get().getAmenities()),HttpStatus.OK);
     }
 
 
@@ -149,6 +203,8 @@ public class AccommodationController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
+    @Operation(summary = "Create accommodation price", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/{id}/price", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationPricesDTO> createAccommodationPrice(@RequestBody InputPriceDTO inputPrice, @PathVariable("id") Long id) {
         Optional<Accommodation> accommodation = accommodationService.findById(id);
@@ -162,6 +218,10 @@ public class AccommodationController {
 
         return new ResponseEntity<>(accommodationPrice, HttpStatus.CREATED);
     }
+
+
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
+    @Operation(summary = "Delete accommodation price", security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping(value = "/{id}/prices/{priceId}")
     public ResponseEntity<Void> deleteAccommodationPrice(@PathVariable("id") Long id, @PathVariable("priceId") Long priceId) {
 
@@ -181,7 +241,20 @@ public class AccommodationController {
 
     }
 
+
+    @GetMapping(value = "/prices/{id}")
+    public ResponseEntity<Collection<PriceForEditDTO>> getAccommodationPrices(@PathVariable("id") Long id) {
+        Optional<Accommodation> accommodation = accommodationService.findById(id);
+
+        if (accommodation.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(accommodation.get().getPriceList().stream().map(PriceMapper::mapToPriceDto)
+                .collect(Collectors.toList()), HttpStatus.OK);
+    }
     @GetMapping(value = "/owner/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
     @Operation(summary = "Get accommodation by owner")
     public ResponseEntity<Collection<AccommodationDetailsDTO>> getAccommodationByOwner(@PathVariable("email") String email) {
         Collection<AccommodationDetailsDTO> accommodations = accommodationService.findByOwnersId(email).stream()
@@ -190,7 +263,6 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
-    @Operation(summary = "Search accommodation")
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<AccommodationDetailsWithAmenitiesDTO>> searchAccommodations(
             @RequestParam(value = "guests", required = false) Integer guests,

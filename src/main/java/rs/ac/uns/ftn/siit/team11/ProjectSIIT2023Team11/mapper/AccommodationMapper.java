@@ -2,11 +2,9 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper;
 
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Owner;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationCardDTO;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsWithAmenitiesDTO;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationPricesDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.AccommodationStatus;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,8 +44,8 @@ public class AccommodationMapper {
                 accommodation.getMaxGuests(),
                 accommodation.getCreated(),
                 accommodation.getType(),
-                accommodation.getPriceType()
-
+                accommodation.getPriceType(),
+                accommodation.getStatus()
         );
     }
     public static Accommodation mapDetailsDtoToAccommodation(AccommodationDetailsDTO accommodationDetailsDTO, IUserService userService, Accommodation accommodation){
@@ -61,7 +59,7 @@ public class AccommodationMapper {
         accommodation.setPhotos(accommodationDetailsDTO.photos());
         accommodation.setType(accommodationDetailsDTO.type());
         accommodation.setPriceType(accommodationDetailsDTO.priceType());
-
+        accommodation.setStatus(accommodationDetailsDTO.status());
         return accommodation;
     }
 
@@ -93,6 +91,7 @@ public class AccommodationMapper {
         accommodation.setType(accommodationDetailsDTO.type());
         return accommodation;
     }
+
     public static Collection<AccommodationDetailsWithAmenitiesDTO> mapToAccommodationsDetailsAmenityDto(Collection<Accommodation> accommodations){
 
         Collection<AccommodationDetailsWithAmenitiesDTO> accommodationDetailsDto = new ArrayList<>();
@@ -123,6 +122,7 @@ public class AccommodationMapper {
         accommodation.setCreated(accommodationDetailsDTO.created());
         accommodation.setActive(false);
         accommodation.setPriceType(accommodationDetailsDTO.priceType());
+        accommodation.setStatus(AccommodationStatus.Pending);
         return accommodation;
     }
 

@@ -38,10 +38,9 @@ public class LoginController {
     @PostMapping("/logIn")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody UserLoginDTO loginDTO) {
         Optional<User> user = userService.findById(loginDTO.getEmail());
-        if(user.isEmpty()){
+        if(user.isEmpty() || !user.get().isActive()){
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-
         UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(),
                 loginDTO.getPassword());
         Authentication auth = authenticationManager.authenticate(authReq);

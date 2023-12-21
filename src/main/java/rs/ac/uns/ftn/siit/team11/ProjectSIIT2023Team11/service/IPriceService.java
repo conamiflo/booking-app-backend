@@ -13,4 +13,6 @@ public interface IPriceService {
     Optional<Price> findById(Long s);
 
     void deleteById(Long s);
+    void deletePrices(List<Price> prices);
+
 }

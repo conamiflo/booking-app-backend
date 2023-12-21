@@ -1,16 +1,19 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Availability;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.TimeSlot;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationAvailabilityDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AvailabilityDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AvailabilityMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
@@ -38,16 +41,24 @@ public class AvailabilityController {
                 .map(AvailabilityMapper::mapToAvailabilityDto).collect(Collectors.toList()), HttpStatus.OK);
     }
 
+
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner')")
+    @Operation(summary = "Create accommodation availability", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AvailabilityDTO> getAvailabilityById(@PathVariable("id") Long id) {
         Optional<Availability> availability = availabilityService.findById(id);
         return new ResponseEntity<>(AvailabilityMapper.mapToAvailabilityDto(availability.get()), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner')")
+    @Operation(summary = "Create accommodation availability", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Availability> createAvailability(@RequestBody AvailabilityDTO availability) {
         return new ResponseEntity<>(availabilityService.save(AvailabilityMapper.mapToAvailability(availability)), HttpStatus.CREATED);
     }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner')")
+    @Operation(summary = "Update accommodation availability", security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Availability> updateAvailability(@RequestBody AvailabilityDTO availability) {
         Optional<Availability> existingAvailability = availabilityService.findById(availability.getId());
@@ -56,6 +67,9 @@ public class AvailabilityController {
         }
         return new ResponseEntity<>(availabilityService.save(AvailabilityMapper.mapToAvailability(availability)), HttpStatus.OK);
     }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner')")
+    @Operation(summary = "Delete accommodation availability", security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteAvailability(@PathVariable("id") Long id) {
         Optional<Availability> availability = availabilityService.findById(id);
@@ -67,6 +81,8 @@ public class AvailabilityController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner')")
+    @Operation(summary = "Create accommodation availability", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping( value = "/accommodation/{accommodation_id}",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Availability> createAvailability(@RequestBody AvailabilityDTO availability, @PathVariable("accommodation_id") Long accommodationId) {
@@ -94,6 +110,19 @@ public class AvailabilityController {
 
         return new ResponseEntity<>(accommodation.get().getAvailability(), HttpStatus.OK);
     }
+    
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
+    @Operation(summary = "Get availabilities", security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping(value = "/available/{accommodation_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationAvailabilityDTO>> getAvailabilitiesForAccommodation(@PathVariable("accommodation_id") Long accommodationId) {
+        Optional<Accommodation> accommodation = accommodationService.findById(accommodationId);
+        if (accommodation.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(accommodation.get().getAvailability().stream().map(AvailabilityMapper::mapToAccommodationAvailabilityDto)
+                .collect(Collectors.toList()), HttpStatus.OK);
+    }
+
     @DeleteMapping(value = "/{id}/accommodation/{accommodationId}")
     public ResponseEntity<Void> deleteAccommodationAvailability(@PathVariable("id") Long id, @PathVariable("accommodationId") Long accommodationId) {
 

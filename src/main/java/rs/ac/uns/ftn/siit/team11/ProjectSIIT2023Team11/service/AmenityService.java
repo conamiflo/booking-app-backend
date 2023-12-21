@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Amenity;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Availability;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IAccommodationRepository;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IAmenityRepository;
 
@@ -42,4 +43,10 @@ public class AmenityService implements IAmenityService{
             }
         }
     }
+
+    public void deleteAmenities( List<Amenity> amenities, Accommodation accommodation){
+        deleteAccommodationFromAmenities(accommodation);
+        amenities.clear();
+    }
+
 }

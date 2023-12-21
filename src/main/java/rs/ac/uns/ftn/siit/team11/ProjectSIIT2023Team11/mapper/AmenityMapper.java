@@ -10,7 +10,6 @@ import java.util.Collection;
 
 import java.util.List;
 
-
 public class AmenityMapper {
     public static Amenity mapAmenityInputDTOToAmenity(AmenityInputDTO amenityInputDTO){
         return new Amenity(0L,amenityInputDTO.amenityName(),new ArrayList<Accommodation>());
@@ -24,7 +23,6 @@ public class AmenityMapper {
 
         return amenityOutputDTOS;
     }
-
 
     public static AmenityOutputDTO mapAmenityToAmenityOutputDTO(Amenity amenity){
         return new AmenityOutputDTO(

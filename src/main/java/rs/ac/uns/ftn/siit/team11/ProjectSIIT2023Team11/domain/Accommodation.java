@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.AccommodationStatus;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.PriceType;
 
 import java.time.LocalDate;
@@ -16,7 +17,6 @@ import java.util.Optional;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name="accommodations")
 @Entity
 public class Accommodation {
@@ -27,8 +27,6 @@ public class Accommodation {
     private Owner owner;
     private String name;
     private String description;
-    private Double xMapsPosition;
-    private Double yMapsPosition;
     private String location;
     @JoinTable(
             name = "accommodations_amenities",
@@ -52,6 +50,29 @@ public class Accommodation {
     private int cancelationDays;
     private LocalDate created;
     private PriceType priceType;
+    private AccommodationStatus status;
+
+    public Accommodation(Long id, Owner owner, String name, String description, String location, List<Amenity> amenities, List<Price> priceList, List<Availability> availability, List<String> photos, int minGuests, int maxGuests, String type, Double defaultPrice, boolean automaticApproval, boolean active, int cancelationDays, LocalDate created, PriceType priceType, AccommodationStatus status) {
+        this.id = id;
+        this.owner = owner;
+        this.name = name;
+        this.description = description;
+        this.location = location;
+        this.amenities = amenities;
+        this.priceList = priceList;
+        this.availability = availability;
+        this.photos = photos;
+        this.minGuests = minGuests;
+        this.maxGuests = maxGuests;
+        this.type = type;
+        this.defaultPrice = defaultPrice;
+        this.automaticApproval = automaticApproval;
+        this.active = active;
+        this.cancelationDays = cancelationDays;
+        this.created = created;
+        this.priceType = priceType;
+        this.status = AccommodationStatus.Pending;
+    }
 
     public Double calculatePrice() {
         LocalDate today = LocalDate.now();
