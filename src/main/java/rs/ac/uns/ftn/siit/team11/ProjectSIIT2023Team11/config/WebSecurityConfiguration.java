@@ -32,8 +32,8 @@ public class WebSecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth->{
-                    auth.requestMatchers("/api/auth/login", "/**").permitAll()
-                            .requestMatchers("/api/accommodations").authenticated();
+                    auth.requestMatchers("/api/auth/login", "/**").permitAll().
+                            requestMatchers("/pictures/**").permitAll();
                 })
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
