@@ -55,7 +55,7 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Guest','ROLE_Admin')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Guest','ROLE_Admin')")
     @Operation(summary = "Get inactive accommodations", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping(value = "/inactive", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDetailsDTO>> getInactiveAccommodations() {
@@ -105,7 +105,7 @@ public class AccommodationController {
     }
 
 
-    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Admin')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Admin')")
     @Operation(summary = "Update accommodation", security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDetailsDTO> updateAccommodation(@RequestBody AccommodationDetailsDTO accommodation, @PathVariable Long id) throws Exception {
@@ -114,9 +114,9 @@ public class AccommodationController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         Accommodation accommodation2 = existingAccommodation.get();
-        amenityService.deleteAmenities(accommodation2.getAmenities(),accommodation2);
-        priceService.deletePrices(accommodation2.getPriceList());
-        availabilityService.deleteAvailabilities(accommodation2.getAvailability());
+//        amenityService.deleteAmenities(accommodation2.getAmenities(),accommodation2);
+//        priceService.deletePrices(accommodation2.getPriceList());
+//        availabilityService.deleteAvailabilities(accommodation2.getAvailability());
         Accommodation updatedAccommodation = accommodationService.save(AccommodationMapper.mapDetailsDtoToAccommodation(accommodation, userService,accommodation2));
         return new ResponseEntity<>(AccommodationMapper.mapToAccommodationDetailsDto(updatedAccommodation), HttpStatus.OK);
     }
@@ -251,7 +251,7 @@ public class AccommodationController {
                 .collect(Collectors.toList()), HttpStatus.OK);
     }
     @GetMapping(value = "/owner/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAuthority('ROLE_Owner')")
+//    @PreAuthorize("hasAuthority('ROLE_Owner')")
     @Operation(summary = "Get accommodation by owner")
     public ResponseEntity<Collection<AccommodationDetailsDTO>> getAccommodationByOwner(@PathVariable("email") String email) {
         Collection<AccommodationDetailsDTO> accommodations = accommodationService.findByOwnersId(email).stream()
@@ -276,6 +276,27 @@ public class AccommodationController {
         List<AccommodationDetailsWithAmenitiesDTO> accommodationDetailsDTOS = new ArrayList<>();
         for (Accommodation accommodation: accommodations) {
             accommodationDetailsDTOS.add(AccommodationMapper.mapToAccommodationDetailsAmenityDto(accommodation));
+        }
+
+        return new ResponseEntity<>(accommodationDetailsDTOS, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/search/detailed", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<AccommodationDetailsDTO>> searchAccommodationsDetailed(
+            @RequestParam(value = "guests", required = false) Integer guests,
+            @RequestParam(value = "location", required = false) String location,
+            @RequestParam(value = "startDate", required = false) LocalDate startDate,
+            @RequestParam(value = "endDate", required = false) LocalDate endDate) {
+
+        Collection<Accommodation> accommodations = accommodationService.searchAccommodationsByCriteria(
+                guests,
+                lowerCase(location),
+                startDate,
+                endDate
+        );
+        List<AccommodationDetailsDTO> accommodationDetailsDTOS = new ArrayList<>();
+        for (Accommodation accommodation: accommodations) {
+            accommodationDetailsDTOS.add(AccommodationMapper.mapToAccommodationDetailsDto(accommodation));
         }
 
         return new ResponseEntity<>(accommodationDetailsDTOS, HttpStatus.OK);

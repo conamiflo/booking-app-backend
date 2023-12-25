@@ -111,7 +111,7 @@ public class AvailabilityController {
         return new ResponseEntity<>(accommodation.get().getAvailability(), HttpStatus.OK);
     }
     
-    @PreAuthorize("hasAuthority('ROLE_Owner')")
+    //@PreAuthorize("hasAuthority('ROLE_Owner')")
     @Operation(summary = "Get availabilities", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping(value = "/available/{accommodation_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationAvailabilityDTO>> getAvailabilitiesForAccommodation(@PathVariable("accommodation_id") Long accommodationId) {
