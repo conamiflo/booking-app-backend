@@ -280,4 +280,25 @@ public class AccommodationController {
 
         return new ResponseEntity<>(accommodationDetailsDTOS, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/search/detailed", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<AccommodationDetailsDTO>> searchAccommodationsDetailed(
+            @RequestParam(value = "guests", required = false) Integer guests,
+            @RequestParam(value = "location", required = false) String location,
+            @RequestParam(value = "startDate", required = false) LocalDate startDate,
+            @RequestParam(value = "endDate", required = false) LocalDate endDate) {
+
+        Collection<Accommodation> accommodations = accommodationService.searchAccommodationsByCriteria(
+                guests,
+                lowerCase(location),
+                startDate,
+                endDate
+        );
+        List<AccommodationDetailsDTO> accommodationDetailsDTOS = new ArrayList<>();
+        for (Accommodation accommodation: accommodations) {
+            accommodationDetailsDTOS.add(AccommodationMapper.mapToAccommodationDetailsDto(accommodation));
+        }
+
+        return new ResponseEntity<>(accommodationDetailsDTOS, HttpStatus.OK);
+    }
 }
