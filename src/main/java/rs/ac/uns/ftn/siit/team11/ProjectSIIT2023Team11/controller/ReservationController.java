@@ -63,6 +63,7 @@ public class ReservationController {
                 .map(OwnerReservationMapper::mapToOwnerReservationDTO)
                 .collect(Collectors.toList()), HttpStatus.OK);
     }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReservationForShowDTO> createReservation(@RequestBody ReservationDTO reservation) {
         Optional<User> user = userService.findById(reservation.getGuest());
@@ -72,9 +73,9 @@ public class ReservationController {
         }
         Reservation newReservationEntry = ReservationMapper.mapToReservation(reservation, userService, accommodationService);
 
-        if(!newReservationEntry.isAvailable()){
+        /*if(!newReservationEntry.isAvailable()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        }*/
 
         newReservationEntry.calculatePrice();
         newReservationEntry.setStatus(ReservationStatus.Waiting);
@@ -83,13 +84,35 @@ public class ReservationController {
     }
 
     @PutMapping(value = "/{reservationId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Reservation> updateReservation(@PathVariable("reservationId") Long reservationId) {
+    public ResponseEntity<ReservationForShowDTO> updateReservation(@PathVariable("reservationId") Long reservationId) {
         Optional<Reservation> existingReservation = reservationService.findById(reservationId);
         if (existingReservation.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         Reservation updatedReservation = reservationService.save(existingReservation.get());
-        return new ResponseEntity<>(updatedReservation, HttpStatus.OK);
+        return new ResponseEntity<>(ReservationMapper.mapToReservationDTO(updatedReservation), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "accept/{reservationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ReservationForShowDTO> acceptReservation(@PathVariable("reservationId") Long reservationId) {
+        Optional<Reservation> existingReservation = reservationService.findById(reservationId);
+        if (existingReservation.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        existingReservation.get().setStatus(ReservationStatus.Accepted);
+        Reservation updatedReservation = reservationService.save(existingReservation.get());
+        return new ResponseEntity<>(ReservationMapper.mapToReservationDTO(updatedReservation), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "decline/{reservationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ReservationForShowDTO> declineReservation(@PathVariable("reservationId") Long reservationId) {
+        Optional<Reservation> existingReservation = reservationService.findById(reservationId);
+        if (existingReservation.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        existingReservation.get().setStatus(ReservationStatus.Declined);
+        Reservation updatedReservation = reservationService.save(existingReservation.get());
+        return new ResponseEntity<>(ReservationMapper.mapToReservationDTO(updatedReservation), HttpStatus.OK);
     }
 
     @GetMapping(value = "/guest/filter",produces = MediaType.APPLICATION_JSON_VALUE)
