@@ -12,8 +12,8 @@ public class OwnerReservationDTO {
     private Long id;
     private Long accommodation;
     private String guest;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private String startDate;
+    private String endDate;
     private int numberOfGuests;
     private ReservationStatus status;
     private Double price;

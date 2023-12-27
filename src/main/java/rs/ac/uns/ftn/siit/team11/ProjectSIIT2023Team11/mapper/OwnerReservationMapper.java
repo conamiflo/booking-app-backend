@@ -4,6 +4,8 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.OwnerR
 import org.springframework.stereotype.Component;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
 
+import java.time.format.DateTimeFormatter;
+
 @Component
 public class OwnerReservationMapper {
     public static OwnerReservationDTO mapToOwnerReservationDTO(Reservation reservation) {
@@ -11,8 +13,8 @@ public class OwnerReservationMapper {
                 reservation.getId(),
                 reservation.getAccommodation().getId(),
                 reservation.getGuest().getEmail(),
-                reservation.getStartDate(),
-                reservation.getEndDate(),
+                reservation.getStartDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                reservation.getEndDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
                 reservation.getNumberOfGuests(),
                 reservation.getStatus(),
                 reservation.getPrice(),
