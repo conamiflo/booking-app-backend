@@ -94,25 +94,25 @@ public class ReservationController {
     }
 
     @PutMapping(value = "accept/{reservationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReservationForShowDTO> acceptReservation(@PathVariable("reservationId") Long reservationId) {
+    public ResponseEntity<OwnerReservationDTO> acceptReservation(@PathVariable("reservationId") Long reservationId) {
         Optional<Reservation> existingReservation = reservationService.findById(reservationId);
         if (existingReservation.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         existingReservation.get().setStatus(ReservationStatus.Accepted);
         Reservation updatedReservation = reservationService.save(existingReservation.get());
-        return new ResponseEntity<>(ReservationMapper.mapToReservationDTO(updatedReservation), HttpStatus.OK);
+        return new ResponseEntity<>(OwnerReservationMapper.mapToOwnerReservationDTO(updatedReservation), HttpStatus.OK);
     }
 
     @PutMapping(value = "decline/{reservationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReservationForShowDTO> declineReservation(@PathVariable("reservationId") Long reservationId) {
+    public ResponseEntity<OwnerReservationDTO> declineReservation(@PathVariable("reservationId") Long reservationId) {
         Optional<Reservation> existingReservation = reservationService.findById(reservationId);
         if (existingReservation.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         existingReservation.get().setStatus(ReservationStatus.Declined);
         Reservation updatedReservation = reservationService.save(existingReservation.get());
-        return new ResponseEntity<>(ReservationMapper.mapToReservationDTO(updatedReservation), HttpStatus.OK);
+        return new ResponseEntity<>(OwnerReservationMapper.mapToOwnerReservationDTO(updatedReservation), HttpStatus.OK);
     }
 
     @GetMapping(value = "/guest/filter",produces = MediaType.APPLICATION_JSON_VALUE)
