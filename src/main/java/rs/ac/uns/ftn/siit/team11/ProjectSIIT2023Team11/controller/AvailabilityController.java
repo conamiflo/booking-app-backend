@@ -91,7 +91,7 @@ public class AvailabilityController {
         {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        if(accommodation.get().AddAvailability(new TimeSlot(availability.getStartDate().plusDays(1), availability.getEndDate().plusDays(1)))) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(accommodation.get().AddAvailability(new TimeSlot(availability.getStartDate() + (1 * 24 * 60 * 60), availability.getEndDate() + (1 * 24 * 60 * 60)))) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         Availability createdAvailability = availabilityService.save(AvailabilityMapper.mapToAvailability(availability));
 
         accommodation.get().getAvailability().add(createdAvailability);

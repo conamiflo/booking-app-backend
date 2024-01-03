@@ -8,6 +8,8 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.Reserv
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Component
@@ -17,8 +19,8 @@ public class ReservationMapper {
                 reservation.getId(),
                 reservation.getAccommodation().getName(),
                 reservation.getGuest().getEmail(),
-                reservation.getStartDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
-                reservation.getEndDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                Instant.ofEpochSecond(reservation.getStartDate()).atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                Instant.ofEpochSecond(reservation.getEndDate()).atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
                 reservation.getNumberOfGuests(),
                 reservation.getStatus(),
                 reservation.getPrice()

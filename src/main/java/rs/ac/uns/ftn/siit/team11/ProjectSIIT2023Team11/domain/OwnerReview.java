@@ -19,7 +19,7 @@ public class OwnerReview extends Review{
     @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
 
-    public OwnerReview(Long id, User guest, String description, int rating, LocalDate date, boolean reported, User owner) {
+    public OwnerReview(Long id, User guest, String description, int rating, Long date, boolean reported, User owner) {
         super(id, guest, description, rating, date, reported);
         this.owner = owner;
     }

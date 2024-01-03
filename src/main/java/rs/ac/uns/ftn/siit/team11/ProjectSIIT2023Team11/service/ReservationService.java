@@ -7,6 +7,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IReservationRepository;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -61,7 +62,7 @@ public class ReservationService implements IReservationService {
     @Override
     public boolean anyReservationInFuture(Accommodation accommodation) {
         for(Reservation reservation : reservationRepository.findAll()){
-            if(reservation.getEndDate().isAfter(LocalDate.now()) && reservation.getStatus().equals(ReservationStatus.Accepted)){
+            if(reservation.getEndDate() > (Instant.now().getEpochSecond()) && reservation.getStatus().equals(ReservationStatus.Accepted)){
                 return true;
             }
         }
@@ -72,7 +73,7 @@ public class ReservationService implements IReservationService {
     public boolean guestHasActiveReservations(String email) {
         for(Reservation reservation : reservationRepository.findAll()){
             if(email.equals(reservation.getGuest().getEmail()) && reservation.getStatus().equals(ReservationStatus.Accepted)
-                    && reservation.getEndDate().isAfter(LocalDate.now())){
+                    && reservation.getEndDate() > Instant.now().getEpochSecond()){
                 return true;
             }
         }

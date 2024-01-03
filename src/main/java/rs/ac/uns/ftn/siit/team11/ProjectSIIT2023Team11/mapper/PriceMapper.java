@@ -26,8 +26,8 @@ public class PriceMapper {
 
     public static PriceForEditDTO mapToPriceDto(Price price) {
         PriceForEditDTO priceDto = new PriceForEditDTO();
-        priceDto.setFrom(price.getTimeSlot().getStartDate().toString());
-        priceDto.setTo(price.getTimeSlot().getEndDate().toString());
+        priceDto.setFrom(price.getTimeSlot().getStartEpochTime().toString());
+        priceDto.setTo(price.getTimeSlot().getEndEpochTime().toString());
         priceDto.setPrice(price.getPrice());
         return priceDto;
     }

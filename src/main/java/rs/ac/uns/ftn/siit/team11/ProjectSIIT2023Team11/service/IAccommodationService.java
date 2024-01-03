@@ -31,7 +31,7 @@ public interface IAccommodationService {
 
     void deleteAmenityFromAccommodations(Amenity existingAmenity);
 
-    Collection<Accommodation> searchAccommodationsByCriteria(Integer guests, String location, LocalDate startDate, LocalDate endDate);
+    Collection<Accommodation> searchAccommodationsByCriteria(Integer guests, String location, Long startDate, Long endDate);
 
     void deleteAvailabilityFromAllAccommodations(Availability availability);
     Collection<Accommodation> findAccommodationsByPendingStatus();

@@ -13,7 +13,7 @@ public class ReservationDTO {
     private Long id;
     private Long accommodation;
     private String guest;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private Long startDate;
+    private Long endDate;
     private int numberOfGuests;
 }

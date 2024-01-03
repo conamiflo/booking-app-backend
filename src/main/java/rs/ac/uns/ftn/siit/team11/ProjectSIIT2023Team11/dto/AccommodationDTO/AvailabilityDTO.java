@@ -12,6 +12,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class AvailabilityDTO {
     private Long id;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private Long startDate;
+    private Long endDate;
 }

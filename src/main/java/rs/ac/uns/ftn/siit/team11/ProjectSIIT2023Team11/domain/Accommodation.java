@@ -9,6 +9,8 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.AccommodationStatus;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.PriceType;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -48,11 +50,11 @@ public class Accommodation {
     private boolean automaticApproval;
     private boolean active;
     private int cancelationDays;
-    private LocalDate created;
+    private Long created;
     private PriceType priceType;
     private AccommodationStatus status;
 
-    public Accommodation(Long id, Owner owner, String name, String description, String location, List<Amenity> amenities, List<Price> priceList, List<Availability> availability, List<String> photos, int minGuests, int maxGuests, String type, Double defaultPrice, boolean automaticApproval, boolean active, int cancelationDays, LocalDate created, PriceType priceType, AccommodationStatus status) {
+    public Accommodation(Long id, Owner owner, String name, String description, String location, List<Amenity> amenities, List<Price> priceList, List<Availability> availability, List<String> photos, int minGuests, int maxGuests, String type, Double defaultPrice, boolean automaticApproval, boolean active, int cancelationDays, Long created, PriceType priceType, AccommodationStatus status) {
         this.id = id;
         this.owner = owner;
         this.name = name;
@@ -75,7 +77,7 @@ public class Accommodation {
     }
 
     public Double calculatePrice() {
-        LocalDate today = LocalDate.now();
+        Long today = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
         if (priceList == null){
             priceList = new ArrayList<Price>();
         }

@@ -8,6 +8,8 @@ import lombok.Setter;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 
 @Getter
 @Setter
@@ -23,8 +25,8 @@ public class Reservation {
     private Accommodation accommodation;
     @ManyToOne(fetch = FetchType.LAZY)
     private Guest guest;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private Long startDate;
+    private Long endDate;
     private int numberOfGuests;
     private ReservationStatus status;
     private Double price;
@@ -32,20 +34,20 @@ public class Reservation {
     public Double calculatePrice() {
         Double totalPrice = 0.0;
 
-        LocalDate currentDate = startDate;
-        while (!currentDate.isAfter(endDate)) {
+        Long currentDate = startDate;
+        while (currentDate > endDate) {
             Double dailyPrice = findPriceForDate(currentDate);
             if (dailyPrice == null) {
                 dailyPrice = accommodation.getDefaultPrice();
             }
             totalPrice += dailyPrice;
-            currentDate = currentDate.plusDays(1); // Move to the next day
+            currentDate = currentDate + (1 * 24 * 60 * 60); // Move to the next day
         }
         setPrice(totalPrice);
         return totalPrice;
     }
 
-    private Double findPriceForDate(LocalDate date) {
+    private Double findPriceForDate(Long date) {
         for (Price price : accommodation.getPriceList()) {
             if (price.getTimeSlot().contains(date)) {
                 return price.getPrice();
@@ -55,8 +57,8 @@ public class Reservation {
     }
 
     public boolean isAvailable() {
-        LocalDate currentDate = startDate;
-        while (!currentDate.isAfter(endDate)) {
+        Long currentDate = startDate;
+        while (currentDate > endDate) {
             boolean isAvailable = false;
             for (Availability availability : accommodation.getAvailability()) {
                 if (availability.getTimeSlot().contains(currentDate)) {
@@ -67,7 +69,7 @@ public class Reservation {
             if (!isAvailable) {
                 return false; // If not available for any date, return false
             }
-            currentDate = currentDate.plusDays(1); // Move to the next day
+            currentDate = currentDate + (1 * 24 * 60 * 60); // Move to the next day
         }
 
         return true;

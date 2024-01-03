@@ -264,8 +264,8 @@ public class AccommodationController {
     public ResponseEntity<List<AccommodationDetailsWithAmenitiesDTO>> searchAccommodations(
             @RequestParam(value = "guests", required = false) Integer guests,
             @RequestParam(value = "location", required = false) String location,
-            @RequestParam(value = "startDate", required = false) LocalDate startDate,
-            @RequestParam(value = "endDate", required = false) LocalDate endDate) {
+            @RequestParam(value = "startDate", required = false) Long startDate,
+            @RequestParam(value = "endDate", required = false) Long endDate) {
 
         Collection<Accommodation> accommodations = accommodationService.searchAccommodationsByCriteria(
                 guests,
@@ -285,8 +285,8 @@ public class AccommodationController {
     public ResponseEntity<List<AccommodationDetailsDTO>> searchAccommodationsDetailed(
             @RequestParam(value = "guests", required = false) Integer guests,
             @RequestParam(value = "location", required = false) String location,
-            @RequestParam(value = "startDate", required = false) LocalDate startDate,
-            @RequestParam(value = "endDate", required = false) LocalDate endDate) {
+            @RequestParam(value = "startDate", required = false) Long startDate,
+            @RequestParam(value = "endDate", required = false) Long endDate) {
 
         Collection<Accommodation> accommodations = accommodationService.searchAccommodationsByCriteria(
                 guests,

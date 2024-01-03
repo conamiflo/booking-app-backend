@@ -19,7 +19,7 @@ public class AccommodationReview extends Review{
     @ManyToOne(fetch = FetchType.LAZY)
     private Accommodation accommondation;
 
-    public AccommodationReview(Long id, User user, String description, int rating, LocalDate date, boolean reported, Accommodation accommodation) {
+    public AccommodationReview(Long id, User user, String description, int rating, Long date, boolean reported, Accommodation accommodation) {
         super(id, user, description, rating, date, reported);
         this.accommondation = accommodation;
     }
