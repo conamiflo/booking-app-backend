@@ -80,10 +80,11 @@ public class Accommodation {
         Long today = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
         if (priceList == null){
             priceList = new ArrayList<Price>();
-        }
-        for (Price price : priceList) {
-            if (price.getTimeSlot().contains(today)) {
-                return price.getPrice();
+        }else{
+            for (Price price : priceList) {
+                if (price.getTimeSlot().contains(today)) {
+                    return price.getPrice();
+                }
             }
         }
         return defaultPrice;
