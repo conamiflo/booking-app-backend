@@ -94,7 +94,7 @@ public class AccommodationController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAuthority('ROLE_Owner')")
+//    @PreAuthorize("hasAuthority('ROLE_Owner')")
     @Operation(summary = "Create accommodation", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<AccommodationDetailsDTO> createAccommodation(@RequestBody AccommodationDetailsDTO accommodation) throws Exception {
         Optional<AccommodationDetailsDTO> newAccommodation = accommodationService.create(accommodation, userService);
