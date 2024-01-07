@@ -21,7 +21,8 @@ public class ReviewMapper {
                     review.getDate(),
                     review.isReported(),
                     null,
-                    ((AccommodationReview) review).getAccommondation().getId()
+                    ((AccommodationReview) review).getAccommondation().getId(),
+                    review.isApproved()
             );
         }else{
             return new ReviewDTO(
@@ -32,7 +33,8 @@ public class ReviewMapper {
                     review.getDate(),
                     review.isReported(),
                     ((OwnerReview) review).getOwner().getEmail(),
-                    null
+                    null,
+                    review.isApproved()
             );
         }
     }
@@ -55,6 +57,7 @@ public class ReviewMapper {
                     reviewDTO.getRating(),
                     reviewDTO.getDate(),
                     reviewDTO.isReported(),
+                    reviewDTO.isApproved(),
                     userService.findById(reviewDTO.getOwnerEmail()).get()
             );
         }else{
@@ -65,6 +68,7 @@ public class ReviewMapper {
                     reviewDTO.getRating(),
                     reviewDTO.getDate(),
                     reviewDTO.isReported(),
+                    reviewDTO.isApproved(),
                     accommodationService.findById(reviewDTO.getAccommodationId()).get()
             );
         }

@@ -24,5 +24,5 @@ public class Review {
     private int rating;
     private Long date;
     private boolean reported;
-
+    private boolean approved;
 }
