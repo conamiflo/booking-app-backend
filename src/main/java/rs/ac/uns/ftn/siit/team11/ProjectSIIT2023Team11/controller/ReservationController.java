@@ -73,9 +73,9 @@ public class ReservationController {
         }
         Reservation newReservationEntry = ReservationMapper.mapToReservation(reservation, userService, accommodationService);
 
-        /*if(!newReservationEntry.isAvailable()){
+        if(!newReservationEntry.isAvailable()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }*/
+        }
 
         newReservationEntry.calculatePrice();
         newReservationEntry.setStatus(ReservationStatus.Waiting);

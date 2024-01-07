@@ -58,7 +58,7 @@ public class Reservation {
 
     public boolean isAvailable() {
         Long currentDate = startDate;
-        while (currentDate > endDate) {
+        while (currentDate < endDate) {
             boolean isAvailable = false;
             for (Availability availability : accommodation.getAvailability()) {
                 if (availability.getTimeSlot().contains(currentDate)) {
