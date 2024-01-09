@@ -91,7 +91,7 @@ public class AccommodationService implements IAccommodationService{
     }
 
     @Override
-    public Collection<Accommodation> searchAccommodationsByCriteria(Integer guests, String location, LocalDate startDate, LocalDate endDate) {
+    public Collection<Accommodation> searchAccommodationsByCriteria(Integer guests, String location, Long startDate, Long endDate) {
         return accommodationRepository.searchAccommodationsByCriteria(guests,location,startDate,endDate);
     }
 

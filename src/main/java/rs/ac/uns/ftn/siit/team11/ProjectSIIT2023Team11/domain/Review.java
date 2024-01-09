@@ -22,8 +22,7 @@ public class Review {
     private User guest;
     private String description;
     private int rating;
-    private LocalDate date;
+    private Long date;
     private boolean reported;
-
 
 }

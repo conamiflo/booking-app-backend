@@ -6,6 +6,8 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.AccommodationStatus;
 
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -38,7 +40,7 @@ public class AccommodationMapper {
                 accommodation.getName(),
                 accommodation.getDescription(),
                 accommodation.getLocation(),
-                accommodation.calculatePrice(),
+                accommodation.getDefaultPrice(),
                 accommodation.getPhotos(),
                 accommodation.getMinGuests(),
                 accommodation.getMaxGuests(),

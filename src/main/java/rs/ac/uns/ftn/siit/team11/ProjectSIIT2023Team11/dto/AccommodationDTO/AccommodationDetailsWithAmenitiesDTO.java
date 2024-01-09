@@ -16,7 +16,7 @@ public record AccommodationDetailsWithAmenitiesDTO (
         List<String> photos,
         int minGuests,
         int maxGuests,
-        LocalDate created,
+        Long created,
         String type,
         Collection<AmenityOutputDTO> amenities
 ){
@@ -76,7 +76,7 @@ public record AccommodationDetailsWithAmenitiesDTO (
     }
 
     @Override
-    public LocalDate created() {
+    public Long created() {
         return created;
     }
 }

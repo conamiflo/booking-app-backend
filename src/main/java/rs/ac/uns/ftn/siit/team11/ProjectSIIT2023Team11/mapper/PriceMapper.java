@@ -5,6 +5,10 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceDTO.InputPriceDT
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceDTO.PriceForEditDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceDTO.PriceForShowDTO;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 public class PriceMapper {
     public static PriceForShowDTO mapToPriceForShowDto(Price price) {
         return new PriceForShowDTO(
@@ -26,8 +30,8 @@ public class PriceMapper {
 
     public static PriceForEditDTO mapToPriceDto(Price price) {
         PriceForEditDTO priceDto = new PriceForEditDTO();
-        priceDto.setFrom(price.getTimeSlot().getStartDate().toString());
-        priceDto.setTo(price.getTimeSlot().getEndDate().toString());
+        priceDto.setFrom(Instant.ofEpochSecond(price.getTimeSlot().getStartEpochTime()).atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        priceDto.setTo(Instant.ofEpochSecond(price.getTimeSlot().getEndEpochTime()).atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         priceDto.setPrice(price.getPrice());
         return priceDto;
     }

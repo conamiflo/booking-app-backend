@@ -12,14 +12,16 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Embeddable
 public class TimeSlot {
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private Long startEpochTime;
+    private Long endEpochTime;
 
-    public boolean contains(LocalDate date){
-        return !date.isBefore(startDate) && !date.isAfter(endDate);
+
+    public boolean contains(Long epochTime) {
+        return epochTime >= startEpochTime && epochTime <= endEpochTime;
     }
-    public boolean overlapsWith(TimeSlot timeSlot){
-        return (startDate.isBefore(timeSlot.endDate) && endDate.isAfter(timeSlot.startDate)) ||
-                (timeSlot.startDate.isBefore(endDate) && timeSlot.endDate.isAfter(startDate));
+
+    public boolean overlapsWith(TimeSlot timeSlot) {
+        return (startEpochTime < timeSlot.endEpochTime && endEpochTime > timeSlot.startEpochTime) ||
+                (timeSlot.startEpochTime < endEpochTime && timeSlot.endEpochTime > startEpochTime);
     }
 }
