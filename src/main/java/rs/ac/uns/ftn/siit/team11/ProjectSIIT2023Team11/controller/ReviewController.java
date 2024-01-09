@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Review;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReviewDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AccommodationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.ReviewMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IReviewService;
@@ -14,6 +15,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -43,10 +45,37 @@ public class ReviewController {
         return new ResponseEntity<>(ReviewMapper.mapToReviewDTO(review.get()), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/owner/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<ReviewDTO>> getReviewsByOwnerEmail(@PathVariable("email") String email) {
+        Collection<Review> reviews = reviewService.findAllByOwnerEmail(email);
+        if (reviews.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Collection<ReviewDTO> reviewDTOs = reviews.stream()
+                .map(ReviewMapper::mapToReviewDTO)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(reviewDTOs, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/accommodation/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<ReviewDTO>> getReviewsByAccommodationId(@PathVariable("id") Long id) {
+        Collection<Review> reviews = reviewService.findAllByAccommodationId(id);
+        if (reviews.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Collection<ReviewDTO> reviewDTOs = reviews.stream()
+                .map(ReviewMapper::mapToReviewDTO)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(reviewDTOs, HttpStatus.OK);
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReviewDTO> createReview(@RequestBody ReviewDTO reviewDTO) throws Exception {
-        if((reviewDTO.getOwnerEmail() == null && reviewDTO.getAccommodationId() == null)
-        || (reviewDTO.getOwnerEmail() != null && reviewDTO.getAccommodationId() != null)){
+        if((reviewDTO.getOwnerEmail().equals("") && reviewDTO.getAccommodationId() == 0)){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         try{
