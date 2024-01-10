@@ -74,16 +74,37 @@ public class UserController {
     @GetMapping(value = "/{email}/favorite_accommodation/{accommodationId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FavoriteAccommodationDTO> getIsFavoriteAccommodation(@PathVariable("email") String email, @PathVariable("accommodationId") Long accommodationId) {
         Optional<User> user = userService.findById(email);
-        if (user.isEmpty()) {
+        Optional<Accommodation> accommodation = accommodationService.findById(accommodationId);
+        if (user.isEmpty() || accommodation.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if(userService.userContainsFavoriteAccommodation(user.get(),accommodationId))
-        {
-            return new ResponseEntity<>(new FavoriteAccommodationDTO(true),HttpStatus.OK);
 
+        if(user.get().getFavoriteAccommodations().contains(accommodation.get()))
+        {
+            return new ResponseEntity<>(new FavoriteAccommodationDTO(accommodationId,true),HttpStatus.OK);
         }
-        return new ResponseEntity<>(new FavoriteAccommodationDTO(false),HttpStatus.OK);
+        return new ResponseEntity<>(new FavoriteAccommodationDTO(accommodationId, false),HttpStatus.OK);
     }
+
+    @Operation(summary = "Update Users Favorite Accommodation.")
+    @PutMapping("/{email}/favorite_accommodation")
+    public ResponseEntity<FavoriteAccommodationDTO> setFavoriteAccommodation(@PathVariable("email") String userId, @RequestBody FavoriteAccommodationDTO favoriteAccommodationDTO){
+        Optional<User> user = userService.findById(userId);
+        Optional<Accommodation> accommodation = accommodationService.findById(favoriteAccommodationDTO.getAccommodationId());
+        if(user.isEmpty() || accommodation.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if(favoriteAccommodationDTO.isFavorite())
+            user.get().getFavoriteAccommodations().remove(accommodation.get());
+        else{
+            user.get().getFavoriteAccommodations().add(accommodation.get());
+        }
+        userService.save(user.get());
+        return new ResponseEntity<>(favoriteAccommodationDTO, HttpStatus.OK);
+    }
+
+
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserRegistrationDTO> registerUserWithRole(@RequestBody UserRegistrationDTO registeredUser) throws Exception {
         EmailSender emailSender = new EmailSender();

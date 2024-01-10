@@ -49,13 +49,4 @@ public class UserService implements IUserService {
         return this.userRepository.save(userRequest);
     }
 
-    @Override
-    public boolean userContainsFavoriteAccommodation(User user, Long accommodationId) {
-        for(Accommodation favoriteAccommodationID : user.getFavoriteAccommodations()){
-            if (favoriteAccommodationID.getId().equals(accommodationId)){
-                return true;
-            }
-        }
-        return false;
-    }
 }

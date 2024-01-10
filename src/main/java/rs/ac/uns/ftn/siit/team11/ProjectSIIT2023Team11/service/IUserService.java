@@ -17,5 +17,5 @@ public interface IUserService {
     boolean isLoginValid(String email, String password);
     User register(User userRequest);
 
-    boolean userContainsFavoriteAccommodation(User user, Long accommodationId);
+
 }
