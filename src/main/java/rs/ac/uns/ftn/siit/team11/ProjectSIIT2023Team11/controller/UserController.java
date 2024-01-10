@@ -13,6 +13,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Guest;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Owner;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.FavoriteAccommodationDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserDTO.GuestForShowDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserDTO.UserForShowDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserDTO.UserLoginDTO;
@@ -70,7 +71,19 @@ public class UserController {
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @GetMapping(value = "/{email}/favorite_accommodation/{accommodationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<FavoriteAccommodationDTO> getIsFavoriteAccommodation(@PathVariable("email") String email, @PathVariable("accommodationId") Long accommodationId) {
+        Optional<User> user = userService.findById(email);
+        if (user.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if(userService.userContainsFavoriteAccommodation(user.get(),accommodationId))
+        {
+            return new ResponseEntity<>(new FavoriteAccommodationDTO(true),HttpStatus.OK);
 
+        }
+        return new ResponseEntity<>(new FavoriteAccommodationDTO(false),HttpStatus.OK);
+    }
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserRegistrationDTO> registerUserWithRole(@RequestBody UserRegistrationDTO registeredUser) throws Exception {
         EmailSender emailSender = new EmailSender();

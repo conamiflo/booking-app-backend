@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IUserRepository;
 
@@ -46,5 +47,15 @@ public class UserService implements IUserService {
         userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
         return this.userRepository.save(userRequest);
+    }
+
+    @Override
+    public boolean userContainsFavoriteAccommodation(User user, Long accommodationId) {
+        for(Accommodation favoriteAccommodationID : user.getFavoriteAccommodations()){
+            if (favoriteAccommodationID.getId().equals(accommodationId)){
+                return true;
+            }
+        }
+        return false;
     }
 }

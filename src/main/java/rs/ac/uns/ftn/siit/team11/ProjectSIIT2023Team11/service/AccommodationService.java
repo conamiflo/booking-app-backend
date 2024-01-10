@@ -6,6 +6,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AccommodationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IAccommodationRepository;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IUserRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ public class AccommodationService implements IAccommodationService{
 
     @Autowired
     private IAccommodationRepository accommodationRepository;
+    @Autowired
+    private IUserRepository userRepository;
     public <S extends Accommodation> S save(S entity) {
         return accommodationRepository.save(entity);
     }
@@ -30,8 +33,20 @@ public class AccommodationService implements IAccommodationService{
         return accommodationRepository.findById(aLong);
     }
 
+
     public void deleteById(Long aLong) {
+        deleteAccommodationFromUserFavorites(aLong);
         accommodationRepository.deleteById(aLong);
+    }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    private void deleteAccommodationFromUserFavorites(Long aLong) {
+        for(User user: userRepository.findAll()){
+            while (user.getFavoriteAccommodations() != null && user.getFavoriteAccommodations().contains(findById(aLong).get())) {
+                user.getFavoriteAccommodations().remove(findById(aLong).get());
+                userRepository.save(user);
+            }
+        }
     }
 
     public Collection<Accommodation> findAccommodationsByPendingStatus(){
