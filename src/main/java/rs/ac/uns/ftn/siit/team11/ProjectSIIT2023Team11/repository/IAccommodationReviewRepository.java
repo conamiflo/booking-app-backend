@@ -9,5 +9,8 @@ import java.util.Collection;
 
 @Repository
 public interface IAccommodationReviewRepository extends JpaRepository<AccommodationReview,Long> {
-    Collection<Review> findAllByAccommondation_Id(Long id);
+    Collection<Review> findAllByAccommondation_IdAndApprovedFalse(Long id);
+    Collection<Review> findAllByAccommondation_IdAndApprovedTrue(Long id);
+    Collection<AccommodationReview> findAllByGuestEmail(String guestEmail);
 }
+

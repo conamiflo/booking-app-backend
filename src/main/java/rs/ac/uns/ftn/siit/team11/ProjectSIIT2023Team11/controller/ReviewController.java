@@ -4,12 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Review;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReviewDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AccommodationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.ReviewMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IReservationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IReviewService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 
@@ -30,6 +32,9 @@ public class ReviewController {
     @Autowired
     private IAccommodationService accommodationService;
 
+    @Autowired
+    IReservationService reservationService;
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<ReviewDTO>> getReviews() {
         Collection<Review> reviews = reviewService.findAll();
@@ -46,8 +51,8 @@ public class ReviewController {
     }
 
     @GetMapping(value = "/owner/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<ReviewDTO>> getReviewsByOwnerEmail(@PathVariable("email") String email) {
-        Collection<Review> reviews = reviewService.findAllByOwnerEmail(email);
+    public ResponseEntity<Collection<ReviewDTO>> getApprovedReviewsByOwnerEmail(@PathVariable("email") String email) {
+        Collection<Review> reviews = reviewService.findAllApprovedByOwnerEmail(email);
         if (reviews.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -60,8 +65,8 @@ public class ReviewController {
     }
 
     @GetMapping(value = "/accommodation/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<ReviewDTO>> getReviewsByAccommodationId(@PathVariable("id") Long id) {
-        Collection<Review> reviews = reviewService.findAllByAccommodationId(id);
+    public ResponseEntity<Collection<ReviewDTO>> getApprovedReviewsByAccommodationId(@PathVariable("id") Long id) {
+        Collection<Review> reviews = reviewService.findAllApprovedByAccommodationId(id);
         if (reviews.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -73,14 +78,49 @@ public class ReviewController {
         return new ResponseEntity<>(reviewDTOs, HttpStatus.OK);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReviewDTO> createReview(@RequestBody ReviewDTO reviewDTO) throws Exception {
-        if((reviewDTO.getOwnerEmail().equals("") && reviewDTO.getAccommodationId() == 0)){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    @GetMapping(value = "/owner/notapproved/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<ReviewDTO>> getNotApprovedReviewsByOwnerEmail(@PathVariable("email") String email) {
+        Collection<Review> reviews = reviewService.findAllNotApprovedByOwnerEmail(email);
+        if (reviews.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
+        Collection<ReviewDTO> reviewDTOs = reviews.stream()
+                .map(ReviewMapper::mapToReviewDTO)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(reviewDTOs, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/accommodation/notapproved/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<ReviewDTO>> getNotApprovedReviewsByAccommodationId(@PathVariable("id") Long id) {
+        Collection<Review> reviews = reviewService.findAllNotApprovedByAccommodationId(id);
+        if (reviews.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Collection<ReviewDTO> reviewDTOs = reviews.stream()
+                .map(ReviewMapper::mapToReviewDTO)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(reviewDTOs, HttpStatus.OK);
+    }
+    @PreAuthorize("hasAuthority('ROLE_Guest')")
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> createReview(@RequestBody ReviewDTO reviewDTO) throws Exception {
+        if(!reviewService.canReviewOwnerOrAccommodation(reviewDTO.getGuestEmail(),reviewDTO.getOwnerEmail())){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You already sent a review!");
+        }
+//        else if(!reviewDTO.getOwnerEmail().equals("") && !reservationService.hasUnCancelledReservation(reviewDTO.getGuestEmail(),reviewDTO.getOwnerEmail())){
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You can't review owner without having reservations in his apartments! ");
+//        }
+//        else if (reviewDTO.getOwnerEmail().equals("") && !reservationService.canReviewAccommodation(reviewDTO.getGuestEmail(),reviewDTO.getAccommodationId())) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You don't have reservations in the past 7 days! ");
+//        }
+
         try{
             reviewService.save(ReviewMapper.mapDtoToReview(reviewDTO, userService, accommodationService));
-            return new ResponseEntity<>(reviewDTO, HttpStatus.CREATED);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception exception){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

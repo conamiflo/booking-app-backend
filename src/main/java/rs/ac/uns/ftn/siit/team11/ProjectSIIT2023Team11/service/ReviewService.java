@@ -42,11 +42,35 @@ public class ReviewService implements IReviewService{
     }
 
     @Override
-    public Collection<Review> findAllByOwnerEmail(String email) {
-        return ownerReviewRepository.findAllByOwnerEmail(email);
+    public Collection<Review> findAllApprovedByOwnerEmail(String email) {
+        return ownerReviewRepository.findAllByOwnerEmailAndApprovedFalse(email);
     }
     @Override
-    public Collection<Review> findAllByAccommodationId(Long id) {
-        return accommodationReviewRepository.findAllByAccommondation_Id(id);
+    public Collection<Review> findAllApprovedByAccommodationId(Long id) {
+        return accommodationReviewRepository.findAllByAccommondation_IdAndApprovedFalse(id);
+    }
+
+    @Override
+    public Collection<Review> findAllNotApprovedByOwnerEmail(String email) {
+        return ownerReviewRepository.findAllByOwnerEmailAndApprovedFalse(email);
+    }
+
+    @Override
+    public Collection<Review> findAllNotApprovedByAccommodationId(Long id) {
+        return accommodationReviewRepository.findAllByAccommondation_IdAndApprovedFalse(id);
+    }
+
+    @Override
+    public boolean canReviewOwnerOrAccommodation(String email,String ownerEmail) {
+        if(ownerEmail.equals("")){
+            if (accommodationReviewRepository.findAllByGuestEmail(email).isEmpty()) {
+                return true;
+            }
+        }else{
+            if(ownerReviewRepository.findAllByGuestEmail(email).isEmpty()){
+                return true;
+            }
+        }
+        return false;
     }
 }

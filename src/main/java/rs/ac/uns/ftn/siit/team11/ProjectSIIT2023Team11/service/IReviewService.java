@@ -14,6 +14,12 @@ public interface IReviewService {
     Optional<Review> findById(Long aLong);
 
     void deleteById(Long aLong);
-    Collection<Review> findAllByOwnerEmail(String email);
-    Collection<Review> findAllByAccommodationId(Long id);
+    Collection<Review> findAllApprovedByOwnerEmail(String email);
+    Collection<Review> findAllApprovedByAccommodationId(Long id);
+
+    Collection<Review> findAllNotApprovedByOwnerEmail(String email);
+    Collection<Review> findAllNotApprovedByAccommodationId(Long id);
+
+    boolean canReviewOwnerOrAccommodation(String email,String ownerEmail);
+
 }

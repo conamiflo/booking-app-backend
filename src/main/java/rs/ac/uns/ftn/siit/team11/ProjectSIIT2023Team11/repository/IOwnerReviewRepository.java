@@ -9,5 +9,8 @@ import java.util.Collection;
 
 @Repository
 public interface IOwnerReviewRepository extends JpaRepository<OwnerReview,Long> {
-    Collection<Review> findAllByOwnerEmail(String email);
+    Collection<Review> findAllByOwnerEmailAndApprovedFalse(String email);
+    Collection<Review> findAllByOwnerEmailAndApprovedTrue(String email);
+    Collection<OwnerReview> findAllByGuestEmail(String guestEmail);
+
 }
