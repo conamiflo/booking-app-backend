@@ -117,7 +117,6 @@ public class ReviewController {
 //        else if (reviewDTO.getOwnerEmail().equals("") && !reservationService.canReviewAccommodation(reviewDTO.getGuestEmail(),reviewDTO.getAccommodationId())) {
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You don't have reservations in the past 7 days! ");
 //        }
-
         try{
             reviewService.save(ReviewMapper.mapDtoToReview(reviewDTO, userService, accommodationService));
             return new ResponseEntity<>(HttpStatus.CREATED);

@@ -20,5 +20,4 @@ public class Report {
     @ManyToOne(cascade={CascadeType.ALL}, fetch = FetchType.LAZY)
     private User receiver;
     private String content;
-    private ReviewStatus status;
 }

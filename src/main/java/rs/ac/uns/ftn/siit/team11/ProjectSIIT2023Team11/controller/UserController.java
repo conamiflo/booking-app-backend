@@ -58,6 +58,25 @@ public class UserController {
         return new ResponseEntity<>(UserMapper.mapToUserDto(user.get()), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/owners/{guestEmail}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<String>> getOwnersForGuestReport(@PathVariable("guestEmail") String guestEmail) {
+        Optional<User> user = userService.findById(guestEmail);
+        if (user.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Collection<String> owners = userService.findOwnersForGuestReport(guestEmail);
+        return new ResponseEntity<>(owners, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/guests/{ownerEmail}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<String>> getGuestsForOwnerReport(@PathVariable("ownerEmail") String ownerEmail) {
+        Optional<User> user = userService.findById(ownerEmail);
+        if (user.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Collection<String> owners = userService.findGuestsForOwnerReport(ownerEmail);
+        return new ResponseEntity<>(owners, HttpStatus.OK);
+    }
 
     @GetMapping(value = "/activation/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> activateUser(@PathVariable("email") String email) {

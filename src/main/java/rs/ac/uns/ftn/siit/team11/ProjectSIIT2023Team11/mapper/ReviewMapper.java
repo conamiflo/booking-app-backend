@@ -49,7 +49,7 @@ public class ReviewMapper {
 
     public static Review mapDtoToReview(ReviewDTO reviewDTO, IUserService userService, IAccommodationService accommodationService){
 
-        if(reviewDTO.getAccommodationId() == 0){
+        if(reviewDTO.getAccommodationId() == null || reviewDTO.getAccommodationId() == 0){
             return new OwnerReview(
                     reviewDTO.getId(),
                     userService.findById(reviewDTO.getGuestEmail()).get(),
