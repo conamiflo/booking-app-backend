@@ -25,10 +25,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IReservationServi
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.EmailSender;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -78,8 +75,12 @@ public class UserController {
         if (user.isEmpty() || accommodation.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
-        if(user.get().getFavoriteAccommodations().contains(accommodation.get()))
+        List<Accommodation> favoriteAccommodations =((Guest) user.get()).getFavoriteAccommodations();
+        if (favoriteAccommodations == null) {
+            // If the list is null, set it to an empty ArrayList
+            ((Guest) user.get()).setFavoriteAccommodations(new ArrayList<>());
+        }
+        if(((Guest) user.get()).getFavoriteAccommodations().contains(accommodation.get()))
         {
             return new ResponseEntity<>(new FavoriteAccommodationDTO(accommodationId,true),HttpStatus.OK);
         }
@@ -95,10 +96,15 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        if(favoriteAccommodationDTO.isFavorite())
-            user.get().getFavoriteAccommodations().remove(accommodation.get());
+        if(!favoriteAccommodationDTO.isFavorite())
+            ((Guest) user.get()).getFavoriteAccommodations().remove(accommodation.get());
         else{
-            user.get().getFavoriteAccommodations().add(accommodation.get());
+            List<Accommodation> favoriteAccommodations = ((Guest) user.get()).getFavoriteAccommodations();
+            if (favoriteAccommodations == null) {
+                // If the list is null, set it to an empty ArrayList
+                ((Guest) user.get()).setFavoriteAccommodations(new ArrayList<>());
+            }
+            ((Guest) user.get()).getFavoriteAccommodations().add(accommodation.get());
         }
         userService.save(user.get());
         return new ResponseEntity<>(favoriteAccommodationDTO, HttpStatus.OK);

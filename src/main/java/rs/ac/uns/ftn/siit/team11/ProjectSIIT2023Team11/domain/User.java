@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -28,12 +29,6 @@ public class User {
     private String phoneNumber;
     private boolean notifications;
     private String photo;
-    @JoinTable(
-            name = "favorite_accommodations",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "accommodation_id"))
-    @OneToMany
-    private List<Accommodation> favoriteAccommodations;
 
     @Transient
     private String jwt;

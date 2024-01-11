@@ -1,13 +1,21 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+
+@Getter
+@Setter
 public class FavoriteAccommodationDTO {
     private Long accommodationId;
-    private boolean isFavorite;
+    private boolean favorite;
+
+    public FavoriteAccommodationDTO(Long accommodationId, boolean favorite) {
+        this.accommodationId = accommodationId;
+        this.favorite = favorite;
+    }
+
+    public FavoriteAccommodationDTO() {
+
+    }
+
 }

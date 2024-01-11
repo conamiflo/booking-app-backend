@@ -42,8 +42,11 @@ public class AccommodationService implements IAccommodationService{
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     private void deleteAccommodationFromUserFavorites(Long aLong) {
         for(User user: userRepository.findAll()){
-            while (user.getFavoriteAccommodations() != null && user.getFavoriteAccommodations().contains(findById(aLong).get())) {
-                user.getFavoriteAccommodations().remove(findById(aLong).get());
+            if(!(user instanceof Guest)){
+                continue;
+            }
+            while (((Guest)user).getFavoriteAccommodations() != null && ((Guest)user).getFavoriteAccommodations().contains(findById(aLong).get())) {
+                ((Guest)user).getFavoriteAccommodations().remove(findById(aLong).get());
                 userRepository.save(user);
             }
         }
