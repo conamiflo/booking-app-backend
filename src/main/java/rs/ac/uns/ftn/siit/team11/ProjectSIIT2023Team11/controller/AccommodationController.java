@@ -217,6 +217,7 @@ public class AccommodationController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         amenityService.deleteAccommodationFromAmenities(accommodation.get());
+
         accommodationService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
