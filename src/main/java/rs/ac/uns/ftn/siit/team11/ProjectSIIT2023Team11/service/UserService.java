@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IUserRepository;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
 import java.util.Collection;
 import java.util.List;
@@ -44,14 +45,12 @@ public class UserService implements IUserService {
         userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         return this.userRepository.save(userRequest);
     }
-
     @Override
     public Collection<String> findOwnersForGuestReport(String guestEmail) {
-        return userRepository.findOwnersForGuestReport(guestEmail);
+        return userRepository.findOwnersForGuestReport(guestEmail, ReservationStatus.Accepted,ReservationStatus.Finished);
     }
-
     @Override
     public Collection<String> findGuestsForOwnerReport(String ownerEmail) {
-        return userRepository.findGuestsForOwnerReport(ownerEmail);
+        return userRepository.findGuestsForOwnerReport(ownerEmail, ReservationStatus.Accepted,ReservationStatus.Finished);
     }
 }

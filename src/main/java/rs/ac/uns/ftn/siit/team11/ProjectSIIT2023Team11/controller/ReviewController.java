@@ -111,12 +111,12 @@ public class ReviewController {
         if(!reviewService.canReviewOwnerOrAccommodation(reviewDTO.getGuestEmail(),reviewDTO.getOwnerEmail())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You already sent a review!");
         }
-//        else if(!reviewDTO.getOwnerEmail().equals("") && !reservationService.hasUnCancelledReservation(reviewDTO.getGuestEmail(),reviewDTO.getOwnerEmail())){
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You can't review owner without having reservations in his apartments! ");
-//        }
-//        else if (reviewDTO.getOwnerEmail().equals("") && !reservationService.canReviewAccommodation(reviewDTO.getGuestEmail(),reviewDTO.getAccommodationId())) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You don't have reservations in the past 7 days! ");
-//        }
+        else if(!reviewDTO.getOwnerEmail().equals("") && !reservationService.hasUnCancelledReservation(reviewDTO.getGuestEmail(),reviewDTO.getOwnerEmail())){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You can't review owner without having reservations in his apartments! ");
+        }
+        else if (reviewDTO.getOwnerEmail().equals("") && !reservationService.canReviewAccommodation(reviewDTO.getGuestEmail(),reviewDTO.getAccommodationId())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You don't have reservations in the past 7 days! ");
+        }
         try{
             reviewService.save(ReviewMapper.mapDtoToReview(reviewDTO, userService, accommodationService));
             return new ResponseEntity<>(HttpStatus.CREATED);
