@@ -13,6 +13,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Guest;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Owner;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsWithAmenitiesDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.FavoriteAccommodationDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserDTO.GuestForShowDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserDTO.UserForShowDTO;
@@ -198,7 +199,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('ROLE_Guest')")
     @Operation(summary = "Get favorite accommodations", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/{email}/favorite_accommodation")
-    public ResponseEntity<GuestForShowDTO> getGuestsFavoriteAccommodations(@PathVariable("email") String email){
+    public ResponseEntity<Collection<AccommodationDetailsWithAmenitiesDTO>> getGuestsFavoriteAccommodations(@PathVariable("email") String email){
         Optional<User> user = userService.findById(email);
         if(user.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -206,7 +207,7 @@ public class UserController {
         if(!(user.get() instanceof Guest guest)){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(UserMapper.mapGuestToGuestForShowDTO(guest), HttpStatus.OK);
+        return new ResponseEntity<>(AccommodationMapper.mapToAccommodationsDetailsAmenityDto(guest.getFavoriteAccommodations()), HttpStatus.OK);
     }
 
     @DeleteMapping("/{email}/favorite_accommodation/{accommodationId}")
