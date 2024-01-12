@@ -16,4 +16,6 @@ public interface IUserService {
     void deleteById(String s);
     boolean isLoginValid(String email, String password);
     User register(User userRequest);
+
+
 }

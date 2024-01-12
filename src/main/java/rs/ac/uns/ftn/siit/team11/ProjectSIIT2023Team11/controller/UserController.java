@@ -13,6 +13,8 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Guest;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Owner;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsWithAmenitiesDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.FavoriteAccommodationDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserDTO.GuestForShowDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserDTO.UserForShowDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserDTO.UserLoginDTO;
@@ -24,10 +26,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IReservationServi
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.EmailSender;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -70,6 +69,48 @@ public class UserController {
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @GetMapping(value = "/{email}/favorite_accommodation/{accommodationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<FavoriteAccommodationDTO> getIsFavoriteAccommodation(@PathVariable("email") String email, @PathVariable("accommodationId") Long accommodationId) {
+        Optional<User> user = userService.findById(email);
+        Optional<Accommodation> accommodation = accommodationService.findById(accommodationId);
+        if (user.isEmpty() || accommodation.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        List<Accommodation> favoriteAccommodations =((Guest) user.get()).getFavoriteAccommodations();
+        if (favoriteAccommodations == null) {
+            // If the list is null, set it to an empty ArrayList
+            ((Guest) user.get()).setFavoriteAccommodations(new ArrayList<>());
+        }
+        if(((Guest) user.get()).getFavoriteAccommodations().contains(accommodation.get()))
+        {
+            return new ResponseEntity<>(new FavoriteAccommodationDTO(accommodationId,true),HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new FavoriteAccommodationDTO(accommodationId, false),HttpStatus.OK);
+    }
+
+    @Operation(summary = "Update Users Favorite Accommodation.")
+    @PutMapping("/{email}/favorite_accommodation")
+    public ResponseEntity<FavoriteAccommodationDTO> setFavoriteAccommodation(@PathVariable("email") String userId, @RequestBody FavoriteAccommodationDTO favoriteAccommodationDTO){
+        Optional<User> user = userService.findById(userId);
+        Optional<Accommodation> accommodation = accommodationService.findById(favoriteAccommodationDTO.getAccommodationId());
+        if(user.isEmpty() || accommodation.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if(!favoriteAccommodationDTO.isFavorite())
+            ((Guest) user.get()).getFavoriteAccommodations().remove(accommodation.get());
+        else{
+            List<Accommodation> favoriteAccommodations = ((Guest) user.get()).getFavoriteAccommodations();
+            if (favoriteAccommodations == null) {
+                // If the list is null, set it to an empty ArrayList
+                ((Guest) user.get()).setFavoriteAccommodations(new ArrayList<>());
+            }
+            ((Guest) user.get()).getFavoriteAccommodations().add(accommodation.get());
+        }
+        userService.save(user.get());
+        return new ResponseEntity<>(favoriteAccommodationDTO, HttpStatus.OK);
+    }
+
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserRegistrationDTO> registerUserWithRole(@RequestBody UserRegistrationDTO registeredUser) throws Exception {
@@ -158,7 +199,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('ROLE_Guest')")
     @Operation(summary = "Get favorite accommodations", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/{email}/favorite_accommodation")
-    public ResponseEntity<GuestForShowDTO> getGuestsFavoriteAccommodations(@PathVariable("email") String email){
+    public ResponseEntity<Collection<AccommodationDetailsWithAmenitiesDTO>> getGuestsFavoriteAccommodations(@PathVariable("email") String email){
         Optional<User> user = userService.findById(email);
         if(user.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -166,7 +207,7 @@ public class UserController {
         if(!(user.get() instanceof Guest guest)){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(UserMapper.mapGuestToGuestForShowDTO(guest), HttpStatus.OK);
+        return new ResponseEntity<>(AccommodationMapper.mapToAccommodationsDetailsAmenityDto(guest.getFavoriteAccommodations()), HttpStatus.OK);
     }
 
     @DeleteMapping("/{email}/favorite_accommodation/{accommodationId}")

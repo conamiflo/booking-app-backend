@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsWithAmenitiesDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationIsAutomaticApprovalDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationPricesDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AmenityOutputDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.PriceDTO.InputPriceDTO;
@@ -91,6 +92,26 @@ public class AccommodationController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(AccommodationMapper.mapToAccommodationDetailsDto(accommodation.get()), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}/approval", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccommodationIsAutomaticApprovalDTO> getAccommodationIsAutomaticApprovalById(@PathVariable("id") Long id) {
+        Optional<Accommodation> accommodation = accommodationService.findById(id);
+        if (accommodation.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(new AccommodationIsAutomaticApprovalDTO(accommodation.get().getId(),accommodation.get().isAutomaticApproval()), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/approval", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccommodationIsAutomaticApprovalDTO> setAccommodationIsAutomaticApprovalById(@RequestBody AccommodationIsAutomaticApprovalDTO accommodationIsAutomaticApprovalDTO) {
+        Optional<Accommodation> accommodation = accommodationService.findById(accommodationIsAutomaticApprovalDTO.getId());
+        if (accommodation.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        accommodation.get().setAutomaticApproval(accommodationIsAutomaticApprovalDTO.isAutomaticApproval());
+        accommodationService.save(accommodation.get());
+        return new ResponseEntity<>(accommodationIsAutomaticApprovalDTO, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -196,6 +217,7 @@ public class AccommodationController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         amenityService.deleteAccommodationFromAmenities(accommodation.get());
+
         accommodationService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

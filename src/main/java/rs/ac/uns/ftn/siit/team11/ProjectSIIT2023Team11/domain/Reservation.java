@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.PriceType;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
 import java.time.LocalDate;
@@ -40,7 +41,12 @@ public class Reservation {
             if (dailyPrice == null) {
                 dailyPrice = accommodation.getDefaultPrice();
             }
-            totalPrice += dailyPrice;
+            if(accommodation.getPriceType().equals(PriceType.PerGuest)){
+                totalPrice += dailyPrice*numberOfGuests;
+            }
+            else {
+                totalPrice += dailyPrice;
+            }
             currentDate = currentDate + (1 * 24 * 60 * 60); // Move to the next day
         }
         setPrice(totalPrice);

@@ -2,13 +2,13 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IReservationRepository;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -81,6 +81,7 @@ public class ReservationService implements IReservationService {
         return false;
     }
 
+
     @Override
     public void declineWaitingReservations(Long startDate, Long endDate, Long accommodationId){
         for(Reservation reservation : reservationRepository.findAll()){
@@ -91,5 +92,22 @@ public class ReservationService implements IReservationService {
                     save(reservation);
             }
         }
+
+    @Override
+    public boolean hasUnCancelledReservation(String guestEmail, String ownerEmail) {
+        return reservationRepository.hasUnCancelledReservationWithOwnerAndStatus(guestEmail,ownerEmail,ReservationStatus.Accepted,ReservationStatus.Finished);
+    }
+
+    @Override
+    public boolean canReviewAccommodation(String guestEmail, Long accommodationId) {
+        Collection<Reservation> reservations = reservationRepository.findReservationsForAccommodationReview(guestEmail,accommodationId,ReservationStatus.Accepted,ReservationStatus.Finished) ;
+        for (Reservation reservation: reservations) {
+            Instant endDate = Instant.ofEpochSecond(reservation.getEndDate());
+            if (Instant.now().isAfter(endDate) && Instant.now().isBefore(endDate.plus(7, ChronoUnit.DAYS))) {
+                return true;
+            }
+        }
+        return false;
+
     }
 }

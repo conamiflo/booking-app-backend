@@ -18,4 +18,5 @@ public class ReviewDTO {
     private boolean reported;
     private String ownerEmail;
     private Long accommodationId;
+    private boolean approved;
 }
