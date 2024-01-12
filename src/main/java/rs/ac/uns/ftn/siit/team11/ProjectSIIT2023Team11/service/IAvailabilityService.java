@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Availability;
 
 import java.util.List;
@@ -15,5 +16,7 @@ public interface IAvailabilityService {
     void deleteById(Long aLong);
 
     void deleteAvailabilities(List<Availability> availabilities);
+
+    void fitAcceptedReservation(Long startDate, Long endDate, Accommodation accommodation);
 
 }

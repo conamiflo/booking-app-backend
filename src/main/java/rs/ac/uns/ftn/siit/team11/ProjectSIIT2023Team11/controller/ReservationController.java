@@ -17,6 +17,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.GuestReservationMa
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.OwnerReservationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.ReservationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAvailabilityService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IReservationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
@@ -39,6 +40,9 @@ public class ReservationController {
 
     @Autowired
     private IAccommodationService accommodationService;
+
+    @Autowired
+    private IAvailabilityService availabilityService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<ReservationForShowDTO>> getReservations() {
@@ -99,6 +103,10 @@ public class ReservationController {
         if (existingReservation.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
+        reservationService.declineWaitingReservations(existingReservation.get().getStartDate(), existingReservation.get().getEndDate(), existingReservation.get().getAccommodation().getId());
+        availabilityService.fitAcceptedReservation(existingReservation.get().getStartDate(), existingReservation.get().getEndDate(), existingReservation.get().getAccommodation());
+
         existingReservation.get().setStatus(ReservationStatus.Accepted);
         Reservation updatedReservation = reservationService.save(existingReservation.get());
         return new ResponseEntity<>(OwnerReservationMapper.mapToOwnerReservationDTO(updatedReservation), HttpStatus.OK);

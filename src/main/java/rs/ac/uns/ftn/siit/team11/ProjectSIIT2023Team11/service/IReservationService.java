@@ -33,4 +33,6 @@ public interface IReservationService {
     boolean anyReservationInFuture(Accommodation accommodation);
 
     boolean guestHasActiveReservations(String email);
+
+    void declineWaitingReservations(Long startDate, Long endDate, Long accommodationId);
 }
