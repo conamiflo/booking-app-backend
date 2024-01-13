@@ -59,7 +59,7 @@ public class Reservation {
                 return price.getPrice();
             }
         }
-        return null; // If no price is found for the date
+        return null;
     }
 
     public boolean isAvailable() {
