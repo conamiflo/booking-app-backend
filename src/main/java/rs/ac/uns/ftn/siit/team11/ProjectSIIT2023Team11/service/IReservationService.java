@@ -36,7 +36,11 @@ public interface IReservationService {
 
     boolean guestHasActiveReservations(String email);
 
+
+    void declineWaitingReservations(Long startDate, Long endDate, Long accommodationId);
+
     boolean hasUnCancelledReservation(@Param("guestEmail") String guestEmail, @Param("ownerEmail") String ownerEmail);
 
     boolean canReviewAccommodation(@Param("guestEmail") String guestEmail, @Param("accommodationId") Long accommodationId);
+
 }

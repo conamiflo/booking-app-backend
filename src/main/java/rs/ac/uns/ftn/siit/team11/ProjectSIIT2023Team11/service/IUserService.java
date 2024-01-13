@@ -20,4 +20,5 @@ public interface IUserService {
     User register(User userRequest);
     Collection<String> findOwnersForGuestReport(@Param("guestEmail") String guestEmail);
     Collection<String> findGuestsForOwnerReport(@Param("ownerEmail") String ownerEmail);
+
 }

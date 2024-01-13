@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -79,6 +80,19 @@ public class ReservationService implements IReservationService {
         }
         return false;
     }
+
+
+    @Override
+    public void declineWaitingReservations(Long startDate, Long endDate, Long accommodationId){
+        for(Reservation reservation : reservationRepository.findAll()){
+            if((Objects.equals(reservation.getAccommodation().getId(), accommodationId)) &&
+                    ((reservation.getStartDate() < endDate && reservation.getEndDate() > startDate) ||
+                            (startDate < reservation.getEndDate() && endDate > reservation.getStartDate()))){
+                    reservation.setStatus(ReservationStatus.Declined);
+                    save(reservation);
+            }
+        }
+
     @Override
     public boolean hasUnCancelledReservation(String guestEmail, String ownerEmail) {
         return reservationRepository.hasUnCancelledReservationWithOwnerAndStatus(guestEmail,ownerEmail,ReservationStatus.Accepted,ReservationStatus.Finished);
@@ -94,5 +108,6 @@ public class ReservationService implements IReservationService {
             }
         }
         return false;
+
     }
 }
