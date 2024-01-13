@@ -42,12 +42,12 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
-    public Collection<Reservation> searchGuestReservations(LocalDate startDate, LocalDate endDate, String accommodationName,String email) {
+    public Collection<Reservation> searchGuestReservations(Long startDate, Long endDate, String accommodationName,String email) {
         return reservationRepository.searchGuestReservations(startDate,endDate,accommodationName,email);
     }
 
     @Override
-    public Collection<Reservation> searchOwnerReservations(LocalDate startDate, LocalDate endDate, String accommodationName, String email) {
+    public Collection<Reservation> searchOwnerReservations(Long startDate, Long endDate, String accommodationName, String email) {
         return reservationRepository.searchOwnerReservations(startDate,endDate,accommodationName,email);
     }
 
