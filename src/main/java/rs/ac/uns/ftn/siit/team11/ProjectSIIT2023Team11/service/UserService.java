@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IUserRepository;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,12 +43,16 @@ public class UserService implements IUserService {
 
     @Override
     public User register(User userRequest) {
-
-        // pre nego sto postavimo lozinku u atribut hesiramo je kako bi se u bazi nalazila hesirana lozinka
-        // treba voditi racuna da se koristi isi password encoder bean koji je postavljen u AUthenticationManager-u kako bi koristili isti algoritam
         userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-
         return this.userRepository.save(userRequest);
+    }
+    @Override
+    public Collection<String> findOwnersForGuestReport(String guestEmail) {
+        return userRepository.findOwnersForGuestReport(guestEmail, ReservationStatus.Accepted,ReservationStatus.Finished);
+    }
+    @Override
+    public Collection<String> findGuestsForOwnerReport(String ownerEmail) {
+        return userRepository.findGuestsForOwnerReport(ownerEmail, ReservationStatus.Accepted,ReservationStatus.Finished);
     }
 
 }

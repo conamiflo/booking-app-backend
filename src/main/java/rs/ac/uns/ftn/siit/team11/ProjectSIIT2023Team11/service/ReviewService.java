@@ -43,11 +43,11 @@ public class ReviewService implements IReviewService{
 
     @Override
     public Collection<Review> findAllApprovedByOwnerEmail(String email) {
-        return ownerReviewRepository.findAllByOwnerEmailAndApprovedFalse(email);
+        return ownerReviewRepository.findAllByOwnerEmailAndApprovedTrue(email);
     }
     @Override
     public Collection<Review> findAllApprovedByAccommodationId(Long id) {
-        return accommodationReviewRepository.findAllByAccommondation_IdAndApprovedFalse(id);
+        return accommodationReviewRepository.findAllByAccommondation_IdAndApprovedTrue(id);
     }
 
     @Override
