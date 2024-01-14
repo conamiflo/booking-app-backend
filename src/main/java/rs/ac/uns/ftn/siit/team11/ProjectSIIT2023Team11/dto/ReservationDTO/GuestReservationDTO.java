@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class GuestReservationDTO {
     private Long id;
-    private String accommodation;
+    private Long accommodation;
     private String startDate;
     private String endDate;
     private int numberOfGuests;

@@ -13,7 +13,7 @@ public class GuestReservationMapper {
     public static GuestReservationDTO mapToGuestReservationDTO(Reservation reservation) {
         return new GuestReservationDTO(
                 reservation.getId(),
-                reservation.getAccommodation().getName(),
+                reservation.getAccommodation().getId(),
                 Instant.ofEpochSecond(reservation.getStartDate()).atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
                 Instant.ofEpochSecond(reservation.getEndDate()).atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
                 reservation.getNumberOfGuests(),

@@ -95,11 +95,15 @@ public class ReservationService implements IReservationService {
             if ((Objects.equals(reservation.getAccommodation().getId(), accommodationId)) &&
                     ((reservation.getStartDate() < endDate && reservation.getEndDate() > startDate) ||
                             (startDate < reservation.getEndDate() && endDate > reservation.getStartDate()))) {
-                reservation.setStatus(ReservationStatus.Declined);
-                save(reservation);
+
+                if(reservation.getStatus() == ReservationStatus.Waiting){
+                    reservation.setStatus(ReservationStatus.Declined);
+                    save(reservation);
+                }
             }
         }
     }
+
     @Override
     public boolean hasUnCancelledReservation(String guestEmail, String ownerEmail) {
         return reservationRepository.hasUnCancelledReservationWithOwnerAndStatus(guestEmail,ownerEmail,ReservationStatus.Accepted,ReservationStatus.Finished);

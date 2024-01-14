@@ -47,7 +47,8 @@ public class AccommodationMapper {
                 accommodation.getCreated(),
                 accommodation.getType(),
                 accommodation.getPriceType(),
-                accommodation.getStatus()
+                accommodation.getStatus(),
+                accommodation.getCancelationDays()
         );
     }
     public static Accommodation mapDetailsDtoToAccommodation(AccommodationDetailsDTO accommodationDetailsDTO, IUserService userService, Accommodation accommodation){
@@ -62,6 +63,7 @@ public class AccommodationMapper {
         accommodation.setType(accommodationDetailsDTO.type());
         accommodation.setPriceType(accommodationDetailsDTO.priceType());
         accommodation.setStatus(accommodationDetailsDTO.status());
+        accommodation.setCancelationDays(accommodationDetailsDTO.cancellationDays());
         return accommodation;
     }
 
@@ -125,6 +127,7 @@ public class AccommodationMapper {
         accommodation.setActive(false);
         accommodation.setPriceType(accommodationDetailsDTO.priceType());
         accommodation.setStatus(AccommodationStatus.Pending);
+        accommodation.setCancelationDays(accommodationDetailsDTO.cancellationDays());
         return accommodation;
     }
 
