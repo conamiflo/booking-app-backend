@@ -77,10 +77,8 @@ public class ReservationController {
         if(!newReservationEntry.isAvailable()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        Optional<Reservation> newReservation = reservationService.createNewReservation(newReservationEntry);
 
-        newReservationEntry.calculatePrice();
-        newReservationEntry.setStatus(ReservationStatus.Waiting);
-        Optional<Reservation> newReservation = Optional.ofNullable(reservationService.save(newReservationEntry));
         return new ResponseEntity<>(ReservationMapper.mapToReservationDTO(newReservation.get()), HttpStatus.CREATED);
     }
 

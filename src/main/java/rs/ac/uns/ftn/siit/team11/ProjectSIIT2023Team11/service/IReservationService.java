@@ -46,4 +46,5 @@ public interface IReservationService {
 
     boolean canReviewAccommodation(@Param("guestEmail") String guestEmail, @Param("accommodationId") Long accommodationId);
 
+    Optional<Reservation> createNewReservation(Reservation newReservationEntry);
 }

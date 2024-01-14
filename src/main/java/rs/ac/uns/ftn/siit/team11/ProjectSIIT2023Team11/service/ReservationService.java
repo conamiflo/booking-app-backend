@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.*;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IAccommodationRepository;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IReservationRepository;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
@@ -19,6 +20,11 @@ public class ReservationService implements IReservationService {
 
     @Autowired
     IReservationRepository reservationRepository;
+
+    @Autowired
+    IAccommodationRepository accommodationRepository;
+    @Autowired
+    AvailabilityService availabilityService;
 
     public List<Reservation> findAll() {
         return reservationRepository.findAll();
@@ -120,5 +126,19 @@ public class ReservationService implements IReservationService {
         }
         return false;
 
+    }
+
+    @Override
+    public Optional<Reservation> createNewReservation(Reservation newReservationEntry) {
+        newReservationEntry.calculatePrice();
+        newReservationEntry.setStatus(ReservationStatus.Waiting);
+
+        if(newReservationEntry.getAccommodation().isAutomaticApproval()){
+            availabilityService.fitAcceptedReservation(newReservationEntry.getStartDate(),newReservationEntry.getEndDate(),newReservationEntry.getAccommodation());
+            newReservationEntry.setStatus(ReservationStatus.Accepted);
+            return  Optional.ofNullable(save(newReservationEntry));
+        }
+
+        return  Optional.ofNullable(save(newReservationEntry));
     }
 }
