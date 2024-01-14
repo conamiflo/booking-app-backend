@@ -85,7 +85,7 @@ public class ReservationService implements IReservationService {
     @Override
     public int countCancellationsForGuest(String guestId) {
         return (int) reservationRepository.findAll().stream()
-                .filter(reservation -> guestId.equals(reservation.getGuest().getEmail()) && ReservationStatus.Canceled.equals(reservation.getStatus()))
+                .filter(reservation -> guestId.equals(reservation.getGuest().getEmail()) && ReservationStatus.Cancelled.equals(reservation.getStatus()))
                 .count();
     }
 
