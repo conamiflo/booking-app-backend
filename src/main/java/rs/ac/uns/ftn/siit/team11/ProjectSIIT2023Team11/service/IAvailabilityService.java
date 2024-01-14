@@ -19,4 +19,6 @@ public interface IAvailabilityService {
 
     void fitAcceptedReservation(Long startDate, Long endDate, Accommodation accommodation);
 
+    void returnCancelledAvailability(Long startDate, Long endDate, Accommodation accommodation);
+
 }

@@ -21,7 +21,8 @@ public record AccommodationDetailsDTO (
         Long created,
         String type,
         PriceType priceType,
-        AccommodationStatus status
+        AccommodationStatus status,
+        int cancellationDays
 ){
 
     @Override
@@ -88,4 +89,6 @@ public record AccommodationDetailsDTO (
     public AccommodationStatus status() {
         return status;
     }
+    @Override
+    public int cancellationDays(){return cancellationDays;}
 }

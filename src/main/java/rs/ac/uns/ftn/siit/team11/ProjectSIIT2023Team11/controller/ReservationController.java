@@ -123,6 +123,20 @@ public class ReservationController {
         return new ResponseEntity<>(OwnerReservationMapper.mapToOwnerReservationDTO(updatedReservation), HttpStatus.OK);
     }
 
+    @PutMapping(value = "cancel/{reservationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GuestReservationDTO> cancelReservation(@PathVariable("reservationId") Long reservationId) {
+        Optional<Reservation> existingReservation = reservationService.findById(reservationId);
+        if (existingReservation.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if(existingReservation.get().getStatus() == ReservationStatus.Accepted){
+            availabilityService.returnCancelledAvailability(existingReservation.get().getStartDate(), existingReservation.get().getEndDate(), existingReservation.get().getAccommodation());
+        }
+        existingReservation.get().setStatus(ReservationStatus.Cancelled);
+        Reservation updatedReservation = reservationService.save(existingReservation.get());
+        return new ResponseEntity<>(GuestReservationMapper.mapToGuestReservationDTO(updatedReservation), HttpStatus.OK);
+    }
+
     @GetMapping(value = "/guest/filter",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<GuestReservationDTO>> filterGuestReservations(
             @RequestParam(value ="status",required = false) ReservationStatus status,

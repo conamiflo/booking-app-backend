@@ -83,15 +83,18 @@ public class ReservationService implements IReservationService {
 
 
     @Override
-    public void declineWaitingReservations(Long startDate, Long endDate, Long accommodationId){
-        for(Reservation reservation : reservationRepository.findAll()){
-            if((Objects.equals(reservation.getAccommodation().getId(), accommodationId)) &&
+    public void declineWaitingReservations(Long startDate, Long endDate, Long accommodationId) {
+        for (Reservation reservation : reservationRepository.findAll()) {
+            if ((Objects.equals(reservation.getAccommodation().getId(), accommodationId)) &&
                     ((reservation.getStartDate() < endDate && reservation.getEndDate() > startDate) ||
-                            (startDate < reservation.getEndDate() && endDate > reservation.getStartDate()))){
+                            (startDate < reservation.getEndDate() && endDate > reservation.getStartDate()))) {
+                if(reservation.getStatus() == ReservationStatus.Waiting){
                     reservation.setStatus(ReservationStatus.Declined);
                     save(reservation);
+                }
             }
         }
+    }
 
     @Override
     public boolean hasUnCancelledReservation(String guestEmail, String ownerEmail) {
