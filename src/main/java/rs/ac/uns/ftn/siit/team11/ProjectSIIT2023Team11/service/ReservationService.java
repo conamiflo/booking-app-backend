@@ -43,12 +43,12 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
-    public Collection<Reservation> searchGuestReservations(LocalDate startDate, LocalDate endDate, String accommodationName,String email) {
+    public Collection<Reservation> searchGuestReservations(Long startDate, Long endDate, String accommodationName,String email) {
         return reservationRepository.searchGuestReservations(startDate,endDate,accommodationName,email);
     }
 
     @Override
-    public Collection<Reservation> searchOwnerReservations(LocalDate startDate, LocalDate endDate, String accommodationName, String email) {
+    public Collection<Reservation> searchOwnerReservations(Long startDate, Long endDate, String accommodationName, String email) {
         return reservationRepository.searchOwnerReservations(startDate,endDate,accommodationName,email);
     }
 
@@ -81,6 +81,13 @@ public class ReservationService implements IReservationService {
         return false;
     }
 
+
+    @Override
+    public int countCancellationsForGuest(String guestId) {
+        return (int) reservationRepository.findAll().stream()
+                .filter(reservation -> guestId.equals(reservation.getGuest().getEmail()) && ReservationStatus.Canceled.equals(reservation.getStatus()))
+                .count();
+    }
 
     @Override
     public void declineWaitingReservations(Long startDate, Long endDate, Long accommodationId) {
