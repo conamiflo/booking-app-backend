@@ -20,6 +20,10 @@ public class ReservationService implements IReservationService {
     @Autowired
     IReservationRepository reservationRepository;
 
+    @Autowired
+    IAvailabilityService availabilityService;
+
+
     public List<Reservation> findAll() {
         return reservationRepository.findAll();
     }
@@ -119,6 +123,23 @@ public class ReservationService implements IReservationService {
             }
         }
         return false;
+    }
 
+    @Override
+    public void declineBlockedGuestsReservations(User guest){
+        Collection<Reservation> reservations = reservationRepository.findAllByGuestEmail(guest.getEmail());
+        for(Reservation r : reservations){
+            if(r.getStatus() == ReservationStatus.Waiting){
+                r.setStatus(ReservationStatus.Declined);
+            }
+            if(r.getStatus() == ReservationStatus.Accepted) {
+                r.setStatus(ReservationStatus.Declined);
+                availabilityService.returnCancelledAvailability(r.getStartDate(), r.getEndDate(), r.getAccommodation());
+            }
+        }
+
+        for(Reservation r: reservations){
+            save(r);
+        }
     }
 }

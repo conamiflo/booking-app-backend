@@ -22,6 +22,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.UserDTO.UserRegistrat
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.AccommodationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.UserMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IAccommodationService;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IReportService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IReservationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.EmailSender;
@@ -167,14 +168,18 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('ROLE_Guest','ROLE_Owner','ROLE_Admin')")
     @Operation(summary = "Block profile", security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping("/{email}/block")
-    public ResponseEntity<UserForShowDTO> blockUser(@PathVariable("email") String userId){
+    public ResponseEntity<Void> blockUser(@PathVariable("email") String userId){
         Optional<User> user = userService.findById(userId);
         if(user.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        if(user.get() instanceof Guest){
+            reservationService.declineBlockedGuestsReservations(user.get());
+        }
+
         user.get().setActive(false);
         userService.save(user.get());
-        return new ResponseEntity<UserForShowDTO>(UserMapper.mapToUserDto(user.get()), HttpStatus.OK);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_Guest','ROLE_Owner','ROLE_Admin')")
@@ -247,7 +252,7 @@ public class UserController {
         return new ResponseEntity<>(UserMapper.mapGuestToGuestForShowDTO(guest), HttpStatus.OK);
     }
 
-//    @PreAuthorize("hasAnyAuthority('ROLE_Guest', 'ROLE_Owner')")
+    @PreAuthorize("hasAnyAuthority('ROLE_Guest', 'ROLE_Owner')")
     @Operation(summary = "Delete user", security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping(value = "/{email}")
     public ResponseEntity<Void> deleteUser(@PathVariable("email") String email) {

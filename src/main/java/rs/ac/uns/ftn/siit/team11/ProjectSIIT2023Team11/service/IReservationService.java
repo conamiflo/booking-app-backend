@@ -1,10 +1,7 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 
 import org.springframework.data.repository.query.Param;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Guest;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Owner;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
 import java.time.LocalDate;
@@ -45,5 +42,7 @@ public interface IReservationService {
     boolean hasUnCancelledReservation(@Param("guestEmail") String guestEmail, @Param("ownerEmail") String ownerEmail);
 
     boolean canReviewAccommodation(@Param("guestEmail") String guestEmail, @Param("accommodationId") Long accommodationId);
+
+    void declineBlockedGuestsReservations(User guest);
 
 }
