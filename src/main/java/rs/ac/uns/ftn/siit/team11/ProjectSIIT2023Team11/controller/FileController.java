@@ -53,4 +53,19 @@ public class FileController {
 
         return ResponseEntity.ok().body(filenames);
     }
+
+    @PostMapping("/uploadMobile")
+    public ResponseEntity<List<String>> uploadFilesForMobile(@RequestPart("images") List<MultipartFile> files) throws IOException {
+        List<String> filenames = new ArrayList<String>();
+
+        for(MultipartFile file: files){
+            String filename = StringUtils.cleanPath(file.getOriginalFilename());
+            Path fileStorage = get(UPLOAD_DIRECTORY, filename).toAbsolutePath().normalize();
+            copy(file.getInputStream(), fileStorage, REPLACE_EXISTING);
+            filenames.add(filename);
+        }
+
+        return ResponseEntity.ok().body(filenames);
+    }
+
 }

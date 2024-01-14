@@ -15,8 +15,7 @@ public class ReportMapper {
                 report.getId(),
                 report.getSender().getEmail(),
                 report.getReceiver().getEmail(),
-                report.getContent(),
-                report.getStatus()
+                report.getContent()
         );
 
     }
@@ -27,15 +26,13 @@ public class ReportMapper {
         }
         return  reportDTOs;
     }
-
     public static Report mapDtoToReport(ReportDTO reportDTO, IUserService userService){
 
         return new Report(
                 reportDTO.getId(),
                 userService.findById(reportDTO.getSenderEmail()).get(),
                 userService.findById(reportDTO.getReceiverEmail()).get(),
-                reportDTO.getContent(),
-                reportDTO.getStatus()
+                reportDTO.getContent()
         );
     }
 }

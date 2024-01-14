@@ -3,16 +3,13 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
 import org.springframework.security.access.prepost.PreAuthorize;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.GuestReservationDTO;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.OwnerReservationDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.ReservationDTO;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.ReservationForShowDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.GuestReservationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.OwnerReservationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.ReservationMapper;
@@ -159,25 +156,25 @@ public class ReservationController {
 
     @GetMapping(value = "/guest/search",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<OwnerReservationDTO>> searchGuestReservations(
-            @RequestParam(value ="startDate",required = false) LocalDate startDate,
-            @RequestParam(value ="endDate",required = false) LocalDate endDate,
+            @RequestParam(value ="startDate",required = false) Long startDate,
+            @RequestParam(value ="endDate",required = false) Long endDate,
             @RequestParam(value ="accommodationName",required = false) String accommodationName,
             @RequestParam("email") String email){
-        Collection<Reservation> reservations = reservationService.searchOwnerReservations(startDate,endDate,accommodationName, email);
+        Collection<Reservation> reservations = reservationService.searchGuestReservations(startDate,endDate,accommodationName, email);
         return new ResponseEntity<>(reservations.stream()
                 .map(OwnerReservationMapper::mapToOwnerReservationDTO)
                 .collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @GetMapping(value = "/owner/search",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<GuestReservationDTO>> searchOwnerReservations(
-            @RequestParam(value ="startDate",required = false) LocalDate startDate,
-            @RequestParam(value ="endDate",required = false) LocalDate endDate,
+    public ResponseEntity<Collection<OwnerReservationDTO>> searchOwnerReservations(
+            @RequestParam(value ="startDate",required = false) Long startDate,
+            @RequestParam(value ="endDate",required = false) Long endDate,
             @RequestParam(value ="accommodationName",required = false) String accommodationName,
             @RequestParam("email") String email){
-        Collection<Reservation> reservations = reservationService.searchGuestReservations(startDate,endDate,accommodationName, email);
+        Collection<Reservation> reservations = reservationService.searchOwnerReservations(startDate,endDate,accommodationName, email);
         return new ResponseEntity<>(reservations.stream()
-                .map(GuestReservationMapper::mapToGuestReservationDTO)
+                .map(OwnerReservationMapper::mapToOwnerReservationDTO)
                 .collect(Collectors.toList()), HttpStatus.OK);
     }
 
@@ -187,5 +184,12 @@ public class ReservationController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping(value = "/guest/{guestId}/cancellations", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<NumberOfCancellationsDTO> countCancellationsForGuest(@PathVariable("guestId") String guestId) {
+        int numberOfCancellations = reservationService.countCancellationsForGuest(guestId);
 
+        // Create and return the DTO
+        NumberOfCancellationsDTO cancellationsDTO = new NumberOfCancellationsDTO(guestId, numberOfCancellations);
+        return new ResponseEntity<>(cancellationsDTO, HttpStatus.OK);
+    }
 }

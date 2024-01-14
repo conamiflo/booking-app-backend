@@ -43,12 +43,12 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
-    public Collection<Reservation> searchGuestReservations(LocalDate startDate, LocalDate endDate, String accommodationName,String email) {
+    public Collection<Reservation> searchGuestReservations(Long startDate, Long endDate, String accommodationName,String email) {
         return reservationRepository.searchGuestReservations(startDate,endDate,accommodationName,email);
     }
 
     @Override
-    public Collection<Reservation> searchOwnerReservations(LocalDate startDate, LocalDate endDate, String accommodationName, String email) {
+    public Collection<Reservation> searchOwnerReservations(Long startDate, Long endDate, String accommodationName, String email) {
         return reservationRepository.searchOwnerReservations(startDate,endDate,accommodationName,email);
     }
 
@@ -83,11 +83,19 @@ public class ReservationService implements IReservationService {
 
 
     @Override
+    public int countCancellationsForGuest(String guestId) {
+        return (int) reservationRepository.findAll().stream()
+                .filter(reservation -> guestId.equals(reservation.getGuest().getEmail()) && ReservationStatus.Cancelled.equals(reservation.getStatus()))
+                .count();
+    }
+
+    @Override
     public void declineWaitingReservations(Long startDate, Long endDate, Long accommodationId) {
         for (Reservation reservation : reservationRepository.findAll()) {
             if ((Objects.equals(reservation.getAccommodation().getId(), accommodationId)) &&
                     ((reservation.getStartDate() < endDate && reservation.getEndDate() > startDate) ||
                             (startDate < reservation.getEndDate() && endDate > reservation.getStartDate()))) {
+
                 if(reservation.getStatus() == ReservationStatus.Waiting){
                     reservation.setStatus(ReservationStatus.Declined);
                     save(reservation);

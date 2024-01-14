@@ -13,4 +13,6 @@ public interface IReportService {
     Optional<Report> findById(Long aLong);
 
     void deleteById(Long aLong);
+
+    boolean existsBySenderEmailAndReceiverEmail(String senderEmail, String receiverEmail);
 }
