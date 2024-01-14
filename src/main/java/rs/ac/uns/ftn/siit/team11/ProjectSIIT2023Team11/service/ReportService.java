@@ -13,7 +13,6 @@ public class ReportService implements IReportService{
     @Autowired
     private IReportRepository reportRepository;
 
-
     @Override
     public List<Report> findAll() {
         return reportRepository.findAll();
@@ -32,5 +31,10 @@ public class ReportService implements IReportService{
     @Override
     public void deleteById(Long aLong) {
         reportRepository.deleteById(aLong);
+    }
+
+    @Override
+    public boolean existsBySenderEmailAndReceiverEmail(String senderEmail, String receiverEmail) {
+        return reportRepository.existsBySenderEmailAndReceiverEmail(senderEmail,receiverEmail);
     }
 }

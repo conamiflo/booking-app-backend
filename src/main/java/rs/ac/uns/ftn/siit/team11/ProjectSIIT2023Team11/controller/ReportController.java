@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Report;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReportDTO;
@@ -39,22 +40,25 @@ public class ReportController {
         return new ResponseEntity<>(ReportMapper.mapToReportDTO(report.get()), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Guest')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReportDTO> createReport(@RequestBody ReportDTO reportDTO) throws Exception {
+    public ResponseEntity<String> createReport(@RequestBody ReportDTO reportDTO) throws Exception {
 
         if (userService.findById(reportDTO.getSenderEmail()).isEmpty() ||
                 userService.findById(reportDTO.getReceiverEmail()).isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }else if(reportService.existsBySenderEmailAndReceiverEmail(reportDTO.getSenderEmail(),reportDTO.getReceiverEmail())){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You already reported this user! ");
         }
 
         try{
             reportService.save(ReportMapper.mapDtoToReport(reportDTO, userService));
-            return new ResponseEntity<>(reportDTO, HttpStatus.CREATED);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception exception){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Guest')")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReportDTO> updateReport(@RequestBody ReportDTO reportDTO, @PathVariable Long id) throws Exception {
         Optional<Report> existingReport = reportService.findById(id);
