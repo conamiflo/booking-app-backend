@@ -148,14 +148,14 @@ public class ReservationController {
     }
 
     @GetMapping(value = "/owner/search",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<GuestReservationDTO>> searchOwnerReservations(
+    public ResponseEntity<Collection<OwnerReservationDTO>> searchOwnerReservations(
             @RequestParam(value ="startDate",required = false) Long startDate,
             @RequestParam(value ="endDate",required = false) Long endDate,
             @RequestParam(value ="accommodationName",required = false) String accommodationName,
             @RequestParam("email") String email){
-        Collection<Reservation> reservations = reservationService.searchGuestReservations(startDate,endDate,accommodationName, email);
+        Collection<Reservation> reservations = reservationService.searchOwnerReservations(startDate,endDate,accommodationName, email);
         return new ResponseEntity<>(reservations.stream()
-                .map(GuestReservationMapper::mapToGuestReservationDTO)
+                .map(OwnerReservationMapper::mapToOwnerReservationDTO)
                 .collect(Collectors.toList()), HttpStatus.OK);
     }
 
