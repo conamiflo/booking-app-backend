@@ -5,6 +5,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Guest;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Owner;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.AccommodationNumberOfReservations;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
 import java.time.LocalDate;
@@ -47,4 +48,6 @@ public interface IReservationService {
     boolean canReviewAccommodation(@Param("guestEmail") String guestEmail, @Param("accommodationId") Long accommodationId);
 
     Optional<Reservation> createNewReservation(Reservation newReservationEntry);
+
+    Collection<AccommodationNumberOfReservations> getStatisticNumberOfReservations(Long startDate, Long endDate, String username);
 }

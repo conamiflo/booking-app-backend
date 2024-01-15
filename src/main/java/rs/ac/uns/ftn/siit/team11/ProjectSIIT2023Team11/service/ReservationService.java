@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.*;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.AccommodationNumberOfReservations;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IAccommodationRepository;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IReservationRepository;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
@@ -10,10 +11,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ReservationService implements IReservationService {
@@ -140,5 +138,24 @@ public class ReservationService implements IReservationService {
         }
 
         return  Optional.ofNullable(save(newReservationEntry));
+    }
+
+    @Override
+    public Collection<AccommodationNumberOfReservations> getStatisticNumberOfReservations(Long startDate, Long endDate, String username) {
+        List<AccommodationNumberOfReservations> accommodationsNumberOfReservations = new ArrayList<>();
+        for(Accommodation accommodation: accommodationRepository.findAll()){
+            if(!accommodation.getOwner().getEmail().equals(username)) continue;
+
+            AccommodationNumberOfReservations accommodationNumberOfReservations = new AccommodationNumberOfReservations(accommodation.getName(),0);
+
+            for(Reservation reservation: findAll()){
+                if(!reservation.getAccommodation().getId().equals(accommodation.getId())) continue;
+
+                if(reservation.getEndDate()<= endDate && reservation.getEndDate() >= startDate) accommodationNumberOfReservations.increaseNumberOfReservations();
+
+            }
+            accommodationsNumberOfReservations.add(accommodationNumberOfReservations);
+        }
+        return accommodationsNumberOfReservations;
     }
 }

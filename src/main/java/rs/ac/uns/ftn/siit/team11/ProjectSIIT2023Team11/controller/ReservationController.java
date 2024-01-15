@@ -190,4 +190,14 @@ public class ReservationController {
         NumberOfCancellationsDTO cancellationsDTO = new NumberOfCancellationsDTO(guestId, numberOfCancellations);
         return new ResponseEntity<>(cancellationsDTO, HttpStatus.OK);
     }
+
+
+    @GetMapping(value = "/statistics/number_of_reservations",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationNumberOfReservations>> getStatisticNumberReservations(
+            @RequestParam(value ="startDate") Long startDate,
+            @RequestParam(value ="endDate") Long endDate,
+            @RequestParam(value ="username") String username){
+        Collection<AccommodationNumberOfReservations> accommodationNumberOfReservations = reservationService.getStatisticNumberOfReservations(startDate,endDate,username);
+        return new ResponseEntity<>(accommodationNumberOfReservations,HttpStatus.OK);
+    }
 }
