@@ -209,4 +209,19 @@ public class ReservationController {
         Collection<AccommodationProfitDTO> accommodationNumberOfReservations = reservationService.getStatisticProfit(startDate,endDate,username);
         return new ResponseEntity<>(accommodationNumberOfReservations,HttpStatus.OK);
     }
+    @GetMapping(value = "/statistics/yearly_number_of_reservations",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationYearlyNumberOfReservations>> getStatisticYearlyNumberReservations(
+            @RequestParam(value ="year") Integer year,
+            @RequestParam(value ="username") String username){
+        Collection<AccommodationYearlyNumberOfReservations> accommodationNumberOfReservations = reservationService.getStatisticYearlyNumberOfReservations(year,username);
+        return new ResponseEntity<>(accommodationNumberOfReservations,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/statistics/yearly_profit",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationYearlyProfitDTO>> getStatisticYearlyProfit(
+            @RequestParam(value ="year") Integer year,
+            @RequestParam(value ="username") String username){
+        Collection<AccommodationYearlyProfitDTO> accommodationNumberOfReservations = reservationService.getStatisticYearlyProfit(year,username);
+        return new ResponseEntity<>(accommodationNumberOfReservations,HttpStatus.OK);
+    }
 }

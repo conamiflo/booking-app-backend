@@ -5,12 +5,13 @@ import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.AccommodationNumberOfReservations;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.AccommodationProfitDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.AccommodationYearlyNumberOfReservations;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.AccommodationYearlyProfitDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IAccommodationRepository;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IReservationRepository;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
-import java.time.Instant;
-import java.time.LocalDate;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -161,6 +162,56 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
+    public Collection<AccommodationYearlyNumberOfReservations> getStatisticYearlyNumberOfReservations(Integer year, String username) {
+        List<AccommodationYearlyNumberOfReservations> yearlyReservationsList = new ArrayList<>();
+
+        for (Accommodation accommodation : accommodationRepository.findAll()) {
+            if (!accommodation.getOwner().getEmail().equals(username)) continue;
+
+            AccommodationYearlyNumberOfReservations yearlyReservations = new AccommodationYearlyNumberOfReservations();
+            yearlyReservations.setAccommodationName(accommodation.getName());
+            yearlyReservations.setMonthlyNumberOfReservations(new ArrayList<>());
+
+            for (int month = 1; month <= 12; month++) {
+                Long startDate = getStartOfMonthTimestamp(year, month);
+                Long endDate = getEndOfMonthTimestamp(year, month);
+
+                int monthlyReservationsCount = getMonthlyReservationsCount(accommodation, startDate, endDate);
+                yearlyReservations.getMonthlyNumberOfReservations().add(monthlyReservationsCount);
+            }
+
+            yearlyReservationsList.add(yearlyReservations);
+        }
+
+        return yearlyReservationsList;
+    }
+
+    private Long getStartOfMonthTimestamp(Integer year, int month) {
+        LocalDate startOfMonth = LocalDate.of(year, month, 1);
+        return startOfMonth.atStartOfDay(ZoneId.systemDefault()).toEpochSecond();
+    }
+
+    private Long getEndOfMonthTimestamp(Integer year, int month) {
+        LocalDate endOfMonth = LocalDate.of(year, month, YearMonth.of(year, month).lengthOfMonth());
+        return endOfMonth.atTime(LocalTime.MAX).atZone(ZoneId.systemDefault()).toEpochSecond();
+    }
+
+    private int getMonthlyReservationsCount(Accommodation accommodation, Long startDate, Long endDate) {
+        int monthlyReservationsCount = 0;
+
+        for (Reservation reservation : findAll()) {
+            if (reservation.getAccommodation().getId().equals(accommodation.getId())
+                    && reservation.getEndDate() <= endDate
+                    && reservation.getEndDate() >= startDate) {
+                monthlyReservationsCount++;
+            }
+        }
+
+        return monthlyReservationsCount;
+    }
+
+
+    @Override
     public Collection<AccommodationProfitDTO> getStatisticProfit(Long startDate, Long endDate, String username) {
         List<AccommodationProfitDTO> accommodationsNumberOfReservations = new ArrayList<>();
         for(Accommodation accommodation: accommodationRepository.findAll()){
@@ -179,5 +230,47 @@ public class ReservationService implements IReservationService {
             accommodationsNumberOfReservations.add(accommodationNumberOfReservations);
         }
         return accommodationsNumberOfReservations;
+    }
+
+
+
+    @Override
+    public Collection<AccommodationYearlyProfitDTO> getStatisticYearlyProfit(Integer year, String username) {
+        List<AccommodationYearlyProfitDTO> yearlyProfitList = new ArrayList<>();
+
+        for (Accommodation accommodation : accommodationRepository.findAll()) {
+            if (!accommodation.getOwner().getEmail().equals(username)) continue;
+
+            AccommodationYearlyProfitDTO yearlyProfit = new AccommodationYearlyProfitDTO();
+            yearlyProfit.setAccommodationName(accommodation.getName());
+            yearlyProfit.setMonthlyProfits(new ArrayList<>());
+
+            for (int month = 1; month <= 12; month++) {
+                Long startOfMonth = getStartOfMonthTimestamp(year, month);
+                Long endOfMonth = getEndOfMonthTimestamp(year, month);
+
+                double monthlyProfit = getMonthlyProfit(accommodation, startOfMonth, endOfMonth);
+                yearlyProfit.getMonthlyProfits().add(monthlyProfit);
+            }
+
+            yearlyProfitList.add(yearlyProfit);
+        }
+
+        return yearlyProfitList;
+    }
+
+    private double getMonthlyProfit(Accommodation accommodation, Long startDate, Long endDate) {
+        double monthlyProfit = 0.0;
+
+        for (Reservation reservation : findAll()) {
+            if (reservation.getAccommodation().getId().equals(accommodation.getId())
+                    && reservation.getEndDate() <= endDate
+                    && reservation.getEndDate() >= startDate
+                    && reservation.getStatus().equals(ReservationStatus.Accepted)) {
+                monthlyProfit += reservation.getPrice();
+            }
+        }
+
+        return monthlyProfit;
     }
 }
