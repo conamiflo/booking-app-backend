@@ -106,6 +106,12 @@
 			<artifactId>jaxb-api</artifactId>
 			<version>2.3.1</version> <!-- or the appropriate version -->
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>2.0.29</version> <!-- You should check for the latest version -->
+		</dependency>
 	</dependencies>
 
 	<build>

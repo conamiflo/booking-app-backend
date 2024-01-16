@@ -5,6 +5,10 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Guest;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Owner;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.AccommodationNumberOfReservations;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.AccommodationProfitDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.AccommodationYearlyNumberOfReservations;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.AccommodationYearlyProfitDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
 import java.time.LocalDate;
@@ -46,4 +50,15 @@ public interface IReservationService {
 
     boolean canReviewAccommodation(@Param("guestEmail") String guestEmail, @Param("accommodationId") Long accommodationId);
 
+    Optional<Reservation> createNewReservation(Reservation newReservationEntry);
+
+    Collection<AccommodationNumberOfReservations> getStatisticNumberOfReservations(Long startDate, Long endDate, String username);
+
+    Collection<AccommodationProfitDTO> getStatisticProfit(Long startDate, Long endDate, String username);
+
+    Collection<AccommodationYearlyNumberOfReservations> getStatisticYearlyNumberOfReservations(Integer year, String username);
+
+    Collection<AccommodationYearlyProfitDTO> getStatisticYearlyProfit(Integer year, String username);
+
+    byte[] generatePdfContent(Collection<AccommodationNumberOfReservations> accommodationNumberOfReservations, Collection<AccommodationProfitDTO> accommodationProfit, Collection<AccommodationYearlyNumberOfReservations> accommodationYearlyNumberOfReservations, Collection<AccommodationYearlyProfitDTO> accommodationYearlyProfitDTOS);
 }
