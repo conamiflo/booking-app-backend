@@ -1,5 +1,9 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.*;
@@ -11,6 +15,8 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IAccommodation
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IReservationRepository;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -257,6 +263,137 @@ public class ReservationService implements IReservationService {
         }
 
         return yearlyProfitList;
+    }
+
+    @Override
+    public byte[] generatePdfContent(Collection<AccommodationNumberOfReservations> reservations,
+                                     Collection<AccommodationProfitDTO> profits,
+                                     Collection<AccommodationYearlyNumberOfReservations> yearlyReservations,
+                                     Collection<AccommodationYearlyProfitDTO> yearlyProfits) {
+
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+             PDDocument document = new PDDocument()) {
+
+            // Add a page
+            PDPage page = new PDPage();
+            document.addPage(page);
+
+            // Create a content stream
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+
+            // Write your statistical data to the content stream
+            contentStream.beginText();
+            contentStream.newLineAtOffset(100, 700); // Set starting position
+            contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+
+            contentStream.showText("Accommodation Number of Reservations:");
+            contentStream.newLineAtOffset(0, -12); 
+
+            for (AccommodationNumberOfReservations reservation : reservations) {
+                contentStream.showText("    Accommodation name: " + reservation.getAccommodationName());
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("    Number of reservations: " + reservation.getNumberOfReservations());
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.newLineAtOffset(0, -12); 
+            }
+
+            contentStream.showText("Accommodation Profit:");
+            contentStream.newLineAtOffset(0, -12); 
+
+            for (AccommodationProfitDTO profit : profits) {
+                contentStream.showText("    Accommodation name: " + profit.getAccommodationName());
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("    Profit: $" + profit.getProfit());
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.newLineAtOffset(0, -12); 
+            }
+
+            contentStream.showText("Accommodation Yearly Number of Reservations:");
+            contentStream.newLineAtOffset(0, -12); 
+
+            for (AccommodationYearlyNumberOfReservations yearlyNumberOfReservations : yearlyReservations) {
+                contentStream.showText("    Accommodation name: " + yearlyNumberOfReservations.getAccommodationName());
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("    Number of reservations: ");
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Jan: " + yearlyNumberOfReservations.getMonthlyNumberOfReservations().get(0));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Feb: "+ yearlyNumberOfReservations.getMonthlyNumberOfReservations().get(1));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Mar: "+ yearlyNumberOfReservations.getMonthlyNumberOfReservations().get(2));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Apr: "+ yearlyNumberOfReservations.getMonthlyNumberOfReservations().get(3));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        May: "+ yearlyNumberOfReservations.getMonthlyNumberOfReservations().get(4));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Jun: "+ yearlyNumberOfReservations.getMonthlyNumberOfReservations().get(5));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Jul: "+ yearlyNumberOfReservations.getMonthlyNumberOfReservations().get(6));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Avg: "+ yearlyNumberOfReservations.getMonthlyNumberOfReservations().get(7));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Sep: "+ yearlyNumberOfReservations.getMonthlyNumberOfReservations().get(8));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Oct: "+ yearlyNumberOfReservations.getMonthlyNumberOfReservations().get(9));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Nov: "+ yearlyNumberOfReservations.getMonthlyNumberOfReservations().get(10));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Dec: "+ yearlyNumberOfReservations.getMonthlyNumberOfReservations().get(11));
+                
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.newLineAtOffset(0, -12); 
+            }
+
+            contentStream.showText("Accommodation Yearly Profit:");
+            contentStream.newLineAtOffset(0, -12); 
+
+            for (AccommodationYearlyProfitDTO accommodationYearlyProfitDTO : yearlyProfits) {
+                contentStream.showText("    Accommodation name: " + accommodationYearlyProfitDTO.getAccommodationName());
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("    Number of reservations: ");
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Jan: $" + accommodationYearlyProfitDTO.getMonthlyProfits().get(0));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Feb: $"+ accommodationYearlyProfitDTO.getMonthlyProfits().get(1));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Mar: $"+ accommodationYearlyProfitDTO.getMonthlyProfits().get(2));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Apr: $"+ accommodationYearlyProfitDTO.getMonthlyProfits().get(3));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        May: $"+ accommodationYearlyProfitDTO.getMonthlyProfits().get(4));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Jun: $"+ accommodationYearlyProfitDTO.getMonthlyProfits().get(5));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Jul: $"+ accommodationYearlyProfitDTO.getMonthlyProfits().get(6));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Avg: $"+ accommodationYearlyProfitDTO.getMonthlyProfits().get(7));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Sep: $"+ accommodationYearlyProfitDTO.getMonthlyProfits().get(8));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Oct: $"+ accommodationYearlyProfitDTO.getMonthlyProfits().get(9));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Nov: $"+ accommodationYearlyProfitDTO.getMonthlyProfits().get(10));
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.showText("        Dec: $"+ accommodationYearlyProfitDTO.getMonthlyProfits().get(11));
+
+                contentStream.newLineAtOffset(0, -12); 
+                contentStream.newLineAtOffset(0, -12); 
+            }
+
+            // Repeat the process for other statistical data
+
+            contentStream.endText();
+            contentStream.close();
+
+            // Save the document to the output stream
+            document.save(outputStream);
+
+            return outputStream.toByteArray();
+        } catch (IOException e) {
+            // Handle exceptions
+            e.printStackTrace();
+            return new byte[0];
+        }
     }
 
     private double getMonthlyProfit(Accommodation accommodation, Long startDate, Long endDate) {

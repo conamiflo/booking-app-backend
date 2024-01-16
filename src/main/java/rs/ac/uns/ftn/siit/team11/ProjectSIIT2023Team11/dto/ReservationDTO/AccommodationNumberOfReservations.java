@@ -17,4 +17,12 @@ public class AccommodationNumberOfReservations {
         numberOfReservations++;
     }
 
+
+    @Override
+    public String toString() {
+        return "AccommodationNumberOfReservations{" +
+                "accommodationName='" + accommodationName + '\'' +
+                ", numberOfReservations=" + numberOfReservations +
+                '}';
+    }
 }

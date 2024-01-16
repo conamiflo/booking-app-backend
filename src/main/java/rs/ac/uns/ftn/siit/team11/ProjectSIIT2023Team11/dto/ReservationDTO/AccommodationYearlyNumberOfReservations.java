@@ -14,4 +14,19 @@ import java.util.List;
 public class AccommodationYearlyNumberOfReservations {
     private String accommodationName;
     private List<Integer> monthlyNumberOfReservations;
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Accommodation: ").append(accommodationName).append("   ");
+
+        List<String> months = List.of("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
+
+        for (int i = 0; i < months.size(); i++) {
+            builder.append(months.get(i)).append(": ").append(monthlyNumberOfReservations.get(i)).append(" ");
+        }
+
+        return builder.toString();
+    }
+
 }

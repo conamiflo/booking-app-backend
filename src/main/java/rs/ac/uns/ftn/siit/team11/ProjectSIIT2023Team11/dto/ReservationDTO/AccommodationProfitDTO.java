@@ -15,4 +15,12 @@ public class AccommodationProfitDTO {
     public void IncreaseProfit(Double increase){
         profit+=increase;
     }
+
+    @Override
+    public String toString() {
+        return "AccommodationProfitDTO{" +
+                "accommodationName='" + accommodationName + '\'' +
+                ", profit=" + profit +
+                '}';
+    }
 }

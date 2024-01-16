@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PreAuthorize;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
@@ -223,5 +224,29 @@ public class ReservationController {
             @RequestParam(value ="username") String username){
         Collection<AccommodationYearlyProfitDTO> accommodationNumberOfReservations = reservationService.getStatisticYearlyProfit(year,username);
         return new ResponseEntity<>(accommodationNumberOfReservations,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/statistics/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> getStatisticPdf(
+            @RequestParam(value ="startDate") Long startDate,
+            @RequestParam(value ="endDate") Long endDate,
+            @RequestParam(value ="year") Integer year,
+            @RequestParam(value ="username") String username) {
+
+        Collection<AccommodationNumberOfReservations> accommodationNumberOfReservations = reservationService.getStatisticNumberOfReservations(startDate, endDate, username);
+        Collection<AccommodationProfitDTO> accommodationProfit = reservationService.getStatisticProfit(startDate, endDate, username);
+        Collection<AccommodationYearlyNumberOfReservations> accommodationYearlyNumberOfReservations = reservationService.getStatisticYearlyNumberOfReservations(year, username);
+        Collection<AccommodationYearlyProfitDTO> accommodationYearlyProfitDTOS = reservationService.getStatisticYearlyProfit(year, username);
+
+        // Generate PDF content
+        byte[] pdfContent = reservationService.generatePdfContent(accommodationNumberOfReservations, accommodationProfit, accommodationYearlyNumberOfReservations, accommodationYearlyProfitDTOS);
+
+        // Set headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "statistics.pdf");
+
+        // Return PDF as a response
+        return new ResponseEntity<>(pdfContent, headers, HttpStatus.OK);
     }
 }
