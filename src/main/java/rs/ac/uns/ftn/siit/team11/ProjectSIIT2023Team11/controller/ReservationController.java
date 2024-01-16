@@ -200,4 +200,13 @@ public class ReservationController {
         Collection<AccommodationNumberOfReservations> accommodationNumberOfReservations = reservationService.getStatisticNumberOfReservations(startDate,endDate,username);
         return new ResponseEntity<>(accommodationNumberOfReservations,HttpStatus.OK);
     }
+
+    @GetMapping(value = "/statistics/profit",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationProfitDTO>> getStatisticProfit(
+            @RequestParam(value ="startDate") Long startDate,
+            @RequestParam(value ="endDate") Long endDate,
+            @RequestParam(value ="username") String username){
+        Collection<AccommodationProfitDTO> accommodationNumberOfReservations = reservationService.getStatisticProfit(startDate,endDate,username);
+        return new ResponseEntity<>(accommodationNumberOfReservations,HttpStatus.OK);
+    }
 }

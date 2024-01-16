@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.AccommodationNumberOfReservations;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.AccommodationProfitDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IAccommodationRepository;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IReservationRepository;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
@@ -152,6 +153,27 @@ public class ReservationService implements IReservationService {
                 if(!reservation.getAccommodation().getId().equals(accommodation.getId())) continue;
 
                 if(reservation.getEndDate()<= endDate && reservation.getEndDate() >= startDate) accommodationNumberOfReservations.increaseNumberOfReservations();
+
+            }
+            accommodationsNumberOfReservations.add(accommodationNumberOfReservations);
+        }
+        return accommodationsNumberOfReservations;
+    }
+
+    @Override
+    public Collection<AccommodationProfitDTO> getStatisticProfit(Long startDate, Long endDate, String username) {
+        List<AccommodationProfitDTO> accommodationsNumberOfReservations = new ArrayList<>();
+        for(Accommodation accommodation: accommodationRepository.findAll()){
+            if(!accommodation.getOwner().getEmail().equals(username)) continue;
+
+            AccommodationProfitDTO accommodationNumberOfReservations = new AccommodationProfitDTO(accommodation.getName(),0.0);
+
+            for(Reservation reservation: findAll()){
+                if(!reservation.getAccommodation().getId().equals(accommodation.getId())) continue;
+                if(!reservation.getStatus().equals(ReservationStatus.Accepted)) continue;
+
+
+                if(reservation.getEndDate()<= endDate && reservation.getEndDate() >= startDate) accommodationNumberOfReservations.IncreaseProfit(reservation.getPrice());
 
             }
             accommodationsNumberOfReservations.add(accommodationNumberOfReservations);
