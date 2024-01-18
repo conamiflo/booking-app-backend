@@ -1,5 +1,5 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util;
 
 public enum NotificationType {
-    ReservationCreated, ReservationCanceled, OwnerReviewed,AccomodationReviewed, ReservationAnswer
+    CREATE_RESERVATIONS, CANCEL_RESERVATIONS, RATING_OWNER, RATING_ACCOMMODATIONS, RESERVATION_RESPONSE
 }

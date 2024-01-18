@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.NotificationType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,8 @@ public class User {
     private String phoneNumber;
     private boolean notifications;
     private String photo;
-
+    @ElementCollection
+    private List<NotificationType> enabledNotificationTypes;
     @Transient
     private String jwt;
 
