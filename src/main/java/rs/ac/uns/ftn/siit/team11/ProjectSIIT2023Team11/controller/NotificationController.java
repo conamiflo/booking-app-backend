@@ -1,9 +1,13 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Notification;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.NotificationDTO;
@@ -11,7 +15,9 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.NotificationMapper
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.INotificationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 
+import java.io.IOException;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -23,6 +29,9 @@ public class NotificationController {
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<NotificationDTO>> getNotifications() {
@@ -48,6 +57,9 @@ public class NotificationController {
 
         try{
             notificationService.save(NotificationMapper.mapDtoToNotification(notificationDTO, userService));
+
+            simpMessagingTemplate.convertAndSend("socket-publisher/"+notificationDTO.getReceiverEmail(),notificationDTO);
+
             return new ResponseEntity<>(notificationDTO, HttpStatus.CREATED);
         } catch (Exception exception){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
