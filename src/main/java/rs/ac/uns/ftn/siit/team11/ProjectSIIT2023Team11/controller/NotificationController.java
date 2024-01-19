@@ -17,6 +17,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -36,7 +37,7 @@ public class NotificationController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<NotificationDTO>> getNotifications() {
         Collection<Notification> notifications = notificationService.findAll();
-        return new ResponseEntity<Collection<NotificationDTO>>(NotificationMapper.mapToNotificationsDTO(notifications), HttpStatus.OK);
+        return new ResponseEntity<>(NotificationMapper.mapToNotificationsDTO(notifications), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,8 +49,16 @@ public class NotificationController {
         return new ResponseEntity<>(NotificationMapper.mapToNotificationDTO(notification.get()), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/user/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<NotificationDTO>> getNotificationByUserEmail(@PathVariable("email") String email) {
+        List<Notification> notifications = notificationService.findAllUsersNotifications(email);
+
+        return new ResponseEntity<>(NotificationMapper.mapToNotificationsDTO(notifications), HttpStatus.OK);
+    }
+
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<NotificationDTO> createNotification(@RequestBody NotificationDTO notificationDTO) throws Exception {
+    public ResponseEntity<NotificationDTO> createNotification(@RequestBody NotificationDTO notificationDTO){
 
         if (userService.findById(notificationDTO.getReceiverEmail()).isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
