@@ -1,10 +1,7 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.AccommodationStatus;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.PriceType;
 
@@ -18,6 +15,7 @@ import java.util.Optional;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @Table(name="accommodations")
 @Entity

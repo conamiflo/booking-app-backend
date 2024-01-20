@@ -32,7 +32,7 @@ public class ReservationMapper {
         Reservation reservation = new Reservation();
         reservation.setId(reservationDTO.getId());
         reservation.setAccommodation(accommodationService.findById(reservationDTO.getAccommodation()).get());
-        reservation.setGuest((Guest)userService.findById(reservationDTO.getGuest()).get());
+        reservation.setGuest((Guest)(userService.findById(reservationDTO.getGuest()).get()));
         reservation.setStartDate(reservationDTO.getStartDate());
         reservation.setEndDate(reservationDTO.getEndDate());
         reservation.setNumberOfGuests(reservationDTO.getNumberOfGuests());
