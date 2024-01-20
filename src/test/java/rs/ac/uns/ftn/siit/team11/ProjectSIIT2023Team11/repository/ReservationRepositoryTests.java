@@ -24,8 +24,8 @@ public class ReservationRepositoryTests {
     @Autowired
     private IReservationRepository reservationRepository;
 
-    @Autowired
-    TestEntityManager entityManager;
+//    @Autowired
+//    TestEntityManager entityManager;
 
     @Test
     public void ReservationRepository_Save_ReturnsSavedReservation(){
