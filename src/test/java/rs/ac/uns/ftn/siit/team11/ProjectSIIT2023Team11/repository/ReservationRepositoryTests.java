@@ -14,11 +14,14 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.ProjectSiit2023Team11Appl
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Guest;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
 
+import java.util.List;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
+@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 @RunWith(SpringRunner.class)
 public class ReservationRepositoryTests {
     @Autowired
@@ -34,6 +37,7 @@ public class ReservationRepositoryTests {
 
         //Act
         Reservation savedReservation = reservationRepository.save(reservation);
+        List<Reservation> reservations = reservationRepository.findAll();
 
         //Assert
         assertEquals(1L, savedReservation.getId());

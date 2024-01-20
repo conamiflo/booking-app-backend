@@ -43,7 +43,6 @@ public class ReservationController {
     private IAvailabilityService availabilityService;
 
 
-
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<ReservationForShowDTO>> getReservations() {
         Collection<Reservation> reservations = reservationService.findAll();

@@ -1,29 +1,33 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
 
+// Remove the following import
+// import org.junit.runner.RunWith;
+
+// Use the correct imports for JUnit 5
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
+
+// Remove this import
+// import org.mockito.junit.jupiter.MockitoExtension;
+
+// Use the correct import for JUnit 5
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Guest;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.ReservationDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.security.JwtTokenUtil;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.AccommodationService;
@@ -31,16 +35,18 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.AvailabilityServi
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.ReservationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.UserService;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @WebMvcTest(ReservationController.class)
-@ExtendWith(SpringExtension.class)
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ReservationControllerTests {
@@ -62,37 +68,43 @@ public class ReservationControllerTests {
     private ReservationDTO reservationDTO;
     private Reservation reservation;
 
-    private Optional<User> optionalUser;
-    private Optional<Accommodation> optionalAccommodation;
+    private static final Optional<User> GUEST = Optional.of(new Guest());
 
-    private Optional<Reservation> optionalReservation;
+    private static final Long START_DATE  = LocalDateTime.of(2024, 1, 20, 0, 0, 0).toEpochSecond(ZoneOffset.UTC);
+    private static final Long END_DATE =  LocalDateTime.of(2024, 1, 25, 0, 0, 0).toEpochSecond(ZoneOffset.UTC);;
+    private static final Long DAY_DURATION = (long) (24 * 60 * 60);
+
+
+    private Optional<Accommodation> accommodation;
+
     @BeforeEach
     public void init(){
         reservation = Reservation.builder().numberOfGuests(2).build();
-        reservationDTO = ReservationDTO.builder().numberOfGuests(2).build();
-        optionalReservation = Optional.of(reservation);
-        optionalUser = Optional.of( User.builder().build());
-        optionalAccommodation = Optional.of(Accommodation.builder().build());
+        reservationDTO = ReservationDTO.builder().numberOfGuests(2).startDate(START_DATE+DAY_DURATION).endDate(END_DATE-DAY_DURATION).build();
+
+        List<Availability> availabilityList = new ArrayList<>(){{add(new Availability(1L,new TimeSlot(START_DATE, END_DATE)));}};
+
+        accommodation =  Optional.of(Accommodation.builder().minGuests(1).maxGuests(3).availability(availabilityList).build());
     }
 
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
-    public void ReservationController_CreateReservation_ReturnCreated() throws Exception{
-        reservation = Reservation.builder().numberOfGuests(2).build();
-        reservationDTO = ReservationDTO.builder().numberOfGuests(2).build();
-        optionalReservation = Optional.of(reservation);
-        optionalUser = Optional.of(new Guest());
-        optionalAccommodation = Optional.of(Accommodation.builder().build());
+    public void ReservationController_CreateReservation_ReturnCreatedAvailabilityBorderCase() throws Exception{
 
+        ReservationDTO validReservationDTO = ReservationDTO.builder().numberOfGuests(2).startDate(START_DATE+DAY_DURATION).endDate(END_DATE-DAY_DURATION).build();
+        Optional<Reservation> validReservation = Optional.of(Reservation.builder().numberOfGuests(2).startDate(START_DATE+DAY_DURATION).endDate(END_DATE-DAY_DURATION).accommodation(accommodation.get()).guest((Guest)GUEST.get()).build());
 
-        when(reservationService.createNewReservation(any())).thenReturn(optionalReservation);
-        when(accommodationService.findById(any())).thenReturn(optionalAccommodation);
-        when(userService.findById(any())).thenReturn(optionalUser);
+        when(reservationService.createNewReservation(any())).thenReturn(validReservation);
+        when(accommodationService.findById(any())).thenReturn(accommodation);
+        when(userService.findById(any())).thenReturn(GUEST);
 
 
         ResultActions response = mockMvc.perform(post("/api/reservations")
                 .contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8")
-                .content(objectMapper.writeValueAsString(reservationDTO)));
+                .content(objectMapper.writeValueAsString(validReservationDTO)));
+
+
         response.andExpect(MockMvcResultMatchers.status().isCreated());
     }
 
