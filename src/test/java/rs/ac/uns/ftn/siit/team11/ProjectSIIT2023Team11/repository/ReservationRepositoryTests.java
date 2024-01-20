@@ -15,6 +15,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Guest;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
@@ -35,6 +36,6 @@ public class ReservationRepositoryTests {
         Reservation savedReservation = reservationRepository.save(reservation);
 
         //Assert
-        assertThat(entityManager.find(Reservation.class,savedReservation.getId()));
+        assertEquals(1L, savedReservation.getId());
     }
 }
