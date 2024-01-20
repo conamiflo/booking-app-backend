@@ -5,6 +5,7 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
 
 // Use the correct imports for JUnit 5
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.checkerframework.checker.nullness.Opt;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -87,10 +88,68 @@ public class ReservationControllerTests {
         accommodation =  Optional.of(Accommodation.builder().minGuests(1).maxGuests(3).availability(availabilityList).build());
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    @Test
+    public void ReservationController_CreateReservation_NonExistingGuest() throws Exception{
+
+        ReservationDTO validReservationDTO = ReservationDTO.builder().numberOfGuests(2).startDate(START_DATE).endDate(END_DATE).build();
+        Optional<Reservation> validReservation = Optional.of(Reservation.builder().numberOfGuests(2).startDate(START_DATE).endDate(END_DATE).accommodation(accommodation.get()).build());
+
+        when(reservationService.createNewReservation(any())).thenReturn(validReservation);
+        when(accommodationService.findById(any())).thenReturn(accommodation);
+        when(userService.findById(any())).thenReturn(Optional.empty());
+
+        ResultActions response = mockMvc.perform(post("/api/reservations")
+                .contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+                .content(objectMapper.writeValueAsString(validReservationDTO)));
+
+
+        response.andExpect(MockMvcResultMatchers.status().is4xxClientError());
+    }
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
-    public void ReservationController_CreateReservation_ReturnCreatedAvailabilityBorderCase() throws Exception{
+    public void ReservationController_CreateReservation_NonExistingAccommodation() throws Exception{
+
+        ReservationDTO validReservationDTO = ReservationDTO.builder().numberOfGuests(2).startDate(START_DATE).endDate(END_DATE).build();
+        Optional<Reservation> validReservation = Optional.of(Reservation.builder().numberOfGuests(2).startDate(START_DATE).endDate(END_DATE).guest((Guest)GUEST.get()).build());
+
+        when(reservationService.createNewReservation(any())).thenReturn(validReservation);
+        when(accommodationService.findById(any())).thenReturn(Optional.empty());
+        when(userService.findById(any())).thenReturn(GUEST);
+
+
+        ResultActions response = mockMvc.perform(post("/api/reservations")
+                .contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+                .content(objectMapper.writeValueAsString(validReservationDTO)));
+
+
+        response.andExpect(MockMvcResultMatchers.status().is4xxClientError());
+    }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    @Test
+    public void ReservationController_CreateReservation_NonExistingGuestAndAccommodation() throws Exception{
+
+        ReservationDTO validReservationDTO = ReservationDTO.builder().numberOfGuests(2).startDate(START_DATE).endDate(END_DATE).build();
+        Optional<Reservation> validReservation = Optional.of(Reservation.builder().numberOfGuests(2).startDate(START_DATE).endDate(END_DATE).build());
+
+        when(reservationService.createNewReservation(any())).thenReturn(validReservation);
+        when(accommodationService.findById(any())).thenReturn(Optional.empty());
+        when(userService.findById(any())).thenReturn(Optional.empty());
+
+
+        ResultActions response = mockMvc.perform(post("/api/reservations")
+                .contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+                .content(objectMapper.writeValueAsString(validReservationDTO)));
+
+
+        response.andExpect(MockMvcResultMatchers.status().is4xxClientError());
+    }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    @Test
+    public void ReservationController_CreateReservation_ReturnCreatedGoodAvailability() throws Exception{
 
         ReservationDTO validReservationDTO = ReservationDTO.builder().numberOfGuests(2).startDate(START_DATE+DAY_DURATION).endDate(END_DATE-DAY_DURATION).build();
         Optional<Reservation> validReservation = Optional.of(Reservation.builder().numberOfGuests(2).startDate(START_DATE+DAY_DURATION).endDate(END_DATE-DAY_DURATION).accommodation(accommodation.get()).guest((Guest)GUEST.get()).build());
@@ -106,6 +165,46 @@ public class ReservationControllerTests {
 
 
         response.andExpect(MockMvcResultMatchers.status().isCreated());
+    }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    @Test
+    public void ReservationController_CreateReservation_ReturnCreatedAvailabilityBorderCase() throws Exception{
+
+        ReservationDTO validReservationDTO = ReservationDTO.builder().numberOfGuests(2).startDate(START_DATE).endDate(END_DATE).build();
+        Optional<Reservation> validReservation = Optional.of(Reservation.builder().numberOfGuests(2).startDate(START_DATE).endDate(END_DATE).accommodation(accommodation.get()).guest((Guest)GUEST.get()).build());
+
+        when(reservationService.createNewReservation(any())).thenReturn(validReservation);
+        when(accommodationService.findById(any())).thenReturn(accommodation);
+        when(userService.findById(any())).thenReturn(GUEST);
+
+
+        ResultActions response = mockMvc.perform(post("/api/reservations")
+                .contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+                .content(objectMapper.writeValueAsString(validReservationDTO)));
+
+
+        response.andExpect(MockMvcResultMatchers.status().isCreated());
+    }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    @Test
+    public void ReservationController_CreateReservation_DontReturnCreatedNotAvailable() throws Exception{
+
+        ReservationDTO validReservationDTO = ReservationDTO.builder().numberOfGuests(2).startDate(START_DATE-DAY_DURATION).endDate(END_DATE+DAY_DURATION).build();
+        Optional<Reservation> validReservation = Optional.of(Reservation.builder().numberOfGuests(2).startDate(START_DATE-DAY_DURATION).endDate(END_DATE+DAY_DURATION).accommodation(accommodation.get()).guest((Guest)GUEST.get()).build());
+
+        when(reservationService.createNewReservation(any())).thenReturn(validReservation);
+        when(accommodationService.findById(any())).thenReturn(accommodation);
+        when(userService.findById(any())).thenReturn(GUEST);
+
+
+        ResultActions response = mockMvc.perform(post("/api/reservations")
+                .contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+                .content(objectMapper.writeValueAsString(validReservationDTO)));
+
+
+        response.andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 
 }
