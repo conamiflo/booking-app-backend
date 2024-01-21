@@ -47,7 +47,6 @@ public class AvailabilityServiceTests {
         MockitoAnnotations.openMocks(this);
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void AvailabilityService_FitAcceptedReservation_FitWholeAvailability(){
         List<Availability> availabilities = new ArrayList<>();
@@ -62,7 +61,6 @@ public class AvailabilityServiceTests {
 
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void AvailabilityService_FitAcceptedReservation_FitMiddlePartOfOneAvailability(){
         List<Availability> availabilities = new ArrayList<>();
@@ -77,7 +75,6 @@ public class AvailabilityServiceTests {
 
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void AvailabilityService_FitAcceptedReservation_FitStartSidePartOfOneAvailability(){
         List<Availability> availabilities = new ArrayList<>();
@@ -92,7 +89,6 @@ public class AvailabilityServiceTests {
 
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void AvailabilityService_FitAcceptedReservation_FitEndSidePartOfOneAvailability(){
         List<Availability> availabilities = new ArrayList<>();
@@ -107,7 +103,6 @@ public class AvailabilityServiceTests {
 
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void AvailabilityService_FitAcceptedReservation_FitOneSidePartOfMultipleNeighbourAvailabilities(){
         List<Availability> availabilities = new ArrayList<>();
