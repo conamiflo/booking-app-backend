@@ -49,4 +49,6 @@ public interface IReservationRepository extends JpaRepository<Reservation,Long> 
             @Param("statusAccepted") ReservationStatus statusAccepted,
             @Param("statusFinished") ReservationStatus statusFinished);
 
+    Collection<Reservation> findAllByAccommodation_Id(Long id);
+
 }

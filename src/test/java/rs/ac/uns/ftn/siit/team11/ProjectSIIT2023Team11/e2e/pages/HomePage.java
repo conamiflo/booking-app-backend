@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.e2e.pages;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -58,6 +59,9 @@ public class HomePage {
         myAccommodations.click();
     }
 
-
+    public void closeProfileDialog(int x, int y) {
+        Actions actions = new Actions(driver);
+        actions.moveByOffset(x, y).click().build().perform();
+    }
 
 }

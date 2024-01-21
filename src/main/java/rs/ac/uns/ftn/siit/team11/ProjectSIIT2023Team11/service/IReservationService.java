@@ -61,4 +61,6 @@ public interface IReservationService {
     Collection<AccommodationYearlyProfitDTO> getStatisticYearlyProfit(Integer year, String username);
 
     byte[] generatePdfContent(Collection<AccommodationNumberOfReservations> accommodationNumberOfReservations, Collection<AccommodationProfitDTO> accommodationProfit, Collection<AccommodationYearlyNumberOfReservations> accommodationYearlyNumberOfReservations, Collection<AccommodationYearlyProfitDTO> accommodationYearlyProfitDTOS);
+    Collection<Reservation> getReservationsByAccommodationId(Long id);
+
 }

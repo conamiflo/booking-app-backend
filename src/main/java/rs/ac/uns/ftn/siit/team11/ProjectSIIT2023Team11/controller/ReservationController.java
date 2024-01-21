@@ -57,7 +57,13 @@ public class ReservationController {
                 .map(GuestReservationMapper::mapToGuestReservationDTO)
                 .collect(Collectors.toList()), HttpStatus.OK);
     }
-
+    @GetMapping(value = "/accommodation/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<GuestReservationDTO>> getReservationsByAccommodationId (@PathVariable("id") Long id) {
+        Collection<Reservation> reservations = reservationService.getReservationsByAccommodationId(id);
+        return new ResponseEntity<>(reservations.stream()
+                .map(GuestReservationMapper::mapToGuestReservationDTO)
+                .collect(Collectors.toList()), HttpStatus.OK);
+    }
     @GetMapping(value = "/owner/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<OwnerReservationDTO>> getReservationsByOwnerEmail(@PathVariable("email") String email) {
         Collection<Reservation> reservations = reservationService.findAllByAccommodationOwnerEmail(email);

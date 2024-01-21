@@ -396,6 +396,11 @@ public class ReservationService implements IReservationService {
         }
     }
 
+    @Override
+    public Collection<Reservation> getReservationsByAccommodationId(Long id) {
+        return reservationRepository.findAllByAccommodation_Id(id);
+    }
+
     private double getMonthlyProfit(Accommodation accommodation, Long startDate, Long endDate) {
         double monthlyProfit = 0.0;
 
