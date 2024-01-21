@@ -26,7 +26,7 @@ public class Test1 extends TestBase {
         LoginPage loginPage = new LoginPage(driver);
         assertTrue(loginPage.isPageOpened());
 
-        loginPage.enterCredentials("owner@gmail.com","123");
+        loginPage.enterCredentials("ognjen_owner@gmail.com","123");
         loginPage.login();
 
         assertTrue(homePage.isPageOpened());
