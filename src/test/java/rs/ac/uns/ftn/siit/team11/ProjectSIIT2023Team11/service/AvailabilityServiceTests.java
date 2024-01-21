@@ -49,11 +49,13 @@ public class AvailabilityServiceTests {
 
     @Test
     public void AvailabilityService_FitAcceptedReservation_FitWholeAvailability(){
+
         List<Availability> availabilities = new ArrayList<>();
         availabilities.add(new Availability(1L, new TimeSlot(START_DATE1, END_DATE1)));
         availabilities.add(new Availability(1L, new TimeSlot(START_DATE2, END_DATE2)));
         Accommodation accommodation = Accommodation.builder().availability(availabilities).build();
         TimeSlot timeSlotToFit = new TimeSlot(START_DATE1, END_DATE1);
+        when(accommodationService.save(accommodation)).thenReturn(accommodation);
 
         availabilityService.fitAcceptedReservation(START_DATE1, END_DATE1, accommodation);
 
@@ -68,6 +70,9 @@ public class AvailabilityServiceTests {
         availabilities.add(new Availability(1L, new TimeSlot(START_DATE2, END_DATE2)));
         Accommodation accommodation = Accommodation.builder().availability(availabilities).build();
         TimeSlot timeSlotToFit = new TimeSlot(START_DATE1, END_DATE1);
+        when(accommodationService.save(accommodation)).thenReturn(accommodation);
+
+
 
         availabilityService.fitAcceptedReservation(START_DATE1+DAY_DURATION, END_DATE1-DAY_DURATION, accommodation);
 
@@ -82,6 +87,8 @@ public class AvailabilityServiceTests {
         availabilities.add(new Availability(1L, new TimeSlot(START_DATE2, END_DATE2)));
         Accommodation accommodation = Accommodation.builder().availability(availabilities).build();
         TimeSlot timeSlotToFit = new TimeSlot(START_DATE1, END_DATE1);
+        when(accommodationService.save(accommodation)).thenReturn(accommodation);
+
 
         availabilityService.fitAcceptedReservation(START_DATE1, END_DATE1-(2*DAY_DURATION), accommodation);
 
@@ -96,6 +103,8 @@ public class AvailabilityServiceTests {
         availabilities.add(new Availability(1L, new TimeSlot(START_DATE2, END_DATE2)));
         Accommodation accommodation = Accommodation.builder().availability(availabilities).build();
         TimeSlot timeSlotToFit = new TimeSlot(START_DATE1, END_DATE1);
+        when(accommodationService.save(accommodation)).thenReturn(accommodation);
+
 
         availabilityService.fitAcceptedReservation(START_DATE1+(2*DAY_DURATION), END_DATE1, accommodation);
 
@@ -110,6 +119,8 @@ public class AvailabilityServiceTests {
         availabilities.add(new Availability(1L, new TimeSlot(START_DATE2, END_DATE2)));
         Accommodation accommodation = Accommodation.builder().availability(availabilities).build();
         TimeSlot timeSlotToFit = new TimeSlot(START_DATE1, END_DATE1);
+        when(accommodationService.save(accommodation)).thenReturn(accommodation);
+
 
         availabilityService.fitAcceptedReservation(START_DATE1, END_DATE1-(2*DAY_DURATION), accommodation);
 
