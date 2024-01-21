@@ -70,4 +70,5 @@ public interface IReservationService {
 
     byte[] generatePdfContent(Collection<AccommodationNumberOfReservations> accommodationNumberOfReservations, Collection<AccommodationProfitDTO> accommodationProfit, Collection<AccommodationYearlyNumberOfReservations> accommodationYearlyNumberOfReservations, Collection<AccommodationYearlyProfitDTO> accommodationYearlyProfitDTOS);
 
+    Collection<Reservation> getReservationsByAccommodationId(Long id);
 }
