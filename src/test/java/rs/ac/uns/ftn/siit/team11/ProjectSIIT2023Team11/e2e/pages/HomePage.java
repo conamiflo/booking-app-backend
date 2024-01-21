@@ -71,9 +71,18 @@ public class HomePage {
         for(WebElement webElement: accommodationCardContainers){
             WebElement location = webElement.findElement(By.xpath("./div/span[contains(@class, 'accommodation-card-text02')]/span"));
             String accommodationLocation = location.getText();
+            WebElement price = webElement.findElement(By.xpath(".//span[@class='accommodation-card-text14']/span"));
+            String accommodationPriceString = price.getText().toString().split(" ")[1];
+            Double accommodationPrice = Double.parseDouble(accommodationPriceString);
+            List<WebElement> numberOfGuests = webElement.findElements(By.xpath(".//div[contains(@class, 'accommodation-card-guests')]/span/span"));
 
-            Accommodation accommodation = Accommodation.builder().location(accommodationLocation).build();
+            String minGuestsString = numberOfGuests.get(0).getText().split(" ")[2];
+            Integer accommodationMinGuests = Integer.parseInt(minGuestsString);
+            String maxGuestsString = numberOfGuests.get(1).getText().split(" ")[2];
+            Integer accommodationMaxGuests = Integer.parseInt(maxGuestsString);
 
+            Accommodation accommodation = Accommodation.builder().minGuests(accommodationMinGuests).maxGuests(accommodationMaxGuests).defaultPrice(accommodationPrice).location(accommodationLocation).build();
+            accommodations.add(accommodation);
         }
 
 
