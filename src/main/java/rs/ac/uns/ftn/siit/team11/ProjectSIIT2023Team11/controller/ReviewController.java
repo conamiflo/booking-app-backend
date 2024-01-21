@@ -78,6 +78,7 @@ public class ReviewController {
         return new ResponseEntity<>(reviewDTOs, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_Admin','ROLE_Owner')")
     @GetMapping(value = "/owner/notapproved/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<ReviewDTO>> getNotApprovedReviewsByOwnerEmail(@PathVariable("email") String email) {
         Collection<Review> reviews = reviewService.findAllNotApprovedByOwnerEmail(email);
@@ -92,6 +93,7 @@ public class ReviewController {
         return new ResponseEntity<>(reviewDTOs, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_Admin')")
     @GetMapping(value = "/accommodation/notapproved/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<ReviewDTO>> getNotApprovedReviewsByAccommodationId(@PathVariable("id") Long id) {
         Collection<Review> reviews = reviewService.findAllNotApprovedByAccommodationId(id);
@@ -125,6 +127,7 @@ public class ReviewController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_Admin')")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReviewDTO> updateReview(@RequestBody ReviewDTO reviewDTO, @PathVariable Long id) throws Exception {
         Optional<Review> existingReview = reviewService.findById(id);
@@ -135,7 +138,7 @@ public class ReviewController {
         return new ResponseEntity<>(ReviewMapper.mapToReviewDTO(updatedReview), HttpStatus.OK);
     }
 
-
+    @PreAuthorize("hasAnyAuthority('ROLE_Admin')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteReview(@PathVariable("id") Long id) {
         reviewService.deleteById(id);

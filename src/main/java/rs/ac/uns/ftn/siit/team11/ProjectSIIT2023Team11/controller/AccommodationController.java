@@ -56,7 +56,7 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Guest','ROLE_Admin')")
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Admin')")
     @Operation(summary = "Get inactive accommodations", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping(value = "/inactive", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDetailsDTO>> getInactiveAccommodations() {
@@ -93,7 +93,7 @@ public class AccommodationController {
         }
         return new ResponseEntity<>(AccommodationMapper.mapToAccommodationDetailsDto(accommodation.get()), HttpStatus.OK);
     }
-
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Admin')")
     @GetMapping(value = "/{id}/approval", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationIsAutomaticApprovalDTO> getAccommodationIsAutomaticApprovalById(@PathVariable("id") Long id) {
         Optional<Accommodation> accommodation = accommodationService.findById(id);
@@ -103,6 +103,7 @@ public class AccommodationController {
         return new ResponseEntity<>(new AccommodationIsAutomaticApprovalDTO(accommodation.get().getId(),accommodation.get().isAutomaticApproval()), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner')")
     @PutMapping(value = "/approval", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationIsAutomaticApprovalDTO> setAccommodationIsAutomaticApprovalById(@RequestBody AccommodationIsAutomaticApprovalDTO accommodationIsAutomaticApprovalDTO) {
         Optional<Accommodation> accommodation = accommodationService.findById(accommodationIsAutomaticApprovalDTO.getId());
@@ -115,7 +116,7 @@ public class AccommodationController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    @PreAuthorize("hasAuthority('ROLE_Owner')")
+    @PreAuthorize("hasAuthority('ROLE_Owner')")
     @Operation(summary = "Create accommodation", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<AccommodationDetailsDTO> createAccommodation(@RequestBody AccommodationDetailsDTO accommodation) throws Exception {
         Optional<AccommodationDetailsDTO> newAccommodation = accommodationService.create(accommodation, userService);

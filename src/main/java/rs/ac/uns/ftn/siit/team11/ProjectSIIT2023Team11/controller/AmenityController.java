@@ -68,6 +68,7 @@ public class AmenityController {
         return new ResponseEntity<>(updatedAmenity, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_Owner','ROLE_Admin')")
     @DeleteMapping(value = "/{id}")
     @Operation(summary = "Delete amenity")
     public ResponseEntity<Void> deleteAmenity(@PathVariable("id") Long id) {

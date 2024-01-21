@@ -62,6 +62,8 @@ public class ReservationController {
                 .map(GuestReservationMapper::mapToGuestReservationDTO)
                 .collect(Collectors.toList()), HttpStatus.OK);
     }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_Guest','ROLE_Owner')")
     @GetMapping(value = "/guest/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<GuestReservationDTO>> getReservationsByUserEmail(@PathVariable("email") String email) {
         Collection<Reservation> reservations = reservationService.findAllByGuestEmail(email);
@@ -78,6 +80,7 @@ public class ReservationController {
                 .collect(Collectors.toList()), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_Guest')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReservationForShowDTO> createReservation(@RequestBody ReservationDTO reservation) {
         Optional<User> user = userService.findById(reservation.getGuest());

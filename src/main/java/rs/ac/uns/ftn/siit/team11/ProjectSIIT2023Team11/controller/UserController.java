@@ -90,6 +90,8 @@ public class UserController {
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_Guest')")
     @GetMapping(value = "/{email}/favorite_accommodation/{accommodationId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FavoriteAccommodationDTO> getIsFavoriteAccommodation(@PathVariable("email") String email, @PathVariable("accommodationId") Long accommodationId) {
         Optional<User> user = userService.findById(email);
@@ -108,7 +110,7 @@ public class UserController {
         }
         return new ResponseEntity<>(new FavoriteAccommodationDTO(accommodationId, false),HttpStatus.OK);
     }
-
+    @PreAuthorize("hasAnyAuthority('ROLE_Guest')")
     @Operation(summary = "Update Users Favorite Accommodation.")
     @PutMapping("/{email}/favorite_accommodation")
     public ResponseEntity<FavoriteAccommodationDTO> setFavoriteAccommodation(@PathVariable("email") String userId, @RequestBody FavoriteAccommodationDTO favoriteAccommodationDTO){

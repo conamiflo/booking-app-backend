@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,7 +40,7 @@ public class FileController {
     public static final String UPLOAD_DIRECTORY = "./src/main/resources/pictures/";
 
 //    public static String UPLOAD_DIRECTORY = File.listRoots()[0].getAbsolutePath() + "./ISS/src/main/resources/pictures/";
-
+@PreAuthorize("hasAnyAuthority('ROLE_Owner')")
     @PostMapping("/upload")
     public ResponseEntity<List<String>> uploadFiles(@RequestParam("images") List<MultipartFile> files) throws IOException {
         List<String> filenames = new ArrayList<String>();
