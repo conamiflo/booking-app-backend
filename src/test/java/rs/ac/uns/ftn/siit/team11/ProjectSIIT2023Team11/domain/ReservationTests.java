@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.security.core.parameters.P;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.PriceType;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -42,7 +43,7 @@ public class ReservationTests {
         availabilityList.add(availability2);
         availabilityList.add(availability3);
 
-        accommodation = Accommodation.builder().availability(availabilityList).priceList(priceList).build();
+        accommodation = Accommodation.builder().defaultPrice(50.0).availability(availabilityList).priceList(priceList).build();
         reservation = Reservation.builder().accommodation(accommodation).build();
 
     }
@@ -103,6 +104,68 @@ public class ReservationTests {
         boolean isAvailable = reservation.isAvailable();
 
         assertFalse(isAvailable);
+
+    }
+
+    @Test
+    void Reservation_CalculatePrice_PerGuestContainsWholePriceTimeSlot(){
+        reservation = Reservation.builder().numberOfGuests(2).accommodation(accommodation).startDate(START_DATE1+(2*DAY_DURATION)).endDate(END_DATE1).build();
+        accommodation.setPriceType(PriceType.PerGuest);
+        Double price = reservation.calculatePrice();
+
+        assertEquals(2*4*40.0,price);
+
+    }
+    @Test
+    void Reservation_CalculatePrice_PerUnitContainsWholePriceTimeSlot(){
+        reservation = Reservation.builder().numberOfGuests(2).accommodation(accommodation).startDate(START_DATE1+(2*DAY_DURATION)).endDate(END_DATE1).build();
+        accommodation.setPriceType(PriceType.PerNight);
+
+        Double price = reservation.calculatePrice();
+
+        assertEquals(4*40.0,price);
+
+    }
+
+    @Test
+    void Reservation_CalculatePrice_PerGuestContainsWholeDefaultPrice(){
+        reservation = Reservation.builder().numberOfGuests(2).accommodation(accommodation).startDate(START_DATE2).endDate(END_DATE2).build();
+        accommodation.setPriceType(PriceType.PerGuest);
+
+        Double price = reservation.calculatePrice();
+
+        assertEquals(2*4*50.0,price);
+
+    }
+    @Test
+    void Reservation_CalculatePrice_PerUnitContainsWholeDefaultPrice(){
+        reservation = Reservation.builder().numberOfGuests(2).accommodation(accommodation).startDate(START_DATE2).endDate(END_DATE2).build();
+        accommodation.setPriceType(PriceType.PerNight);
+
+        Double price = reservation.calculatePrice();
+
+        assertEquals(4*50.0,price);
+
+    }
+
+    @Test
+    void Reservation_CalculatePrice_PerGuestContainsPartDefaultPricePartPriceList(){
+        reservation = Reservation.builder().numberOfGuests(2).accommodation(accommodation).startDate(START_DATE1).endDate(END_DATE1).build();
+        accommodation.setPriceType(PriceType.PerGuest);
+
+        Double price = reservation.calculatePrice();
+
+        assertEquals((2*2*50.0)+(2*4*40.0),price);
+
+    }
+    @Test
+    void Reservation_CalculatePrice_PerUnitContainsPartDefaultPricePartPriceList(){
+        reservation = Reservation.builder().numberOfGuests(2).accommodation(accommodation).startDate(START_DATE1).endDate(END_DATE1).build();
+        accommodation.setPriceType(PriceType.PerNight);
+
+        Double price = reservation.calculatePrice();
+
+        assertEquals((2*50.0)+(4*40.0),price);
 
     }
 }
