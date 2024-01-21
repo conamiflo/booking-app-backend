@@ -72,7 +72,7 @@ public class ReservationControllerTests {
     private static final Optional<User> GUEST = Optional.of(new Guest());
 
     private static final Long START_DATE  = LocalDateTime.of(2024, 1, 20, 0, 0, 0).toEpochSecond(ZoneOffset.UTC);
-    private static final Long END_DATE =  LocalDateTime.of(2024, 1, 25, 0, 0, 0).toEpochSecond(ZoneOffset.UTC);;
+    private static final Long END_DATE =  LocalDateTime.of(2024, 1, 25, 0, 0, 0).toEpochSecond(ZoneOffset.UTC);
     private static final Long DAY_DURATION = (long) (24 * 60 * 60);
 
 
