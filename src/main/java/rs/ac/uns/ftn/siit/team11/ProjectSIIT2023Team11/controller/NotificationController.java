@@ -66,7 +66,6 @@ public class NotificationController {
 
         try{
             notificationService.save(NotificationMapper.mapDtoToNotification(notificationDTO, userService));
-
             simpMessagingTemplate.convertAndSend("socket-publisher/"+notificationDTO.getReceiverEmail(),notificationDTO);
 
             return new ResponseEntity<>(notificationDTO, HttpStatus.CREATED);

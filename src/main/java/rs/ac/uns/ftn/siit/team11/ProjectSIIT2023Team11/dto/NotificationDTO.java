@@ -6,6 +6,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.NotificationType;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Getter
 @Setter
 public class NotificationDTO {
