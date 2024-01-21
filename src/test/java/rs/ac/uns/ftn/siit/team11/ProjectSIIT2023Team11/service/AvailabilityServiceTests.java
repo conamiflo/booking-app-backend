@@ -23,7 +23,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-@ExtendWith({SpringExtension.class, MockitoExtension.class})
+
 public class AvailabilityServiceTests {
     @Mock
     private IAvailabilityRepository availabilityRepository;
