@@ -1,8 +1,11 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.NotificationDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,6 +44,9 @@ public class ReservationController {
     @Autowired
     private IAvailabilityService availabilityService;
 
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<ReservationForShowDTO>> getReservations() {
         Collection<Reservation> reservations = reservationService.findAll();
@@ -77,10 +83,8 @@ public class ReservationController {
         if(!newReservationEntry.isAvailable()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        Optional<Reservation> newReservation = reservationService.createNewReservation(newReservationEntry);
 
-        newReservationEntry.calculatePrice();
-        newReservationEntry.setStatus(ReservationStatus.Waiting);
-        Optional<Reservation> newReservation = Optional.ofNullable(reservationService.save(newReservationEntry));
         return new ResponseEntity<>(ReservationMapper.mapToReservationDTO(newReservation.get()), HttpStatus.CREATED);
     }
 
@@ -191,5 +195,63 @@ public class ReservationController {
         // Create and return the DTO
         NumberOfCancellationsDTO cancellationsDTO = new NumberOfCancellationsDTO(guestId, numberOfCancellations);
         return new ResponseEntity<>(cancellationsDTO, HttpStatus.OK);
+    }
+
+
+    @GetMapping(value = "/statistics/number_of_reservations",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationNumberOfReservations>> getStatisticNumberReservations(
+            @RequestParam(value ="startDate") Long startDate,
+            @RequestParam(value ="endDate") Long endDate,
+            @RequestParam(value ="username") String username){
+        Collection<AccommodationNumberOfReservations> accommodationNumberOfReservations = reservationService.getStatisticNumberOfReservations(startDate,endDate,username);
+        return new ResponseEntity<>(accommodationNumberOfReservations,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/statistics/profit",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationProfitDTO>> getStatisticProfit(
+            @RequestParam(value ="startDate") Long startDate,
+            @RequestParam(value ="endDate") Long endDate,
+            @RequestParam(value ="username") String username){
+        Collection<AccommodationProfitDTO> accommodationNumberOfReservations = reservationService.getStatisticProfit(startDate,endDate,username);
+        return new ResponseEntity<>(accommodationNumberOfReservations,HttpStatus.OK);
+    }
+    @GetMapping(value = "/statistics/yearly_number_of_reservations",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationYearlyNumberOfReservations>> getStatisticYearlyNumberReservations(
+            @RequestParam(value ="year") Integer year,
+            @RequestParam(value ="username") String username){
+        Collection<AccommodationYearlyNumberOfReservations> accommodationNumberOfReservations = reservationService.getStatisticYearlyNumberOfReservations(year,username);
+        return new ResponseEntity<>(accommodationNumberOfReservations,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/statistics/yearly_profit",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationYearlyProfitDTO>> getStatisticYearlyProfit(
+            @RequestParam(value ="year") Integer year,
+            @RequestParam(value ="username") String username){
+        Collection<AccommodationYearlyProfitDTO> accommodationNumberOfReservations = reservationService.getStatisticYearlyProfit(year,username);
+        return new ResponseEntity<>(accommodationNumberOfReservations,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/statistics/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> getStatisticPdf(
+            @RequestParam(value ="startDate") Long startDate,
+            @RequestParam(value ="endDate") Long endDate,
+            @RequestParam(value ="year") Integer year,
+            @RequestParam(value ="username") String username) {
+
+        Collection<AccommodationNumberOfReservations> accommodationNumberOfReservations = reservationService.getStatisticNumberOfReservations(startDate, endDate, username);
+        Collection<AccommodationProfitDTO> accommodationProfit = reservationService.getStatisticProfit(startDate, endDate, username);
+        Collection<AccommodationYearlyNumberOfReservations> accommodationYearlyNumberOfReservations = reservationService.getStatisticYearlyNumberOfReservations(year, username);
+        Collection<AccommodationYearlyProfitDTO> accommodationYearlyProfitDTOS = reservationService.getStatisticYearlyProfit(year, username);
+
+        // Generate PDF content
+        byte[] pdfContent = reservationService.generatePdfContent(accommodationNumberOfReservations, accommodationProfit, accommodationYearlyNumberOfReservations, accommodationYearlyProfitDTOS);
+
+        // Set headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "statistics.pdf");
+
+        // Return PDF as a response
+        return new ResponseEntity<>(pdfContent, headers, HttpStatus.OK);
     }
 }

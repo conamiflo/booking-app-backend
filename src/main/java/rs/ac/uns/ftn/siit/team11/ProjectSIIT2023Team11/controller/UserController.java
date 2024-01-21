@@ -26,6 +26,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IReportService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IReservationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.EmailSender;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.NotificationType;
 
 import java.util.*;
 
@@ -280,5 +281,28 @@ public class UserController {
     }
 
 
+    @PreAuthorize("hasAnyAuthority('ROLE_Guest','ROLE_Owner')")
+    @Operation(summary = "Set enabled notification types", security = @SecurityRequirement(name = "bearerAuth"))
+    @PutMapping(value = "/{email}/notifications", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserForShowDTO> setEnabledNotifications(@PathVariable("email") String email, @RequestBody List<NotificationType> enabledNotificationTypes) {
+        Optional<User> user = userService.findById(email);
+        if (user.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        user.get().setEnabledNotificationTypes(enabledNotificationTypes);
+        userService.save(user.get());
+        return new ResponseEntity<>(UserMapper.mapToUserDto(user.get()), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_Guest','ROLE_Owner')")
+    @Operation(summary = "Set enabled notification types", security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping(value = "/{email}/notifications", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<NotificationType>> getEnabledNotifications(@PathVariable("email") String email) {
+        Optional<User> user = userService.findById(email);
+        if (user.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(user.get().getEnabledNotificationTypes(), HttpStatus.OK);
+    }
 
 }

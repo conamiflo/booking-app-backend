@@ -13,4 +13,6 @@ public interface INotificationService {
     Optional<Notification> findById(Long aLong);
 
     void deleteById(Long aLong);
+
+    List<Notification> findAllUsersNotifications(String email);
 }

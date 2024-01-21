@@ -36,7 +36,7 @@ public class Reservation {
         Double totalPrice = 0.0;
 
         Long currentDate = startDate;
-        while (currentDate < endDate) {
+        while (currentDate <= endDate) {
             Double dailyPrice = findPriceForDate(currentDate);
             if (dailyPrice == null) {
                 dailyPrice = accommodation.getDefaultPrice();

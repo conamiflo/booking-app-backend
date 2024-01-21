@@ -1,9 +1,13 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Notification;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.NotificationDTO;
@@ -11,7 +15,10 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.NotificationMapper
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.INotificationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 
+import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -24,10 +31,13 @@ public class NotificationController {
     @Autowired
     private IUserService userService;
 
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<NotificationDTO>> getNotifications() {
         Collection<Notification> notifications = notificationService.findAll();
-        return new ResponseEntity<Collection<NotificationDTO>>(NotificationMapper.mapToNotificationsDTO(notifications), HttpStatus.OK);
+        return new ResponseEntity<>(NotificationMapper.mapToNotificationsDTO(notifications), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -39,8 +49,16 @@ public class NotificationController {
         return new ResponseEntity<>(NotificationMapper.mapToNotificationDTO(notification.get()), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/user/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<NotificationDTO>> getNotificationByUserEmail(@PathVariable("email") String email) {
+        List<Notification> notifications = notificationService.findAllUsersNotifications(email);
+
+        return new ResponseEntity<>(NotificationMapper.mapToNotificationsDTO(notifications), HttpStatus.OK);
+    }
+
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<NotificationDTO> createNotification(@RequestBody NotificationDTO notificationDTO) throws Exception {
+    public ResponseEntity<NotificationDTO> createNotification(@RequestBody NotificationDTO notificationDTO){
 
         if (userService.findById(notificationDTO.getReceiverEmail()).isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -48,6 +66,9 @@ public class NotificationController {
 
         try{
             notificationService.save(NotificationMapper.mapDtoToNotification(notificationDTO, userService));
+
+            simpMessagingTemplate.convertAndSend("socket-publisher/"+notificationDTO.getReceiverEmail(),notificationDTO);
+
             return new ResponseEntity<>(notificationDTO, HttpStatus.CREATED);
         } catch (Exception exception){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
