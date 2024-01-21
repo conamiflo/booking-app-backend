@@ -79,7 +79,7 @@ public class AvailabilityServiceTests {
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
-    public void AvailabilityService_FitAcceptedReservation_FitOneSidePartOfOneAvailability(){
+    public void AvailabilityService_FitAcceptedReservation_FitStartSidePartOfOneAvailability(){
         List<Availability> availabilities = new ArrayList<>();
         availabilities.add(new Availability(1L, new TimeSlot(START_DATE1, END_DATE1)));
         availabilities.add(new Availability(1L, new TimeSlot(START_DATE2, END_DATE2)));
@@ -87,6 +87,21 @@ public class AvailabilityServiceTests {
         TimeSlot timeSlotToFit = new TimeSlot(START_DATE1, END_DATE1);
 
         availabilityService.fitAcceptedReservation(START_DATE1, END_DATE1-(2*DAY_DURATION), accommodation);
+
+        assertEquals(2,accommodation.getAvailability().size());
+
+    }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    @Test
+    public void AvailabilityService_FitAcceptedReservation_FitEndSidePartOfOneAvailability(){
+        List<Availability> availabilities = new ArrayList<>();
+        availabilities.add(new Availability(1L, new TimeSlot(START_DATE1, END_DATE1)));
+        availabilities.add(new Availability(1L, new TimeSlot(START_DATE2, END_DATE2)));
+        Accommodation accommodation = Accommodation.builder().availability(availabilities).build();
+        TimeSlot timeSlotToFit = new TimeSlot(START_DATE1, END_DATE1);
+
+        availabilityService.fitAcceptedReservation(START_DATE1+(2*DAY_DURATION), END_DATE1, accommodation);
 
         assertEquals(2,accommodation.getAvailability().size());
 
@@ -106,4 +121,6 @@ public class AvailabilityServiceTests {
         assertEquals(2,accommodation.getAvailability().size());
 
     }
+
+
 }
