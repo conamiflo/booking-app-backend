@@ -28,10 +28,9 @@ public class ReservationService implements IReservationService {
     IReservationRepository reservationRepository;
 
     @Autowired
-
     IAvailabilityService availabilityService;
 
-
+    @Autowired
     IAccommodationRepository accommodationRepository;
 
 
