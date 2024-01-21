@@ -430,4 +430,9 @@ public class ReservationService implements IReservationService {
 
         return monthlyProfit;
     }
+
+    @Override
+    public Collection<Reservation> getReservationsByAccommodationId(Long id) {
+        return reservationRepository.findAllByAccommodation_Id(id);
+    }
 }
