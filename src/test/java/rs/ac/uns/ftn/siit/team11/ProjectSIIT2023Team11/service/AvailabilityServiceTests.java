@@ -60,7 +60,7 @@ public class AvailabilityServiceTests {
         availabilityService.fitAcceptedReservation(START_DATE1, END_DATE1, accommodation);
 
         assertEquals(1,accommodation.getAvailability().size());
-
+        verify(accommodationService, times(1)).save(accommodation);
     }
 
     @Test
@@ -77,6 +77,7 @@ public class AvailabilityServiceTests {
         availabilityService.fitAcceptedReservation(START_DATE1+DAY_DURATION, END_DATE1-DAY_DURATION, accommodation);
 
         assertEquals(3,accommodation.getAvailability().size());
+        verify(accommodationService, times(3)).save(accommodation);
 
     }
 
@@ -93,6 +94,7 @@ public class AvailabilityServiceTests {
         availabilityService.fitAcceptedReservation(START_DATE1, END_DATE1-(2*DAY_DURATION), accommodation);
 
         assertEquals(2,accommodation.getAvailability().size());
+        verify(accommodationService, times(2)).save(accommodation);
 
     }
 
@@ -109,6 +111,7 @@ public class AvailabilityServiceTests {
         availabilityService.fitAcceptedReservation(START_DATE1+(2*DAY_DURATION), END_DATE1, accommodation);
 
         assertEquals(2,accommodation.getAvailability().size());
+        verify(accommodationService, times(2)).save(accommodation);
 
     }
 
@@ -122,9 +125,10 @@ public class AvailabilityServiceTests {
         when(accommodationService.save(accommodation)).thenReturn(accommodation);
 
 
-        availabilityService.fitAcceptedReservation(START_DATE1, END_DATE1-(2*DAY_DURATION), accommodation);
+        availabilityService.fitAcceptedReservation(START_DATE1+(2*DAY_DURATION), START_DATE2+DAY_DURATION, accommodation);
 
         assertEquals(2,accommodation.getAvailability().size());
+        verify(accommodationService, times(2)).save(accommodation);
 
     }
 
