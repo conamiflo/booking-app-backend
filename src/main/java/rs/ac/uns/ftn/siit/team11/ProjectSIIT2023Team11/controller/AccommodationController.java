@@ -238,7 +238,7 @@ public class AccommodationController {
     }
 
 
-    @PreAuthorize("hasAuthority('ROLE_Owner')")
+//    @PreAuthorize("hasAuthority('ROLE_Owner')")
     @Operation(summary = "Delete accommodation price", security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping(value = "/{id}/prices/{priceId}")
     public ResponseEntity<Void> deleteAccommodationPrice(@PathVariable("id") Long id, @PathVariable("priceId") Long priceId) {

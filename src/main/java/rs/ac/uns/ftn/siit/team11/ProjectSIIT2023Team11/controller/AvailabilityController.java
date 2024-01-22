@@ -130,16 +130,14 @@ public class AvailabilityController {
         if(accommodation.isEmpty() || availability.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
         while(accommodation.get().getAvailability().contains(availability.get())){
             accommodation.get().getAvailability().remove(availability.get());
 
         }
-
         availabilityService.deleteById(id);
-
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
+
 
 }

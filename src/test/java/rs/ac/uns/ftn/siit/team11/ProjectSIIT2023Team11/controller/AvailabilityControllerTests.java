@@ -293,4 +293,116 @@ public class AvailabilityControllerTests {
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
+
+    @Test
+    @DisplayName("It shouldnt delete availability that doesnt exist from accommodation! ")
+    public void deleteAccommodationAvailabilityInvalid() {
+
+        Long accommodationId = 1L;
+        Long availabilityId = 1521L;
+
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(
+                "/api/availabilities/{id}/accommodation/{accommodationId}",
+                HttpMethod.DELETE,
+                null,
+                Void.class,
+                availabilityId, accommodationId
+        );
+
+        assert responseEntity.getStatusCode() == HttpStatus.NOT_FOUND;
+    }
+
+    @Test
+    @DisplayName("It shouldnt delete availability from accommodation that doesnt exist! ")
+    public void deleteInvalidAccommodationAvailability() {
+
+        Long accommodationId = 11244L;
+        Long availabilityId = 1L;
+
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(
+                "/api/availabilities/{id}/accommodation/{accommodationId}",
+                HttpMethod.DELETE,
+                null,
+                Void.class,
+                availabilityId, accommodationId
+        );
+
+        assert responseEntity.getStatusCode() == HttpStatus.NOT_FOUND;
+    }
+
+
+//    @Test
+//    @DisplayName("It should delete availability from accommodation! ")
+//    public void deleteAccommodationAvailability() {
+//
+//        Long accommodationId = 1L;
+//        Long availabilityId = 1L;
+//
+//        ResponseEntity<Void> responseEntity = restTemplate.exchange(
+//                "/api/availabilities/{id}/accommodation/{accommodationId}",
+//                HttpMethod.DELETE,
+//                null,
+//                Void.class,
+//                availabilityId, accommodationId
+//        );
+//
+//        assert responseEntity.getStatusCode() == HttpStatus.NO_CONTENT;
+//    }
+
+
+    @Test
+    @DisplayName("It shouldnt delete price from accommodation that doesnt exist! ")
+    public void deleteAccommodationInvalidPrice() {
+
+        Long accommodationId = 114L;
+        Long priceId = 3L;
+
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(
+                "/api/accommodations/{id}/prices/{priceId}",
+                HttpMethod.DELETE,
+                null,
+                Void.class,
+                accommodationId, priceId
+        );
+
+        assert responseEntity.getStatusCode() == HttpStatus.NOT_FOUND;
+    }
+
+    @Test
+    @DisplayName("It shouldnt delete price that doenst exist from accommodation!")
+    public void deleteInvalidAccommodationPrice() {
+
+        Long accommodationId = 1L;
+        Long priceId = 124L;
+
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(
+                "/api/accommodations/{id}/prices/{priceId}",
+                HttpMethod.DELETE,
+                null,
+                Void.class,
+                accommodationId, priceId
+        );
+
+        assert responseEntity.getStatusCode() == HttpStatus.NOT_FOUND;
+    }
+
+    //    @Test
+//    @DisplayName("It should delete availability from accommodation! ")
+//    public void deleteAccommodationPrice() {
+//
+//        Long accommodationId = 1L;
+//        Long priceId = 1L;
+//
+//        ResponseEntity<Void> responseEntity = restTemplate.exchange(
+//                "/api/accommodations/{id}/prices/{priceId}",
+//                HttpMethod.DELETE,
+//                null,
+//                Void.class,
+//                availabilityId, accommodationId
+//        );
+//
+//        assert responseEntity.getStatusCode() == HttpStatus.NO_CONTENT;
+//    }
+
+
 }
