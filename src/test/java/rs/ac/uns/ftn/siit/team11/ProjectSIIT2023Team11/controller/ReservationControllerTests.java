@@ -261,5 +261,48 @@ public class ReservationControllerTests {
 
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    @Test
+    public void ReservationController_DeclineReservation_NotFoundExistingReservation() throws Exception {
+        Long nonExistingReservationId = 0L;
+
+        when(reservationService.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        ResultActions response = mockMvc.perform(put("/api/reservations/decline/{reservationId}", nonExistingReservationId)
+                .contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8"));
+
+        response.andExpect(MockMvcResultMatchers.status().is4xxClientError());
+    }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    @Test
+    public void ReservationController_DeclineReservation_ExistingReservation() throws Exception{
+        Long existingReservationId = 1L;
+        OwnerReservationDTO reservationDTO = OwnerReservationDTO.builder().build();
+        Optional<Reservation> validReservation = Optional.of(Reservation.builder().id(existingReservationId)
+                .startDate(START_DATE).endDate(END_DATE).accommodation(accommodation.get()).status(ReservationStatus.Waiting).build());
+
+        Optional<Reservation> validReservationDeclined = Optional.of(Reservation.builder().id(existingReservationId)
+                .startDate(START_DATE).endDate(END_DATE).accommodation(accommodation.get()).status(ReservationStatus.Declined).guest(mock(Guest.class)).build());
+
+        when(reservationService.findById(existingReservationId)).thenReturn(validReservation);
+        when(reservationService.save(validReservation.get())).thenReturn(validReservationDeclined.get());
+        try(MockedStatic<OwnerReservationMapper> mockedMapper = Mockito.mockStatic(OwnerReservationMapper.class,Mockito.CALLS_REAL_METHODS)){
+            mockedMapper.when(() -> OwnerReservationMapper.mapToOwnerReservationDTO(validReservationDeclined.get())).thenReturn(reservationDTO);
+        }
+
+        ResultActions response = mockMvc.perform(put("/api/reservations/decline/{reservationId}", existingReservationId)
+                .contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8"));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("Declined"))
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE));
+
+
+        verify(reservationService, times(1)).findById(existingReservationId);
+        verify(reservationService, times(1)).save(validReservation.get());
+
+    }
+
 
 }

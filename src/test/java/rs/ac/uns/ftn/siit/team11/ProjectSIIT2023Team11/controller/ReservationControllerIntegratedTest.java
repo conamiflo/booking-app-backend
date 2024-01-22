@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
+/*package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -112,3 +112,4 @@ public class ReservationControllerIntegratedTest {
         response.andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 }
+*/

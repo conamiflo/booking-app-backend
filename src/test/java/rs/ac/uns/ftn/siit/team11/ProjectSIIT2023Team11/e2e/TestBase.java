@@ -3,12 +3,14 @@ package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.e2e;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
 import java.util.concurrent.TimeUnit;
 
-public class TestBase {
+public class TestBase{
     public static WebDriver driver;
 
     @BeforeSuite

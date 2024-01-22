@@ -29,6 +29,11 @@ public class HomePage {
     private WebElement dialogMenu;
     @FindBy(css="#my-accommodations")
     private WebElement myAccommodationsButton;
+    @FindBy(css="#my-reservations")
+    private WebElement guestReservationsButton;
+    @FindBy(css="#log-out-button")
+    private WebElement logOutButton;
+
 
     @FindBy(css=".accommodation-card-container")
     private List<WebElement> accommodationCardContainers;
@@ -63,6 +68,21 @@ public class HomePage {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement myAccommodations = wait.until(ExpectedConditions.visibilityOf(myAccommodationsButton));
         myAccommodations.click();
+    }
+
+    public void goToGuestReservations(){
+
+        openProfileMenu();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement myReservations = wait.until(ExpectedConditions.visibilityOf(guestReservationsButton));
+        myReservations.click();
+    }
+    public void goToLogOut(){
+
+        openProfileMenu();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement logOut = wait.until(ExpectedConditions.visibilityOf(logOutButton));
+        logOut.click();
     }
 
     public List<Accommodation> getShownAccommodations(){
