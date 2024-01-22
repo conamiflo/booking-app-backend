@@ -1,8 +1,6 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.http.*;
+import org.springframework.test.context.TestPropertySource;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Availability;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.TimeSlot;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AccommodationDetailsDTO;
@@ -32,7 +31,9 @@ import java.util.Collection;
 import java.util.stream.Stream;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AvailabilityControllerTests {
 
     @Autowired
@@ -54,6 +55,7 @@ public class AvailabilityControllerTests {
     }
 
     @Test
+    @Transactional
     @DisplayName("It should create availability for accommodation")
     public void createAvailabilityValidData() {
 
@@ -75,12 +77,13 @@ public class AvailabilityControllerTests {
                 HttpMethod.POST,
                 requestEntity,
                 Availability.class,
-                1
+                16
         );
         Assertions.assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
     }
 
     @Test
+    @Transactional
     @DisplayName("It shouldnt create availability for non existing accommodation")
     public void createAvailabilityInvalidAccommodation() {
         // Given
@@ -107,7 +110,7 @@ public class AvailabilityControllerTests {
         Assertions.assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
 
-
+    @Transactional
     @ParameterizedTest
     @MethodSource("invalidAvailabilityDatesProvider")
     @DisplayName("It shouldnt create availabilities for accommodation with invalid dates")
@@ -123,7 +126,7 @@ public class AvailabilityControllerTests {
                 HttpMethod.POST,
                 requestEntity,
                 Availability.class,
-                1
+                16
         );
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
@@ -135,7 +138,7 @@ public class AvailabilityControllerTests {
         Long startDateBeforeToday = LocalDateTime.of(2024, 1, 21, 0, 0, 0).toEpochSecond(ZoneOffset.UTC);
         Long endDateBeforeToday = LocalDateTime.of(2024, 1, 22, 0, 0, 0).toEpochSecond(ZoneOffset.UTC);
 
-        Long startDateReservation = LocalDateTime.of(2024, 2, 15, 0, 0, 0).toEpochSecond(ZoneOffset.UTC);
+        Long startDateReservation = LocalDateTime.of(2024, 2, 16, 0, 0, 0).toEpochSecond(ZoneOffset.UTC);
         Long endDateReservation = LocalDateTime.of(2024, 2, 17, 0, 0, 0).toEpochSecond(ZoneOffset.UTC);
 
         return Stream.of(
@@ -149,6 +152,7 @@ public class AvailabilityControllerTests {
 
 
     @Test
+    @Transactional
     @DisplayName("It should create valid price for accommodation")
     public void createPriceValidData() {
 
@@ -169,7 +173,7 @@ public class AvailabilityControllerTests {
                 HttpMethod.POST,
                 requestEntity,
                 InputPriceDTO.class,
-                1
+                16
 
         );
         Assertions.assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
@@ -198,6 +202,7 @@ public class AvailabilityControllerTests {
     }
 
     @ParameterizedTest
+    @Transactional
     @MethodSource("invalidPriceDatesProvider")
     @DisplayName("It shouldnt create prices for accommodation with invalid dates and price")
     public void createPriceInvalidData(InputPriceDTO priceDTO) {
@@ -212,7 +217,7 @@ public class AvailabilityControllerTests {
                 HttpMethod.POST,
                 requestEntity,
                 InputPriceDTO.class,
-                1
+                16
 
         );
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
@@ -236,6 +241,7 @@ public class AvailabilityControllerTests {
 //    }
 
     @Test
+    @Transactional
     @DisplayName("It should create accommodation with valid cancellation days! ")
     public void createAccommodationWithValidCancellationDays() {
 
@@ -274,6 +280,7 @@ public class AvailabilityControllerTests {
     }
 
     @ParameterizedTest
+    @Transactional
     @MethodSource("invalidCancellationDays")
     @DisplayName("It shouldnt create accommodation with invalid cancellation days! ")
     public void createAccommodationWithInvalidCancellationDays(AccommodationDetailsDTO accommodation) {
@@ -295,11 +302,12 @@ public class AvailabilityControllerTests {
 
 
     @Test
+    @Transactional
     @DisplayName("It shouldnt delete availability that doesnt exist from accommodation! ")
     public void deleteAccommodationAvailabilityInvalid() {
 
-        Long accommodationId = 1L;
-        Long availabilityId = 1521L;
+        Long accommodationId = 16L;
+        Long availabilityId = 1621L;
 
         ResponseEntity<Void> responseEntity = restTemplate.exchange(
                 "/api/availabilities/{id}/accommodation/{accommodationId}",
@@ -313,11 +321,12 @@ public class AvailabilityControllerTests {
     }
 
     @Test
+    @Transactional
     @DisplayName("It shouldnt delete availability from accommodation that doesnt exist! ")
     public void deleteInvalidAccommodationAvailability() {
 
         Long accommodationId = 11244L;
-        Long availabilityId = 1L;
+        Long availabilityId = 16L;
 
         ResponseEntity<Void> responseEntity = restTemplate.exchange(
                 "/api/availabilities/{id}/accommodation/{accommodationId}",
@@ -351,6 +360,7 @@ public class AvailabilityControllerTests {
 
 
     @Test
+    @Transactional
     @DisplayName("It shouldnt delete price from accommodation that doesnt exist! ")
     public void deleteAccommodationInvalidPrice() {
 
@@ -369,10 +379,11 @@ public class AvailabilityControllerTests {
     }
 
     @Test
+    @Transactional
     @DisplayName("It shouldnt delete price that doenst exist from accommodation!")
     public void deleteInvalidAccommodationPrice() {
 
-        Long accommodationId = 1L;
+        Long accommodationId = 16L;
         Long priceId = 124L;
 
         ResponseEntity<Void> responseEntity = restTemplate.exchange(
