@@ -84,6 +84,40 @@ public class ReservationControllerIntegrationTests {
         OwnerReservationDTO responseOwner = responseEntity.getBody();
         assertEquals(responseOwner.getStatus(),ReservationStatus.Accepted);
     }
+    @Test
+    @DisplayName("Decline Reservation not found reservation")
+    public void ReservationController_DeclineReservation_NotFoundExistingReservation() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization","Bearer "+ jwt);
+        HttpEntity<Object> requestEntity = new HttpEntity<>(null, headers);
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(
+                "/reservations/decline/{reservationId}",
+                HttpMethod.PUT,
+                requestEntity,
+                Void.TYPE,
+                0L);
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Decline Reservation valid")
+    public void ReservationController_DeclineReservation_ExistingReservation() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        //headers.set("Authorization","Bearer "+ jwt);
+        HttpEntity<Object> requestEntity = new HttpEntity<>(null, headers);
+
+        ResponseEntity<OwnerReservationDTO> responseEntity = restTemplate.exchange(
+                "/reservations/decline/{reservationId}",
+                HttpMethod.PUT,
+                requestEntity,
+                OwnerReservationDTO.class,
+                1L);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        OwnerReservationDTO responseOwner = responseEntity.getBody();
+        assertEquals(responseOwner.getStatus(),ReservationStatus.Accepted);
+    }
 
 
 }
