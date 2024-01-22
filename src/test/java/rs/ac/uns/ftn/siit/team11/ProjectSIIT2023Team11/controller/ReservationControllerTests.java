@@ -17,6 +17,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 // Use the correct import for JUnit 5
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +31,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.*;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.OwnerReservationDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.ReservationDTO.ReservationDTO;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.mapper.OwnerReservationMapper;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.security.JwtTokenUtil;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.AccommodationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.AvailabilityService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.ReservationService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.UserService;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -43,8 +48,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 @WebMvcTest(ReservationController.class)
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
@@ -63,6 +69,7 @@ public class ReservationControllerTests {
     private AvailabilityService availabilityService;
     @MockBean
     private JwtTokenUtil jwtTokenUtil;
+
 
     @Autowired
     ObjectMapper objectMapper;
@@ -206,5 +213,53 @@ public class ReservationControllerTests {
 
         response.andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    @Test
+    public void ReservationController_AcceptReservation_NotFoundExistingReservation() throws Exception {
+        Long nonExistingReservationId = 0L;
+
+        when(reservationService.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        ResultActions response = mockMvc.perform(put("/api/reservations/accept/{reservationId}", nonExistingReservationId)
+                .contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8"));
+
+        response.andExpect(MockMvcResultMatchers.status().is4xxClientError());
+    }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    @Test
+    public void ReservationController_AcceptReservation_ExistingReservation() throws Exception{
+        Long existingReservationId = 1L;
+        OwnerReservationDTO reservationDTO = OwnerReservationDTO.builder().build();
+        Optional<Reservation> validReservation = Optional.of(Reservation.builder().id(existingReservationId)
+                .startDate(START_DATE).endDate(END_DATE).accommodation(accommodation.get()).status(ReservationStatus.Waiting).build());
+
+        Optional<Reservation> validReservationAccepted = Optional.of(Reservation.builder().id(existingReservationId)
+                .startDate(START_DATE).endDate(END_DATE).accommodation(accommodation.get()).status(ReservationStatus.Accepted).guest(mock(Guest.class)).build());
+
+        when(reservationService.findById(existingReservationId)).thenReturn(validReservation);
+        when(reservationService.save(validReservation.get())).thenReturn(validReservationAccepted.get());
+        try(MockedStatic<OwnerReservationMapper> mockedMapper = Mockito.mockStatic(OwnerReservationMapper.class,Mockito.CALLS_REAL_METHODS)){
+            mockedMapper.when(() -> OwnerReservationMapper.mapToOwnerReservationDTO(validReservationAccepted.get())).thenReturn(reservationDTO);
+        }
+
+        ResultActions response = mockMvc.perform(put("/api/reservations/accept/{reservationId}", existingReservationId)
+                .contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8"));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("Accepted"))
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE));
+
+
+        verify(reservationService, times(1)).findById(existingReservationId);
+        verify(reservationService, times(1)).save(validReservation.get());
+        verify(reservationService, times(1))
+                .declineWaitingReservations(validReservation.get().getStartDate(), validReservation.get().getEndDate(), validReservation.get().getAccommodation().getId());
+        verify(availabilityService, times(1))
+                .fitAcceptedReservation(validReservation.get().getStartDate(), validReservation.get().getEndDate(), validReservation.get().getAccommodation());
+
+    }
+
 
 }
