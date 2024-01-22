@@ -4,11 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Availability;
-import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Price;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Reservation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.TimeSlot;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.dto.AccommodationDTO.AvailabilityDTO;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.repository.IAvailabilityRepository;
+import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +24,9 @@ public class AvailabilityService implements IAvailabilityService{
 
     @Autowired
     IAccommodationService accommodationService;
+
+    @Autowired
+    IReservationService reservationService;
 
     public List<Availability> findAll() {
         return availabilityRepository.findAll();
@@ -35,6 +42,53 @@ public class AvailabilityService implements IAvailabilityService{
 
     public void deleteById(Long aLong) {
         availabilityRepository.deleteById(aLong);
+    }
+
+
+    @Override
+    public Availability createAvailability(AvailabilityDTO availabilityDTO, Long accommodationId) {
+        Availability createdAvailability = createAvailabilityForAccommodation(accommodationService.findById(accommodationId).get(), availabilityDTO.getStartDate(), availabilityDTO.getEndDate());
+        return createdAvailability;
+    }
+    @Override
+    public boolean isOverlap(Long newStartDate, Long newEndDate, Long existingStartDate, Long existingEndDate) {
+        return newStartDate <= existingEndDate && newEndDate >= existingStartDate;
+    }
+    @Override
+    public Availability createAvailabilityForAccommodation(Accommodation accommodation, Long startDate, Long endDate) {
+        if(validateInputDates(startDate,endDate) || isOverLappingWithReservations(startDate,endDate,accommodation.getId())){
+            return null;
+        }
+        for (Availability availability : accommodation.getAvailability()) {
+            if (isOverlap(startDate, endDate, availability.getTimeSlot().getStartEpochTime(), availability.getTimeSlot().getEndEpochTime())) {
+                return null;
+            }
+        }
+        Availability newAvailability = new Availability(0L, new TimeSlot(startDate, endDate));
+        save(newAvailability);
+        accommodation.getAvailability().add(newAvailability);
+        accommodationService.save(accommodation);
+        return newAvailability;
+    }
+
+    public boolean validateInputDates(Long startDate, Long endDate){
+        Instant currentInstant = Instant.now();
+        long currentDate = currentInstant.toEpochMilli() / 1000;
+
+        if (startDate == null || endDate == null || startDate < currentDate || endDate < currentDate || startDate > endDate) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isOverLappingWithReservations(Long startDate, Long endDate,Long id){
+        Collection<Reservation> reservations = reservationService.getReservationsByAccommodationId(id);
+        for (Reservation reservation : reservations) {
+            if (reservation.getStatus() == ReservationStatus.Accepted && isOverlap(startDate, endDate, reservation.getStartDate(), reservation.getEndDate())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void deleteAvailabilities(List<Availability> availabilities){

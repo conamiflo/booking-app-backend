@@ -1,0 +1,2 @@
+INSERT INTO users (email, password, is_active, name, last_name, address, phone_number, notifications, photo, role)
+VALUES ('owner@gmail.com', '$2a$10$ZCBpC0hvmcBUjS1L9DMx.eOlhdAxb0eb/FoiPFp634DwGIoytaS3.', true, 'John', 'Doe', 'Owner Street', '123456789', true, '', 'Owner');

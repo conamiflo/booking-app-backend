@@ -24,11 +24,12 @@ import java.util.*;
 @Service
 public class ReservationService implements IReservationService {
 
+
     @Autowired
     IReservationRepository reservationRepository;
 
-    @Autowired
-    IAvailabilityService availabilityService;
+//    @Autowired
+//    IAvailabilityService availabilityService;
 
     @Autowired
     IAccommodationRepository accommodationRepository;
@@ -136,36 +137,46 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
-    public void declineBlockedGuestsReservations(User guest){
-        Collection<Reservation> reservations = reservationRepository.findAllByGuestEmail(guest.getEmail());
-        for(Reservation r : reservations){
-            if(r.getStatus() == ReservationStatus.Waiting){
-                r.setStatus(ReservationStatus.Declined);
-            }
-            if(r.getStatus() == ReservationStatus.Accepted) {
-                r.setStatus(ReservationStatus.Declined);
-                availabilityService.returnCancelledAvailability(r.getStartDate(), r.getEndDate(), r.getAccommodation());
-            }
-        }
+    public void declineBlockedGuestsReservations(User guest) {
 
-        for(Reservation r: reservations){
-            save(r);
-        }
     }
 
     @Override
     public Optional<Reservation> createNewReservation(Reservation newReservationEntry) {
-        newReservationEntry.calculatePrice();
-        newReservationEntry.setStatus(ReservationStatus.Waiting);
-
-        if(newReservationEntry.getAccommodation().isAutomaticApproval()){
-            availabilityService.fitAcceptedReservation(newReservationEntry.getStartDate(),newReservationEntry.getEndDate(),newReservationEntry.getAccommodation());
-            newReservationEntry.setStatus(ReservationStatus.Accepted);
-            return  Optional.ofNullable(save(newReservationEntry));
-        }
-
-        return  Optional.ofNullable(save(newReservationEntry));
+        return Optional.empty();
     }
+
+//    @Override
+//    public void declineBlockedGuestsReservations(User guest){
+//        Collection<Reservation> reservations = reservationRepository.findAllByGuestEmail(guest.getEmail());
+//        for(Reservation r : reservations){
+//            if(r.getStatus() == ReservationStatus.Waiting){
+//                r.setStatus(ReservationStatus.Declined);
+//            }
+//            if(r.getStatus() == ReservationStatus.Accepted) {
+//                r.setStatus(ReservationStatus.Declined);
+//                availabilityService.returnCancelledAvailability(r.getStartDate(), r.getEndDate(), r.getAccommodation());
+//            }
+//        }
+//
+//        for(Reservation r: reservations){
+//            save(r);
+//        }
+//    }
+//
+//    @Override
+//    public Optional<Reservation> createNewReservation(Reservation newReservationEntry) {
+//        newReservationEntry.calculatePrice();
+//        newReservationEntry.setStatus(ReservationStatus.Waiting);
+//
+//        if(newReservationEntry.getAccommodation().isAutomaticApproval()){
+//            availabilityService.fitAcceptedReservation(newReservationEntry.getStartDate(),newReservationEntry.getEndDate(),newReservationEntry.getAccommodation());
+//            newReservationEntry.setStatus(ReservationStatus.Accepted);
+//            return  Optional.ofNullable(save(newReservationEntry));
+//        }
+//
+//        return  Optional.ofNullable(save(newReservationEntry));
+//    }
 
     @Override
     public Collection<AccommodationNumberOfReservations> getStatisticNumberOfReservations(Long startDate, Long endDate, String username) {

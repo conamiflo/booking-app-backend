@@ -62,7 +62,7 @@ public class AccommodationService implements IAccommodationService{
 
     public Optional<AccommodationDetailsDTO> create(AccommodationDetailsDTO accommodationDetailsDTO, IUserService userService){
         Optional<User> user =  userService.findById(accommodationDetailsDTO.ownerEmail());
-        if(user.isEmpty()){
+        if(user.isEmpty() || accommodationDetailsDTO.cancellationDays() <= 0){
             return Optional.empty();
         }
         Owner owner = (Owner) user.get();

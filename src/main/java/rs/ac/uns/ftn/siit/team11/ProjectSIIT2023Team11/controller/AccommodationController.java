@@ -120,7 +120,7 @@ public class AccommodationController {
     public ResponseEntity<AccommodationDetailsDTO> createAccommodation(@RequestBody AccommodationDetailsDTO accommodation) throws Exception {
         Optional<AccommodationDetailsDTO> newAccommodation = accommodationService.create(accommodation, userService);
         if(newAccommodation.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(newAccommodation.get(), HttpStatus.CREATED);
     }
@@ -222,7 +222,7 @@ public class AccommodationController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_Owner')")
+//    @PreAuthorize("hasAuthority('ROLE_Owner')")
     @Operation(summary = "Create accommodation price", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/{id}/price", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationPricesDTO> createAccommodationPrice(@RequestBody InputPriceDTO inputPrice, @PathVariable("id") Long id) {
@@ -230,12 +230,11 @@ public class AccommodationController {
         if(accommodation.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-        accommodation.get().getPriceList().add(PriceMapper.mapInputPriceToPrice(inputPrice));
-        accommodationService.save(accommodation.get());
-        AccommodationPricesDTO accommodationPrice = AccommodationMapper.mapAccommodationToAccommodationPriceDTO(accommodation.get());
-
-        return new ResponseEntity<>(accommodationPrice, HttpStatus.CREATED);
+        AccommodationPricesDTO createdAvailability = priceService.createPrice(inputPrice,id);
+        if(createdAvailability == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(createdAvailability, HttpStatus.CREATED);
     }
 
 

@@ -81,7 +81,7 @@ public class AvailabilityController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_Owner')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_Owner')")
     @Operation(summary = "Create accommodation availability", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping( value = "/accommodation/{accommodation_id}",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -91,14 +91,13 @@ public class AvailabilityController {
         {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        if(accommodation.get().AddAvailability(new TimeSlot(availability.getStartDate() + (1 * 24 * 60 * 60), availability.getEndDate() + (1 * 24 * 60 * 60)))) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        Availability createdAvailability = availabilityService.save(AvailabilityMapper.mapToAvailability(availability));
-
-        accommodation.get().getAvailability().add(createdAvailability);
-        accommodationService.save(accommodation.get());
-
+        Availability createdAvailability = availabilityService.createAvailability(availability,accommodationId);
+        if(createdAvailability == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(createdAvailability, HttpStatus.CREATED);
     }
+
     @GetMapping( value = "/accommodation/{accommodation_id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<Availability>> getAccommodationAvailability(@PathVariable("accommodation_id") Long accommodationId) {
