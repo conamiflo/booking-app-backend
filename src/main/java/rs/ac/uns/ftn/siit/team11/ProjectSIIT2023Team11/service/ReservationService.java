@@ -28,9 +28,11 @@ public class ReservationService implements IReservationService {
     IReservationRepository reservationRepository;
 
     @Autowired
-    IAccommodationRepository accommodationRepository;
+    IAvailabilityService availabilityService;
+
     @Autowired
-    AvailabilityService availabilityService;
+    IAccommodationRepository accommodationRepository;
+
 
     public List<Reservation> findAll() {
         return reservationRepository.findAll();
@@ -131,7 +133,24 @@ public class ReservationService implements IReservationService {
             }
         }
         return false;
+    }
 
+    @Override
+    public void declineBlockedGuestsReservations(User guest){
+        Collection<Reservation> reservations = reservationRepository.findAllByGuestEmail(guest.getEmail());
+        for(Reservation r : reservations){
+            if(r.getStatus() == ReservationStatus.Waiting){
+                r.setStatus(ReservationStatus.Declined);
+            }
+            if(r.getStatus() == ReservationStatus.Accepted) {
+                r.setStatus(ReservationStatus.Declined);
+                availabilityService.returnCancelledAvailability(r.getStartDate(), r.getEndDate(), r.getAccommodation());
+            }
+        }
+
+        for(Reservation r: reservations){
+            save(r);
+        }
     }
 
     @Override
@@ -409,5 +428,10 @@ public class ReservationService implements IReservationService {
         }
 
         return monthlyProfit;
+    }
+
+    @Override
+    public Collection<Reservation> getReservationsByAccommodationId(Long id) {
+        return reservationRepository.findAllByAccommodation_Id(id);
     }
 }
