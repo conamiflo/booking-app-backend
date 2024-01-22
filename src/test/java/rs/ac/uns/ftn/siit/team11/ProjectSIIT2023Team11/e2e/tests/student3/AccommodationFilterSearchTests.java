@@ -28,7 +28,7 @@ public class AccommodationFilterSearchTests extends TestBase {
 
     private static final Integer INVALID_MINIMUM_PRICE =  50;
     private static final Integer VALID_MINIMUM_PRICE =  30;
-    private static final Integer INVALID_MAXIMUM_PRICE =  3224;
+    private static final Integer INVALID_MAXIMUM_PRICE =  555;
     private static final Integer VALID_MAXIMUM_PRICE =  50;
 
     private static final Long START_DATE2  = LocalDateTime.of(2024, 1, 26, 0, 0, 0).toEpochSecond(ZoneOffset.UTC);
@@ -186,8 +186,8 @@ public class AccommodationFilterSearchTests extends TestBase {
         homePage.clickOnFilterContainer();
         homePage.setMinimumPrice(VALID_MINIMUM_PRICE);
         homePage.setMaximumPrice(VALID_MAXIMUM_PRICE);
-        Integer minimumPrice = Integer.valueOf(homePage.getMinimumPrice());
-        Integer maximumPrice = Integer.valueOf(homePage.getMaximumPrice());
+//        Integer minimumPrice = Integer.valueOf(homePage.getMinimumPrice());
+//        Integer maximumPrice = Integer.valueOf(homePage.getMaximumPrice());
 
         homePage.clickOnApplyContainer();
 
@@ -220,8 +220,8 @@ public class AccommodationFilterSearchTests extends TestBase {
         homePage.clickOnFilterContainer();
         homePage.setMinimumPrice(INVALID_MINIMUM_PRICE);
         homePage.setMaximumPrice(INVALID_MAXIMUM_PRICE);
-        Integer minimumPrice = Integer.valueOf(homePage.getMinimumPrice());
-        Integer maximumPrice = Integer.valueOf(homePage.getMaximumPrice());
+//        Integer minimumPrice = Integer.valueOf(homePage.getMinimumPrice());
+//        Integer maximumPrice = Integer.valueOf(homePage.getMaximumPrice());
 
         homePage.clickOnApplyContainer();
 
