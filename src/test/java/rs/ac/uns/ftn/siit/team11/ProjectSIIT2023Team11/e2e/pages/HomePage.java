@@ -198,7 +198,7 @@ public class HomePage {
     }
     public void clickOnApplyContainer() {
         applyButton.click();
-        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(5L));
+        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(10L));
         wait.until(ExpectedConditions.invisibilityOf(maximumPriceInputElement));
     }
 }

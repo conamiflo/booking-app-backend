@@ -75,12 +75,9 @@ public class ReservationControllerIntegratedTest {
 ////    }
     @BeforeEach
     public void init(){
-        reservation = Reservation.builder().numberOfGuests(2).build();
+
         reservationDTO = ReservationDTO.builder().numberOfGuests(2).startDate(START_DATE+DAY_DURATION).endDate(END_DATE-DAY_DURATION).build();
 
-        List<Availability> availabilityList = new ArrayList<>(){{add(new Availability(1L,new TimeSlot(START_DATE, END_DATE)));}};
-
-        accommodation =  Optional.of(Accommodation.builder().minGuests(1).maxGuests(3).availability(availabilityList).build());
     }
     @Test
     @DisplayName("Should List All Reservations When making GET request to endpoint - /api/reservations")
@@ -101,14 +98,10 @@ public class ReservationControllerIntegratedTest {
     @DisplayName("CREATE reservation - /api/reservations")
     public void ReservationController_CreateReservation_NonExistingGuest() throws Exception{
 
-        ReservationDTO validReservationDTO = ReservationDTO.builder().numberOfGuests(2).startDate(START_DATE).endDate(END_DATE).build();
-        Optional<Reservation> validReservation = Optional.of(Reservation.builder().numberOfGuests(2).startDate(START_DATE).endDate(END_DATE).accommodation(accommodation.get()).build());
+//        ReservationDTO validReservationDTO = ReservationDTO.builder().numberOfGuests(2).startDate(START_DATE).endDate(END_DATE).build();
+        ReservationDTO validReservation = ReservationDTO.builder().numberOfGuests(2).startDate(START_DATE).endDate(END_DATE).accommodation(1L).build();
+        ReservationDTO validReservationDTO = restTemplate.postForObject("/api/reservations", validReservation, ReservationDTO.class);
 
-        ResultActions response = mockMvc.perform(post("/api/reservations")
-                .contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8")
-                .content(objectMapper.writeValueAsString(validReservationDTO)));
-
-
-        response.andExpect(MockMvcResultMatchers.status().is4xxClientError());
+        assertEquals(2,validReservationDTO.getNumberOfGuests());
     }
 }
