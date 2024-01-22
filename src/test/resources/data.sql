@@ -13,3 +13,12 @@ VALUES (true, true, 7, 1642972800000, 100.0, 'Description of Accommodation', 'Lo
 
 INSERT INTO reservations (end_date, number_of_guests, price, start_date, status, accommodation_id, guest_email)
 VALUES (1643673600000, 2, 150.0, 1642972800000, 0, 1, 'guest@example.com');
+
+INSERT INTO availabilities (id, start_epoch_time, end_epoch_time)
+VALUES (1, 1642972800000, 1643673600000);
+
+INSERT INTO accommodations_availability (accommodation_id, availability_id)
+VALUES (
+           1,
+           1
+       );

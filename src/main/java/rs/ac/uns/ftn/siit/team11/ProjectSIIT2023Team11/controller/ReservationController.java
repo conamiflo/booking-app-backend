@@ -1,6 +1,8 @@
 package rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.controller;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.Accommodation;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.domain.User;
@@ -21,8 +23,7 @@ import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.service.IUserService;
 import rs.ac.uns.ftn.siit.team11.ProjectSIIT2023Team11.util.ReservationStatus;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -69,6 +70,8 @@ public class ReservationController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReservationForShowDTO> createReservation(@RequestBody ReservationDTO reservation) {
+
+
         Optional<User> user = userService.findById(reservation.getGuest());
         Optional<Accommodation> accommodation = accommodationService.findById(reservation.getAccommodation());
         if(user.isEmpty() || accommodation.isEmpty()){
